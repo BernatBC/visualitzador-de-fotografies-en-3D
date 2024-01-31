@@ -6,18 +6,22 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
-
-const geometry = new THREE.PlaneGeometry( 4, 4 );
-
-//Textures
-const texture = new THREE.TextureLoader().load( "public/images/default.png" );
-
-const material = new THREE.MeshBasicMaterial( { map: texture } );
-const plane = new THREE.Mesh( geometry, material );
-
-scene.add( plane );
-
 camera.position.z = 5;
+
+//Add scene content here
+addImage("images/non-square.jpeg");
+
+animate();
+
+function addImage(path) {
+    var loader = new THREE.TextureLoader();
+    var texture = loader.load(path, function () {
+        const geometry = new THREE.PlaneGeometry( texture.image.width/200,texture.image.height/200);
+        const material = new THREE.MeshBasicMaterial( { map: texture } );
+        const plane = new THREE.Mesh( geometry, material );
+        scene.add( plane );
+    } );
+}
 
 function animate() {
 	requestAnimationFrame( animate );
@@ -27,4 +31,3 @@ function animate() {
 function render() {
     renderer.render( scene, camera );
 }
-animate();
