@@ -4,6 +4,8 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 const scene = new THREE.Scene()
 
+scene.background = new THREE.Color( 0xADD8E6 );
+
 const ambientLight = new THREE.AmbientLight()
 scene.add(ambientLight)
 
