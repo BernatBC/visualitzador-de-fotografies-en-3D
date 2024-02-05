@@ -10,11 +10,14 @@ const ambientLight = new THREE.AmbientLight()
 scene.add(ambientLight)
 
 const light = new THREE.PointLight(0xffffff, 50)
-light.position.set(1.6, 2,8, 2.0)
+light.position.set(2,2,8)
 scene.add(light)
+const light2 = new THREE.PointLight(0xffffff, 50)
+light2.position.set(-2,2,-8)
+scene.add(light2)
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-camera.position.set(1.6, 2,8, 2.0)
+camera.position.set(2,2,8)
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
@@ -46,8 +49,6 @@ function animate() {
     controls.update()
 
     render()
-
-    stats.update()
 }
 
 function render() {
