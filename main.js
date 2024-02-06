@@ -49,10 +49,13 @@ out_file_loader.load( 'out-files/model.out',
             console.log(camera_pos)
             console.log(rotation_matrix)
 
-            const geometry = new THREE.SphereGeometry( 0.03, 5, 5 ).translate(camera_pos[0], camera_pos[1], camera_pos[2]); 
+            const sphere_geometry = new THREE.SphereGeometry( 0.03, 5, 5 ).translate(camera_pos[0], camera_pos[1], camera_pos[2]);; 
             const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } ); 
-            const sphere = new THREE.Mesh( geometry, material );
+            const sphere = new THREE.Mesh( sphere_geometry, material );
             scene.add( sphere );
+            const pyramid_geometry = new THREE.ConeGeometry(0.2,0.2,4).rotateY(Math.PI / 4).translate(camera_pos[0], camera_pos[1]-0.1, camera_pos[2]);
+            const pyramid = new THREE.Mesh(pyramid_geometry, material);
+            scene.add(pyramid);
           } 
 	}
 );
