@@ -27,10 +27,14 @@ const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
 controls.target.set(0, 2, 0)
 
-//const material = new THREE.MeshNormalMaterial()
+const geometry = new THREE.PlaneGeometry(500,500);
+const ground = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0xE5E4E2 } ) );
+ground.rotateX(Math.PI / 180 * -90);
+scene.add( ground );
 
 const fbxLoader = new FBXLoader()
 fbxLoader.load('models/cottage.fbx',(object) => {
+    object.Mesh = new THREE.MeshNormalMaterial();
     object.scale.set(.002, .002, .002)
     scene.add(object)
 })
