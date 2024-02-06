@@ -43,9 +43,11 @@ out_file_loader.load( 'out-files/model.out',
         const num_cameras = lines[0].split(' ')[0]
         for (let i = 0; i < num_cameras; i++) {
             const line_number = 1 + 5*i;
-            const position_line = line_number + 4
-            const camera_pos = lines[position_line].split(' ').map(parseFloat);
+            const rotation_matrix = [lines[line_number + 1].split(' ').map(parseFloat), lines[line_number + 2].split(' ').map(parseFloat), lines[line_number + 3].split(' ').map(parseFloat)];
+            const camera_pos = lines[line_number + 4].split(' ').map(parseFloat);
+            
             console.log(camera_pos)
+            console.log(rotation_matrix)
 
             const geometry = new THREE.SphereGeometry( 0.03, 5, 5 ).translate(camera_pos[0], camera_pos[1], camera_pos[2]); 
             const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } ); 
