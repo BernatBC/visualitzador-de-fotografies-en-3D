@@ -34,7 +34,6 @@ scene.add( ground );
 
 const fbxLoader = new FBXLoader()
 fbxLoader.load('models/cottage.fbx',(object) => {
-    object.Mesh = new THREE.MeshNormalMaterial();
     object.scale.set(.002, .002, .002)
     scene.add(object)
 })
