@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
+THREE.Cache.enabled = true;
 const scene = new THREE.Scene()
 
 scene.background = new THREE.Color( 0xADD8E6 );
@@ -25,15 +26,34 @@ document.body.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
-controls.target.set(0, 2, 0)
+controls.target.set(0, 0, 0)
 
 //const material = new THREE.MeshNormalMaterial()
 
 const fbxLoader = new FBXLoader()
 fbxLoader.load('models/cottage.fbx',(object) => {
-    object.scale.set(.002, .002, .002)
+    object.scale.set(.0002, .0002, .0002)
     scene.add(object)
 })
+
+const out_file_loader = new THREE.FileLoader();
+out_file_loader.load( 'out-files/model.out',
+	function ( data ) {
+        const lines = data.split('\n');
+        const num_cameras = lines[0].split(' ')[0]
+        for (let i = 0; i < num_cameras; i++) {
+            const line_number = 1 + 5*i;
+            const position_line = line_number + 4
+            const camera_pos = lines[position_line].split(' ').map(parseFloat);
+            console.log(camera_pos)
+
+            const geometry = new THREE.SphereGeometry( 0.03, 5, 5 ).translate(camera_pos[0], camera_pos[1], camera_pos[2]); 
+            const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } ); 
+            const sphere = new THREE.Mesh( geometry, material );
+            scene.add( sphere );
+          } 
+	}
+);
 
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
