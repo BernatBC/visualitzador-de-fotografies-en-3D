@@ -1,6 +1,9 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { create, all } from 'mathjs'
+
+const math = create(all,  {})
 
 THREE.Cache.enabled = true;
 const scene = new THREE.Scene()
@@ -40,17 +43,27 @@ const out_file_loader = new THREE.FileLoader();
 out_file_loader.load( 'out-files/model.out',
 	function ( data ) {
         const lines = data.split('\n');
-        const num_cameras = lines[0].split(' ')[0]
+        const num_cameras = lines[1].split(' ')[0]
         for (let i = 0; i < num_cameras; i++) {
-            const line_number = 1 + 5*i;
-            const position_line = line_number + 4
-            const camera_pos = lines[position_line].split(' ').map(parseFloat);
+            const line_number = 2 + 5*i;
+            const R = math.matrix([lines[line_number + 1].split(' ').map(parseFloat), lines[line_number + 2].split(' ').map(parseFloat), lines[line_number + 3].split(' ').map(parseFloat)]);
+            const t = math.matrix(lines[line_number + 4].split(' ').map(parseFloat));
+            
+            console.log(t)
+            console.log(R)
+            console.log(math.unaryMinus(R))
+
+            const pos = math.multiply(math.transpose(math.unaryMinus(R)),t)
+            const camera_pos = [pos.get([0]), pos.get([1]), pos.get([2])]
             console.log(camera_pos)
 
-            const geometry = new THREE.SphereGeometry( 0.03, 5, 5 ).translate(camera_pos[0], camera_pos[1], camera_pos[2]); 
+            const sphere_geometry = new THREE.SphereGeometry( 0.03, 5, 5 ).translate(camera_pos[0], camera_pos[1], camera_pos[2]);; 
             const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } ); 
-            const sphere = new THREE.Mesh( geometry, material );
+            const sphere = new THREE.Mesh( sphere_geometry, material );
             scene.add( sphere );
+            /*const pyramid_geometry = new THREE.ConeGeometry(0.2,0.2,4).rotateY(Math.PI / 4).translate(camera_pos[0], camera_pos[1]-0.1, camera_pos[2]);
+            const pyramid = new THREE.Mesh(pyramid_geometry, material);
+            scene.add(pyramid);*/
           } 
 	}
 );
