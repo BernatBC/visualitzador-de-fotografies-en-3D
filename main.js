@@ -48,25 +48,54 @@ out_file_loader.load( 'out-files/model.out',
             const line_number = 2 + 5*i;
             const R = math.matrix([lines[line_number + 1].split(' ').map(parseFloat), lines[line_number + 2].split(' ').map(parseFloat), lines[line_number + 3].split(' ').map(parseFloat)]);
             const t = math.matrix(lines[line_number + 4].split(' ').map(parseFloat));
-            
-            console.log(t)
-            console.log(R)
-            console.log(math.unaryMinus(R))
 
             const pos = math.multiply(math.transpose(math.unaryMinus(R)),t)
             const camera_pos = [pos.get([0]), pos.get([1]), pos.get([2])]
-            console.log(camera_pos)
+            //console.log(camera_pos)
 
-            const sphere_geometry = new THREE.SphereGeometry( 0.03, 5, 5 ).translate(camera_pos[0], camera_pos[1], camera_pos[2]);; 
+            const sphere_geometry = new THREE.SphereGeometry( 0.03, 5, 5 ).translate(camera_pos[0], camera_pos[1], camera_pos[2]);
             const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } ); 
             const sphere = new THREE.Mesh( sphere_geometry, material );
             scene.add( sphere );
-            /*const pyramid_geometry = new THREE.ConeGeometry(0.2,0.2,4).rotateY(Math.PI / 4).translate(camera_pos[0], camera_pos[1]-0.1, camera_pos[2]);
+            //Punta de la piràmide al centre mirant cap endavant
+            const pyramid_geometry = new THREE.ConeGeometry(0.2,0.2,4).rotateY(Math.PI / 4).translate(0,-0.1,0).rotateZ(Math.PI/2)
+            //Rotació
+            //View direction
+            const view_direction = math.multiply(math.transpose(R), math.transpose(math.matrix([0,0,-1])))
+            //const view_direction = math.matrix([1,0,0]);
+            // View direction PUNT
+            const x = view_direction.get([0]) - camera_pos[0];
+            const y = view_direction.get([1]) - camera_pos[1];
+            const z = view_direction.get([2]) - camera_pos[2];
+            //View direction VECTOR
+            /*const x = view_direction.get([0])
+            const y = view_direction.get([1])
+            const z = view_direction.get([2])*/
+            const h = math.sqrt(x*x + y*y + z*z)
+            //EIX X-Z
+            let radZ = 0
+            if (x < 0) {
+                radZ = Math.PI - math.asin(z/h)
+            }
+            else {
+                radZ = math.asin(z/h)
+            }
+            pyramid_geometry.rotateY(radZ);
+            //Alçada
+            const radY = math.asin(y/h)
+            pyramid_geometry.rotateZ(radY)
+            //Portar-la a la posició de la càmera*
+            pyramid_geometry.translate(camera_pos[0], camera_pos[1], camera_pos[2]);
             const pyramid = new THREE.Mesh(pyramid_geometry, material);
-            scene.add(pyramid);*/
+            scene.add(pyramid);
           } 
 	}
 );
+
+const sphere_geometry2 = new THREE.SphereGeometry( 0.03, 5, 5 ).translate(0,0,0);
+const material2 = new THREE.MeshBasicMaterial( { color: 0x0000ff } ); 
+const sphere2 = new THREE.Mesh( sphere_geometry2, material2 );
+scene.add( sphere2 );
 
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
