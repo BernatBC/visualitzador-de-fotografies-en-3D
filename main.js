@@ -64,13 +64,13 @@ out_file_loader.load( 'out-files/model.out',
             const view_direction = math.multiply(math.transpose(R), math.transpose(math.matrix([0,0,-1])))
             //const view_direction = math.matrix([1,0,0]);
             // View direction PUNT
-            const x = view_direction.get([0]) - camera_pos[0];
+            /*const x = view_direction.get([0]) - camera_pos[0];
             const y = view_direction.get([1]) - camera_pos[1];
-            const z = view_direction.get([2]) - camera_pos[2];
+            const z = view_direction.get([2]) - camera_pos[2];*/
             //View direction VECTOR
-            /*const x = view_direction.get([0])
+            const x = view_direction.get([0])
             const y = view_direction.get([1])
-            const z = view_direction.get([2])*/
+            const z = view_direction.get([2])
             const h = math.sqrt(x*x + y*y + z*z)
             //EIX X-Z
             let radZ = 0
