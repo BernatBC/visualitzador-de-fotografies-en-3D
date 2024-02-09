@@ -91,11 +91,11 @@ out_file_loader.load( 'out-files/model.out',
           } 
 	}
 );
-
+/*
 const sphere_geometry2 = new THREE.SphereGeometry( 0.03, 5, 5 ).translate(0,0,0);
 const material2 = new THREE.MeshBasicMaterial( { color: 0x0000ff } ); 
 const sphere2 = new THREE.Mesh( sphere_geometry2, material2 );
-scene.add( sphere2 );
+scene.add( sphere2 );*/
 
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
