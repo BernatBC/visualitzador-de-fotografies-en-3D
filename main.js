@@ -6,25 +6,16 @@ import { MTLLoader } from 'three/addons/loaders/MTLLoader.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { create, all } from 'mathjs'
 
+//SETUP
 const math = create(all,  {})
 
 THREE.Cache.enabled = true;
+
 const scene = new THREE.Scene()
-
-scene.background = new THREE.Color( 0xADD8E6 );
-
-const ambientLight = new THREE.AmbientLight()
-scene.add(ambientLight)
-
-const light = new THREE.PointLight(0xffffff, 50)
-light.position.set(2,2,8)
-scene.add(light)
-const light2 = new THREE.PointLight(0xffffff, 50)
-light2.position.set(-2,2,-8)
-scene.add(light2)
+scene.background = new THREE.Color( 0xdadada );
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-camera.position.set(2,2,8)
+camera.position.set(0,0,0)
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
@@ -32,8 +23,26 @@ document.body.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
-controls.target.set(0, 0, 0)
+controls.target.set(0, 0, -15)
 
+//LIGHTING
+const ambientLight = new THREE.AmbientLight()
+scene.add(ambientLight)
+
+const light = new THREE.PointLight(0xffffff, 50)
+light.position.set(0,5,-10)
+scene.add(light)
+const light2 = new THREE.PointLight(0xffffff, 50)
+light2.position.set(0,10,-20)
+scene.add(light2)
+const light3 = new THREE.PointLight(0xffffff, 50)
+light3.position.set(10,10,-15)
+scene.add(light3)
+const light4 = new THREE.PointLight(0xffffff, 50)
+light4.position.set(-10,10,-25)
+scene.add(light4)
+
+//MODEL LOADER
 /*
 const fbxLoader = new FBXLoader()
 fbxLoader.load('models/pedret/pedret_XIII.fbx',(object) => {
@@ -60,6 +69,7 @@ mtlLoader.load("models/pedret/pedret_XII.mtl", function(materials)
     });
 });
 
+//CAMERAS LOADER
 const out_file_loader = new THREE.FileLoader();
 out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-registre.out',
 	function ( data ) {
@@ -113,11 +123,6 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
           } 
 	}
 );
-/*
-const sphere_geometry2 = new THREE.SphereGeometry( 0.03, 5, 5 ).translate(0,0,0);
-const material2 = new THREE.MeshBasicMaterial( { color: 0x0000ff } ); 
-const sphere2 = new THREE.Mesh( sphere_geometry2, material2 );
-scene.add( sphere2 );*/
 
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
