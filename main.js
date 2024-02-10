@@ -15,7 +15,7 @@ const scene = new THREE.Scene()
 scene.background = new THREE.Color( 0xdadada );
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-camera.position.set(2,2,8)
+camera.position.set(0,0,0)
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
@@ -23,7 +23,7 @@ document.body.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
-controls.target.set(0, 0, 0)
+controls.target.set(0, 0, -15)
 
 //LIGHTING
 const ambientLight = new THREE.AmbientLight()
