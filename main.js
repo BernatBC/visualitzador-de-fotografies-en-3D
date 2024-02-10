@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { create, all } from 'mathjs'
 
 const math = create(all,  {})
@@ -33,26 +34,29 @@ const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
 controls.target.set(0, 0, 0)
 
-//const material = new THREE.MeshNormalMaterial()
 /*
 const fbxLoader = new FBXLoader()
 fbxLoader.load('models/pedret/pedret_XIII.fbx',(object) => {
-    object.scale.set(.1, .1, .1)
+    object.scale.set(.01, .01, .01)
     scene.add(object)
-})
-*/
+})*/
+
+/*
+const gltfLoader = new GLTFLoader()
+gltfLoader.load('models/pedret/pedret_XIII.glb',(object) => {
+    object.scale.set(.01, .01, .01)
+    scene.add(object)
+})*/
 
 const mtlLoader = new MTLLoader()
-var plant_cube = undefined;
-mtlLoader.load("models/pedret/pedret_XIII.mtl", function(materials)
+mtlLoader.load("models/pedret/pedret_XII.mtl", function(materials)
 {
     materials.preload();
     var objLoader = new OBJLoader();
     objLoader.setMaterials(materials);
-    objLoader.load("models/pedret/pedret_XIII.obj", function(object)
+    objLoader.load("models/pedret/pedret_XII.obj", function(object)
     {    
-        plant_cube = object;
-        scene.add( plant_cube );
+        scene.add( object );
     });
 });
 
