@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js'
 import { create, all } from 'mathjs'
 
 const math = create(all,  {})
@@ -32,18 +34,34 @@ controls.enableDamping = true
 controls.target.set(0, 0, 0)
 
 //const material = new THREE.MeshNormalMaterial()
-
+/*
 const fbxLoader = new FBXLoader()
-fbxLoader.load('models/cottage.fbx',(object) => {
-    object.scale.set(.0002, .0002, .0002)
+fbxLoader.load('models/pedret/pedret_XIII.fbx',(object) => {
+    object.scale.set(.1, .1, .1)
     scene.add(object)
 })
+*/
+
+const mtlLoader = new MTLLoader()
+var plant_cube = undefined;
+mtlLoader.load("models/pedret/pedret_XIII.mtl", function(materials)
+{
+    materials.preload();
+    var objLoader = new OBJLoader();
+    objLoader.setMaterials(materials);
+    objLoader.load("models/pedret/pedret_XIII.obj", function(object)
+    {    
+        plant_cube = object;
+        scene.add( plant_cube );
+    });
+});
 
 const out_file_loader = new THREE.FileLoader();
-out_file_loader.load( 'out-files/model.out',
+out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-registre.out',
 	function ( data ) {
         const lines = data.split('\n');
         const num_cameras = lines[1].split(' ')[0]
+        console.log(num_cameras)
         for (let i = 0; i < num_cameras; i++) {
             const line_number = 2 + 5*i;
             const R = math.matrix([lines[line_number + 1].split(' ').map(parseFloat), lines[line_number + 2].split(' ').map(parseFloat), lines[line_number + 3].split(' ').map(parseFloat)]);
