@@ -11,7 +11,7 @@ const math = create(all,  {})
 THREE.Cache.enabled = true;
 const scene = new THREE.Scene()
 
-scene.background = new THREE.Color( 0xADD8E6 );
+scene.background = new THREE.Color( 0xdadada );
 
 const ambientLight = new THREE.AmbientLight()
 scene.add(ambientLight)
