@@ -80,7 +80,6 @@ function read_image_list(filePath) {
 }
 
 const image_list = await read_image_list('out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-llistaImatges_converted-converted.lst')
-console.log(image_list)
 
 //CAMERAS LOADER
 const out_file_loader = new THREE.FileLoader();
@@ -132,7 +131,16 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
             pyramid_geometry.translate(camera_pos[0], camera_pos[1], camera_pos[2]);
             const pyramid = new THREE.Mesh(pyramid_geometry, material);
             scene.add(pyramid);
-          } 
+
+            // Afegir imatge
+            const SCALE = 5000;
+            const image_path = "/images/low_res" + image_list[i];
+            var texture_map = new THREE.TextureLoader().load( image_path );
+            var sprite = new THREE.Sprite( new THREE.SpriteMaterial( { map: texture_map, color: 0xffffff } ) );
+            sprite.scale.set(0.25,0.25,1)
+            sprite.position.set(camera_pos[0], camera_pos[1], camera_pos[2]);
+            scene.add( sprite );
+        } 
 	}
 );
 
