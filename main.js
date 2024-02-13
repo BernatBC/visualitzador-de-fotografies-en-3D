@@ -58,12 +58,12 @@ gltfLoader.load('models/pedret/pedret_XIII.glb',(object) => {
 })*/
 
 const mtlLoader = new MTLLoader()
-mtlLoader.load("models/pedret/pedret_XII.mtl", function(materials)
+mtlLoader.load("models/pedret/pedret_XIII.mtl", function(materials)
 {
     materials.preload();
     var objLoader = new OBJLoader();
     objLoader.setMaterials(materials);
-    objLoader.load("models/pedret/pedret_XII.obj", function(object)
+    objLoader.load("models/pedret/pedret_XIII.obj", function(object)
     {    
         scene.add( object );
     });
