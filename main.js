@@ -58,16 +58,29 @@ gltfLoader.load('models/pedret/pedret_XIII.glb',(object) => {
 })*/
 
 const mtlLoader = new MTLLoader()
-mtlLoader.load("models/pedret/pedret_XIII.mtl", function(materials)
+mtlLoader.load("models/pedret/pedret_XII.mtl", function(materials)
 {
     materials.preload();
     var objLoader = new OBJLoader();
     objLoader.setMaterials(materials);
-    objLoader.load("models/pedret/pedret_XIII.obj", function(object)
+    objLoader.load("models/pedret/pedret_XII.obj", function(object)
     {    
         scene.add( object );
     });
 });
+
+//Read Images file
+function read_image_list(filePath) {
+    return new Promise((resolve) => {
+        const loader = new THREE.FileLoader();
+        loader.load(filePath, (data) => {
+            resolve(data.split('\n'));
+        });
+    });
+}
+
+const image_list = await read_image_list('out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-llistaImatges_converted-converted.lst')
+console.log(image_list)
 
 //CAMERAS LOADER
 const out_file_loader = new THREE.FileLoader();
@@ -75,7 +88,6 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
 	function ( data ) {
         const lines = data.split('\n');
         const num_cameras = lines[1].split(' ')[0]
-        console.log(num_cameras)
         for (let i = 0; i < num_cameras; i++) {
             const line_number = 2 + 5*i;
             const R = math.matrix([lines[line_number + 1].split(' ').map(parseFloat), lines[line_number + 2].split(' ').map(parseFloat), lines[line_number + 3].split(' ').map(parseFloat)]);
