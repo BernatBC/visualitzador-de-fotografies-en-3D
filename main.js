@@ -82,6 +82,7 @@ function read_image_list(filePath) {
 const image_list = await read_image_list('out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-llistaImatges_converted-converted.lst')
 
 //CAMERAS LOADER
+
 const out_file_loader = new THREE.FileLoader();
 out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-registre.out',
 	function ( data ) {
@@ -107,9 +108,9 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
             const view_direction = math.multiply(math.transpose(R), math.transpose(math.matrix([0,0,-1])))
             //const view_direction = math.matrix([1,0,0]);
             // View direction PUNT
-            /*const x = view_direction.get([0]) - camera_pos[0];
-            const y = view_direction.get([1]) - camera_pos[1];
-            const z = view_direction.get([2]) - camera_pos[2];*/
+            //const x = view_direction.get([0]) - camera_pos[0];
+            //const y = view_direction.get([1]) - camera_pos[1];
+            //const z = view_direction.get([2]) - camera_pos[2];
             //View direction VECTOR
             const x = view_direction.get([0])
             const y = view_direction.get([1])
@@ -133,13 +134,15 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
             scene.add(pyramid);
 
             // Afegir imatge
-            const SCALE = 5000;
-            const image_path = "/images/low_res" + image_list[i];
-            var texture_map = new THREE.TextureLoader().load( image_path );
-            var sprite = new THREE.Sprite( new THREE.SpriteMaterial( { map: texture_map, color: 0xffffff } ) );
-            sprite.scale.set(0.25,0.25,1)
-            sprite.position.set(camera_pos[0], camera_pos[1], camera_pos[2]);
-            scene.add( sprite );
+            const SCALE = 400;
+            const image_path = "/images/low_res/" + image_list[i];
+            const image_loader = new THREE.TextureLoader();
+            const image_texture = image_loader.load(image_path, function () {
+                const image_geometry = new THREE.PlaneGeometry( image_texture.image.width/SCALE,image_texture.image.height/SCALE).rotateY(radZ).rotateZ(radY).translate(camera_pos[0], camera_pos[1], camera_pos[2]);
+                const image_material = new THREE.MeshBasicMaterial( { map: image_texture } );
+                const image_plane = new THREE.Mesh( image_geometry, image_material );
+                scene.add( image_plane );
+            } );
         } 
 	}
 );
