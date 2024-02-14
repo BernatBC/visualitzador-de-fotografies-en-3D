@@ -135,10 +135,11 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
 
             // Afegir imatge
             const SCALE = 400;
+            const offset = -0.2;
             const image_path = "/images/low_res/" + image_list[i];
             const image_loader = new THREE.TextureLoader();
             const image_texture = image_loader.load(image_path, function () {
-                const image_geometry = new THREE.PlaneGeometry( image_texture.image.width/SCALE,image_texture.image.height/SCALE).rotateY(radZ).rotateZ(radY).translate(camera_pos[0], camera_pos[1], camera_pos[2]);
+                const image_geometry = new THREE.PlaneGeometry( image_texture.image.width/SCALE,image_texture.image.height/SCALE).translate(offset, 0, 0).rotateY(radZ - Math.PI / 2).rotateZ(radY).translate(camera_pos[0], camera_pos[1], camera_pos[2]);
                 const image_material = new THREE.MeshBasicMaterial( { map: image_texture } );
                 const image_plane = new THREE.Mesh( image_geometry, image_material );
                 scene.add( image_plane );
