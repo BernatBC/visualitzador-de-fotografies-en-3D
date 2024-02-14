@@ -58,24 +58,36 @@ gltfLoader.load('models/pedret/pedret_XIII.glb',(object) => {
 })*/
 
 const mtlLoader = new MTLLoader()
-mtlLoader.load("models/pedret/pedret_XIII.mtl", function(materials)
+mtlLoader.load("models/pedret/pedret_XII.mtl", function(materials)
 {
     materials.preload();
     var objLoader = new OBJLoader();
     objLoader.setMaterials(materials);
-    objLoader.load("models/pedret/pedret_XIII.obj", function(object)
+    objLoader.load("models/pedret/pedret_XII.obj", function(object)
     {    
         scene.add( object );
     });
 });
 
+//Read Images file
+function read_image_list(filePath) {
+    return new Promise((resolve) => {
+        const loader = new THREE.FileLoader();
+        loader.load(filePath, (data) => {
+            resolve(data.split('\n'));
+        });
+    });
+}
+
+const image_list = await read_image_list('out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-llistaImatges_converted-converted.lst')
+
 //CAMERAS LOADER
+
 const out_file_loader = new THREE.FileLoader();
 out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-registre.out',
 	function ( data ) {
         const lines = data.split('\n');
         const num_cameras = lines[1].split(' ')[0]
-        console.log(num_cameras)
         for (let i = 0; i < num_cameras; i++) {
             const line_number = 2 + 5*i;
             const R = math.matrix([lines[line_number + 1].split(' ').map(parseFloat), lines[line_number + 2].split(' ').map(parseFloat), lines[line_number + 3].split(' ').map(parseFloat)]);
@@ -96,9 +108,9 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
             const view_direction = math.multiply(math.transpose(R), math.transpose(math.matrix([0,0,-1])))
             //const view_direction = math.matrix([1,0,0]);
             // View direction PUNT
-            /*const x = view_direction.get([0]) - camera_pos[0];
-            const y = view_direction.get([1]) - camera_pos[1];
-            const z = view_direction.get([2]) - camera_pos[2];*/
+            //const x = view_direction.get([0]) - camera_pos[0];
+            //const y = view_direction.get([1]) - camera_pos[1];
+            //const z = view_direction.get([2]) - camera_pos[2];
             //View direction VECTOR
             const x = view_direction.get([0])
             const y = view_direction.get([1])
@@ -120,7 +132,19 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
             pyramid_geometry.translate(camera_pos[0], camera_pos[1], camera_pos[2]);
             const pyramid = new THREE.Mesh(pyramid_geometry, material);
             scene.add(pyramid);
-          } 
+
+            // Afegir imatge
+            const SCALE = 400;
+            const offset = -0.2;
+            const image_path = "/images/low_res/" + image_list[i];
+            const image_loader = new THREE.TextureLoader();
+            const image_texture = image_loader.load(image_path, function () {
+                const image_geometry = new THREE.PlaneGeometry( image_texture.image.width/SCALE,image_texture.image.height/SCALE).translate(offset, 0, 0).rotateY(radZ - Math.PI / 2).rotateZ(radY).translate(camera_pos[0], camera_pos[1], camera_pos[2]);
+                const image_material = new THREE.MeshBasicMaterial( { map: image_texture } );
+                const image_plane = new THREE.Mesh( image_geometry, image_material );
+                scene.add( image_plane );
+            } );
+        } 
 	}
 );
 
