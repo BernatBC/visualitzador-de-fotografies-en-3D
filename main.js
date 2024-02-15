@@ -142,13 +142,34 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
                 const image_geometry = new THREE.PlaneGeometry( image_texture.image.width/SCALE,image_texture.image.height/SCALE).translate(offset, 0, 0).rotateY(radZ - Math.PI / 2).rotateZ(radY).translate(camera_pos[0], camera_pos[1], camera_pos[2]);
                 const image_material = new THREE.MeshBasicMaterial( { map: image_texture } );
                 const image_plane = new THREE.Mesh( image_geometry, image_material );
+                image_plane.name = image_list[i];
                 scene.add( image_plane );
             } );
         } 
 	}
 );
 
+// On Click
+var mouse = new THREE.Vector2()
+var raycaster = new THREE.Raycaster();;
+
+function onClick() {
+    event.preventDefault();
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    var intersects = raycaster.intersectObject(scene, true);
+    if (intersects.length > 0) {
+        var object = intersects[0].object;
+        console.log(object.name)
+    }
+      render();
+}
+
 window.addEventListener('resize', onWindowResize, false)
+
+renderer.domElement.addEventListener('click', onClick, false);
+
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
