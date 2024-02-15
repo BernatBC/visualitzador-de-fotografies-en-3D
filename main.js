@@ -149,7 +149,8 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
 	}
 );
 
-// On Click
+// INTERACCIÓ AMB IMATGES
+
 var mouse = new THREE.Vector2()
 var raycaster = new THREE.Raycaster();;
 
