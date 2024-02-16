@@ -82,7 +82,7 @@ function read_image_list(filePath) {
 const image_list = await read_image_list('out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-llistaImatges_converted-converted.lst')
 
 //CAMERAS LOADER
-
+const image_loader = new THREE.TextureLoader();
 const out_file_loader = new THREE.FileLoader();
 out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-registre.out',
 	function ( data ) {
@@ -134,11 +134,11 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
             scene.add(pyramid);
 
             // Afegir imatge
-            const SCALE = 400;
+            const SCALE = 200;
             const offset = -0.2;
             const image_path = "/images/low_res/" + image_list[i];
-            const image_loader = new THREE.TextureLoader();
             const image_texture = image_loader.load(image_path, function () {
+                image_texture.colorSpace = THREE.SRGBColorSpace;
                 const image_geometry = new THREE.PlaneGeometry( image_texture.image.width/SCALE,image_texture.image.height/SCALE).translate(offset, 0, 0).rotateY(radZ - Math.PI / 2).rotateZ(radY).translate(camera_pos[0], camera_pos[1], camera_pos[2]);
                 const image_material = new THREE.MeshBasicMaterial( { map: image_texture } );
                 const image_plane = new THREE.Mesh( image_geometry, image_material );
