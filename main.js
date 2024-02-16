@@ -152,7 +152,7 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
 // INTERACCIÓ AMB IMATGES
 
 var mouse = new THREE.Vector2()
-var raycaster = new THREE.Raycaster();;
+var raycaster = new THREE.Raycaster();
 
 function onClick() {
     event.preventDefault();
@@ -162,7 +162,10 @@ function onClick() {
     var intersects = raycaster.intersectObject(scene, true);
     if (intersects.length > 0) {
         var object = intersects[0].object;
-        console.log(object.name)
+        if (object.name.startsWith('Sant Quirze de Pedret by Zones')) {
+            const url = 'openseadragon.html?image=' + encodeURIComponent(object.name);
+            window.open(url, '_blank')
+        }
     }
       render();
 }

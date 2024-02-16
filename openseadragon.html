@@ -1,0 +1,28 @@
+<div id="openseadragon1" style="width: 100vw; "></div>
+<script src="openseadragon/openseadragon.min.js"></script>
+<script type="text/javascript">
+    const urlParams = new URLSearchParams(window.location.search);
+    const image = urlParams.get('image');
+    var viewer = OpenSeadragon({
+		
+        id: "openseadragon1",
+        prefixUrl: "openseadragon/images/",
+        tileSources: [
+		{
+			type: 'image',
+			url:  'images/' + image,
+			buildPyramid: false
+		}
+		],
+		
+		constrainDuringPan: true,
+		maxZoomPixelRatio: 3,
+		showNavigator:  true,
+		//sequenceMode: true,
+		collectionMode:       true,
+		collectionRows:       2, 
+		collectionTileSize:   1024,
+		collectionTileMargin: 256
+		
+    });
+</script>
