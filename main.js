@@ -202,6 +202,7 @@ function hoverOut() {
 }
 
 function onHover() {
+    if (mDragging) return
     event.preventDefault();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -228,7 +229,6 @@ function onHover() {
 }
 
 window.addEventListener('resize', onWindowResize, false)
-//window.addEventListener('click', onClick);
 window.addEventListener('pointermove', onHover);
 
 function onWindowResize() {
