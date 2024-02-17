@@ -150,6 +150,25 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
 );
 
 // OBRIR IMATGES EN OPENSEADRAGON
+var mDragging = false;
+var mDown = false;
+
+window.addEventListener('mousedown', function () {
+    mDown = true;
+});
+window.addEventListener('mousemove', function () {
+    if(mDown) {
+        mDragging = true;
+    }
+});
+window.addEventListener('mouseup', function() {
+    if(mDragging === false) {
+        onClick()
+    }
+    mDown = false;
+    mDragging = false;
+});
+
 var mouse = new THREE.Vector2()
 var raycaster = new THREE.Raycaster();
 
@@ -183,6 +202,7 @@ function hoverOut() {
 }
 
 function onHover() {
+    if (mDragging) return
     event.preventDefault();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -209,7 +229,6 @@ function onHover() {
 }
 
 window.addEventListener('resize', onWindowResize, false)
-window.addEventListener('click', onClick);
 window.addEventListener('pointermove', onHover);
 
 function onWindowResize() {
