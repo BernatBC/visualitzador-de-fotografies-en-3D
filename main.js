@@ -149,8 +149,7 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsisSud-NomesFotos-regi
 	}
 );
 
-// INTERACCIÓ AMB IMATGES
-
+// OBRIR IMATGES EN OPENSEADRAGON
 var mouse = new THREE.Vector2()
 var raycaster = new THREE.Raycaster();
 
@@ -170,9 +169,48 @@ function onClick() {
       render();
 }
 
-window.addEventListener('resize', onWindowResize, false)
+// HOVERING IMATGES
+var hover = undefined
 
-renderer.domElement.addEventListener('click', onClick, false);
+function hoverIn(image_object) {
+    image_object.material.color.setHex( 0xccffff )
+    hover = image_object
+}
+
+function hoverOut() {
+    hover.material.color.setHex( 0xffffff )
+    hover = undefined
+}
+
+function onHover() {
+    event.preventDefault();
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    var intersects = raycaster.intersectObject(scene, true);
+    if (intersects.length > 0) {
+        var object = intersects[0].object;
+        if (object.name.startsWith('Sant Quirze de Pedret by Zones')) {
+            // New Hover
+            if (hover === undefined) hoverIn(object)
+            // Replace hover
+            else if (hover.name !== object.name) {
+                hoverOut()
+                hoverIn(object)
+            }
+        }
+        // Hovering a non-image object
+        else if (hover !== undefined) hoverOut();
+    }
+    //No hovering any image
+    else if (hover !== undefined) hoverOut();
+
+    render();
+}
+
+window.addEventListener('resize', onWindowResize, false)
+window.addEventListener('click', onClick);
+window.addEventListener('pointermove', onHover);
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight
