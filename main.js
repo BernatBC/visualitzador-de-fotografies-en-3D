@@ -73,6 +73,10 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistrati
         const num_points = lines[1].split(' ')[1]
         for (let i = 0; i < num_cameras; i++) {
             const line_number = 2 + 5*i;
+
+            //Descarta les imatges lsp
+            if (image_list[i].endsWith('.lsp')) continue
+
             const R = math.matrix([lines[line_number + 1].split(' ').map(parseFloat), lines[line_number + 2].split(' ').map(parseFloat), lines[line_number + 3].split(' ').map(parseFloat)]);
             const t = math.matrix(lines[line_number + 4].split(' ').map(parseFloat));
             const pos = math.multiply(math.unaryMinus(math.transpose(R)),t)
