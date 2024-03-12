@@ -86,11 +86,6 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistrati
             //Rotació
             //View direction
             const view_direction = math.multiply(math.transpose(R), math.transpose(math.matrix([0,0,-1])))
-            //const view_direction = math.matrix([1,0,0]);
-            // View direction PUNT
-            //const x = view_direction.get([0]) - camera_pos[0];
-            //const y = view_direction.get([1]) - camera_pos[1];
-            //const z = view_direction.get([2]) - camera_pos[2];
             //View direction VECTOR
             const x = view_direction.get([0])
             const y = view_direction.get([1])
@@ -104,10 +99,10 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistrati
             else {
                 radZ = math.asin(z/h)
             }
-            pyramid_geometry.rotateY(radZ);
+            pyramid_geometry.rotateY(-radZ);
             //Alçada
             const radY = math.asin(y/h)
-            pyramid_geometry.rotateZ(radY)
+            pyramid_geometry.rotateZ(-radY)
             //Portar-la a la posició de la càmera*
             pyramid_geometry.translate(camera_pos[0], camera_pos[1], camera_pos[2]).rotateX(Math.PI);
             const pyramid = new THREE.Mesh(pyramid_geometry, material);
@@ -119,11 +114,11 @@ out_file_loader.load( 'out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistrati
             const image_path = "/images/low_res/" + image_list[i];
             const image_texture = image_loader.load(image_path, function () {
                 image_texture.colorSpace = THREE.SRGBColorSpace;
-                const image_geometry = new THREE.PlaneGeometry( image_texture.image.width/SCALE,image_texture.image.height/SCALE).translate(offset, 0, 0).rotateY(radZ - Math.PI / 2).rotateZ(radY).translate(camera_pos[0], camera_pos[1], camera_pos[2]);
+                const image_geometry = new THREE.PlaneGeometry( image_texture.image.width/SCALE,image_texture.image.height/SCALE).rotateZ(Math.PI).rotateY(- radZ - Math.PI / 2).rotateZ(-radY).translate(camera_pos[0], camera_pos[1], camera_pos[2]).rotateX(Math.PI);
                 const image_material = new THREE.MeshBasicMaterial( { map: image_texture } );
                 const image_plane = new THREE.Mesh( image_geometry, image_material );
                 image_plane.name = image_list[i];
-                //scene.add( image_plane );
+                scene.add( image_plane );
             } );
         }
         //2228
