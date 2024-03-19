@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 import {loadImages} from './multiple-image-loader.js'
 import { addInteraction } from './interaction.js';
+import {createPanel} from './panel.js'
 
 //INIT
 THREE.Cache.enabled = true;
@@ -43,6 +44,7 @@ scene.add(light4)
 const axesHelper = new THREE.AxesHelper( 5 );
 scene.add( axesHelper );
 
+createPanel()
 
 //MODEL LOADER
 const gltfLoader = new GLTFLoader()
