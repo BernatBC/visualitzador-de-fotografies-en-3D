@@ -15,7 +15,7 @@ function createPanel() {
 
 
     folder1.add( settings, 'Modify image size', 0.0, 5.0, 0.01 ).onChange( setSize );
-    folder1.add( settings, 'Modify image separation', 0.0, 10.0, 0.01 ).onChange(  setOffset );
+    folder1.add( settings, 'Modify image separation', 0.0, 2.0, 0.01 ).onChange(  setOffset );
 
     folder1.open();
 
