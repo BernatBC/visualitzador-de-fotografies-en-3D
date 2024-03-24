@@ -55,7 +55,7 @@ gltfLoader.load('models/pedret10/MNAC-AbsSud-LowPoly.glb',(object) => {
 
 await loadImages(scene, 'out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasList-converted.lst', 'out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistration.out')
 
-addInteraction(camera, scene)
+addInteraction(controls, camera, scene)
 
 window.addEventListener('resize', onWindowResize, false)
 

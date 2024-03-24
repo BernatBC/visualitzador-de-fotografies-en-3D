@@ -9,9 +9,11 @@ var imageSize = 1
 var images = []
 var image_names = []
 var camera_positions = []
+var real_positions = []
 var Rs = []
+var indices = {}
 
-function loadImage(scene, R, t, image_name, image_loader) {
+function loadImage(i, scene, R, t, image_name, image_loader) {
     const pos = math.multiply(math.unaryMinus(math.transpose(R)),t)
     const camera_pos = [pos.get([0]), pos.get([1]), pos.get([2])]
     const sphere_geometry = new THREE.SphereGeometry( 0.01, 5, 5 ).translate(camera_pos[0], camera_pos[1], camera_pos[2]).rotateX(Math.PI);
@@ -41,30 +43,33 @@ function loadImage(scene, R, t, image_name, image_loader) {
         const image_geometry = new THREE.PlaneGeometry( image_texture.image.width/SCALE,image_texture.image.height/SCALE).rotateY(Math.PI)
         const image_material = new THREE.MeshBasicMaterial( { map: image_texture } );
         const image_plane = new THREE.Mesh( image_geometry, image_material );
+        let new_pos = math.add(math.matrix(camera_pos), math.multiply(math.number(offset), view_direction))
         image_plane.name = image_name;
         image_plane.lookAt(x,-y,-z)
-        image_plane.position.set(camera_pos[0], -camera_pos[1], -camera_pos[2])
+        image_plane.position.set(new_pos.get([0]), -new_pos.get([1]), -new_pos.get([2]))
         scene.add(image_plane);
         images.push(image_plane)
+        real_positions.push(new_pos)
     } );
 
     image_names.push(image_name)
     camera_positions.push(camera_pos)
     Rs.push(R)
+    indices[image_name] = i
 }
 
 function setSize(value) {
     console.log("New image size: " + String(value))
     for (let i = 0; i < images.length; i++) {
-        let camera_pos = camera_positions[i]
         let image = images[i]
+        let pos = image.position
         //Bring to 0,0,0 // S'HA DE TENIR EN COMPTE L'OFFSET
-        image.position.set(-camera_pos[0], camera_pos[1], camera_pos[2])
+        image.position.set(0,0,0)
         // Resize
         image.scale.set(1/imageSize, 1/imageSize, 1/imageSize)
         image.scale.set(value, value, value)
         //Bring back to its place
-        image.position.set(camera_pos[0], -camera_pos[1], -camera_pos[2])
+        image.position.set(pos[0], pos[1], pos[2])
     }
     imageSize = value
 }
@@ -78,8 +83,19 @@ function setOffset(value) {
         let direction = math.multiply(math.transpose(R), math.transpose(math.matrix([0,0,-1])))
         let new_pos = math.add(math.matrix(camera_pos), math.multiply(math.number(value), direction))
         image.position.set(new_pos.get([0]), -new_pos.get([1]), -new_pos.get([2]))
+        real_positions.push(new_pos)
     }
     imageOffset = value
 }
 
-export { loadImage, setSize, setOffset }
+function getImageParams(image_name) {
+    let i = indices[image_name]
+    let R = Rs[i]
+    let camera_pos = camera_positions[i]
+    let direction = math.multiply(math.transpose(R), math.transpose(math.matrix([0,0,-1])))
+    let dir = [direction.get([0]), direction.get([1]), direction.get([2])]
+    let new_pos = real_positions[i]
+    return {"image_pos": new_pos,"pos": camera_pos, "dir": dir}
+}
+
+export { loadImage, setSize, setOffset, getImageParams }

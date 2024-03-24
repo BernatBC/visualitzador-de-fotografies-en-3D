@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import {render} from './main.js'
+import { getImageParams } from './single-image-loader.js';
 
 var mouse = new THREE.Vector2()
 var raycaster = new THREE.Raycaster();
@@ -8,8 +9,10 @@ var mDragging = false;
 var mDown = false;
 var camera
 var scene
+var controls
 
-function addInteraction(cam, sce) {
+function addInteraction(ctrl, cam, sce) {
+    controls = ctrl
     camera = cam
     scene = sce
 
@@ -40,8 +43,22 @@ function onClick() {
     if (intersects.length > 0) {
         var object = intersects[0].object;
         if (object.name.startsWith('Sant Quirze de Pedret by Zones')) {
-            const url = 'openseadragon.html?image=' + encodeURIComponent(object.name);
-            window.open(url, '_blank')
+            if (event.button == 0) {
+                const url = 'openseadragon.html?image=' + encodeURIComponent(object.name);
+                window.open(url, '_blank')
+            }
+            else {
+                let params = getImageParams(object.name)
+                let pos = params.pos
+                let dir = params.dir
+                console.log(camera)
+                console.log(pos)
+                console.log(dir)
+                //camera.position.set(0,0,0)
+                controls.target.set(pos[0], -pos[1], -pos[2])
+                camera.position.set(pos[0], -pos[1], -pos[2])
+                console.log(camera)
+            }
         }
     }
       render();
