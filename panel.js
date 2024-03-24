@@ -10,7 +10,7 @@ function createPanel() {
 
     let settings = {
         'Modify image size': 1.0,
-        'Modify image separation': 0.0
+        'Modify image separation': 0.1
     };
 
 
