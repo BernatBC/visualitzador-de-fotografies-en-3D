@@ -49,14 +49,19 @@ function onClick() {
             }
             else {
                 let params = getImageParams(object.name)
+                let image_pos = params.image_pos
                 let pos = params.pos
                 let dir = params.dir
                 console.log(camera)
+                console.log(image_pos)
                 console.log(pos)
                 console.log(dir)
-                //camera.position.set(0,0,0)
-                controls.target.set(pos[0], -pos[1], -pos[2])
+
+                //camera.position.set(pos[0], -pos[1], -pos[2])
+                controls.target.set(image_pos[0], -image_pos[1], -image_pos[2])
                 camera.position.set(pos[0], -pos[1], -pos[2])
+                camera.lookAt(image_pos[0], -image_pos[1], -image_pos[2])
+                
                 console.log(camera)
             }
         }

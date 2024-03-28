@@ -3,14 +3,14 @@ import { create, all } from 'mathjs'
 
 const math = create(all,  {})
 
-var imageOffset = 0
+var imageOffset = 0.1
 var imageSize = 1
 
 var images = []
 var image_names = []
 var camera_positions = []
-var real_positions = []
 var Rs = []
+var real_positions = []
 var indices = {}
 
 function loadImage(i, scene, R, t, image_name, image_loader) {
@@ -43,13 +43,13 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
         const image_geometry = new THREE.PlaneGeometry( image_texture.image.width/SCALE,image_texture.image.height/SCALE).rotateY(Math.PI)
         const image_material = new THREE.MeshBasicMaterial( { map: image_texture } );
         const image_plane = new THREE.Mesh( image_geometry, image_material );
-        let new_pos = math.add(math.matrix(camera_pos), math.multiply(math.number(offset), view_direction))
         image_plane.name = image_name;
         image_plane.lookAt(x,-y,-z)
+        const new_pos = math.add(math.matrix(camera_pos), math.multiply(math.number(offset), view_direction))
         image_plane.position.set(new_pos.get([0]), -new_pos.get([1]), -new_pos.get([2]))
         scene.add(image_plane);
         images.push(image_plane)
-        real_positions.push(new_pos)
+        real_positions.push([new_pos.get([0]), -new_pos.get([1]), -new_pos.get([2])])
     } );
 
     image_names.push(image_name)
@@ -61,15 +61,9 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
 function setSize(value) {
     console.log("New image size: " + String(value))
     for (let i = 0; i < images.length; i++) {
-        let image = images[i]
-        let pos = image.position
-        //Bring to 0,0,0 // S'HA DE TENIR EN COMPTE L'OFFSET
-        image.position.set(0,0,0)
-        // Resize
-        image.scale.set(1/imageSize, 1/imageSize, 1/imageSize)
-        image.scale.set(value, value, value)
-        //Bring back to its place
-        image.position.set(pos[0], pos[1], pos[2])
+        const image = images[i]
+        const scaling_factor = value/imageSize
+        image.scale.set(scaling_factor, scaling_factor, scaling_factor)
     }
     imageSize = value
 }
@@ -83,7 +77,7 @@ function setOffset(value) {
         let direction = math.multiply(math.transpose(R), math.transpose(math.matrix([0,0,-1])))
         let new_pos = math.add(math.matrix(camera_pos), math.multiply(math.number(value), direction))
         image.position.set(new_pos.get([0]), -new_pos.get([1]), -new_pos.get([2]))
-        real_positions.push(new_pos)
+        real_positions.push([new_pos.get([0]), -new_pos.get([1]), -new_pos.get([2])])
     }
     imageOffset = value
 }
