@@ -42,6 +42,8 @@ function addInteraction(ctrl, cam, sce) {
 
 function onClick() {
     event.preventDefault();
+    // Avoid clicking images behind GUI
+    if (event.target.tagName === "DIV") return
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
@@ -94,6 +96,8 @@ function hoverOut() {
 function onHover() {
     if (mDragging) return
     event.preventDefault();
+    // Avoid clicking images behind GUI
+    if (event.target.tagName === "DIV") return
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
