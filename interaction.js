@@ -11,6 +11,8 @@ var camera
 var scene
 var controls
 
+var imagesSelected = new Set();
+
 function addInteraction(ctrl, cam, sce) {
     controls = ctrl
     camera = cam
@@ -44,29 +46,30 @@ function onClick() {
         var object = intersects[0].object;
         if (object.name.startsWith('Sant Quirze de Pedret by Zones')) {
             if (event.button == 0) {
-                const url = 'openseadragon.html?image=' + encodeURIComponent(object.name);
+                const url = 'openseadragon.html?images=' + encodeURIComponent(JSON.stringify(object.name));
                 window.open(url, '_blank')
             }
             else {
-                let params = getImageParams(object.name)
-                let image_pos = params.image_pos
-                let pos = params.pos
-                let dir = params.dir
-                console.log(camera)
-                console.log(image_pos)
-                console.log(pos)
-                console.log(dir)
-
-                //camera.position.set(pos[0], -pos[1], -pos[2])
-                controls.target.set(image_pos[0], -image_pos[1], -image_pos[2])
-                camera.position.set(pos[0], -pos[1], -pos[2])
-                camera.lookAt(image_pos[0], -image_pos[1], -image_pos[2])
-                
-                console.log(camera)
+                if (imagesSelected.has(object.name)) {
+                    imagesSelected.delete(object.name)
+                }
+                else {
+                    imagesSelected.add(object.name)
+                }
             }
         }
     }
       render();
+}
+
+function openImagesToOpenSeaDragon() {
+    if (imagesSelected.size == 0) return;
+    const url = 'openseadragon.html?images=' + encodeURIComponent(JSON.stringify(Array.from(imagesSelected)));
+    window.open(url, '_blank')
+}
+
+function clearSelection() {
+    imagesSelected.clear()
 }
 
 function hoverIn(image_object) {
@@ -106,4 +109,4 @@ function onHover() {
     render();
 }
 
-export {addInteraction}
+export {addInteraction, openImagesToOpenSeaDragon, clearSelection}

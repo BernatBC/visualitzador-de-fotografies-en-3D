@@ -62,8 +62,8 @@ function setSize(value) {
     console.log("New image size: " + String(value))
     for (let i = 0; i < images.length; i++) {
         const image = images[i]
-        const scaling_factor = value/imageSize
-        image.scale.set(scaling_factor, scaling_factor, scaling_factor)
+        image.scale.set(1/imageSize, 1/imageSize, 1/imageSize)
+        image.scale.set(value, value, value)
     }
     imageSize = value
 }
