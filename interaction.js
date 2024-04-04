@@ -11,6 +11,10 @@ var camera
 var scene
 var controls
 
+const HOVER_COLOR = 0xccffff
+const SELECTION_COLOR = 0xd6b4fc
+const NEUTRAL_COLOR = 0xffffff
+
 var imagesSelected = new Set();
 
 function addInteraction(ctrl, cam, sce) {
@@ -48,13 +52,16 @@ function onClick() {
             if (event.button == 0) {
                 const url = 'openseadragon.html?images=' + encodeURIComponent(JSON.stringify(object.name));
                 window.open(url, '_blank')
+                clearSelection()
             }
             else {
-                if (imagesSelected.has(object.name)) {
-                    imagesSelected.delete(object.name)
+                if (imagesSelected.has(object)) {
+                    imagesSelected.delete(object)
+                    object.material.color.setHex( HOVER_COLOR )
                 }
                 else {
-                    imagesSelected.add(object.name)
+                    imagesSelected.add(object)
+                    object.material.color.setHex( SELECTION_COLOR )
                 }
             }
         }
@@ -64,21 +71,23 @@ function onClick() {
 
 function openImagesToOpenSeaDragon() {
     if (imagesSelected.size == 0) return;
-    const url = 'openseadragon.html?images=' + encodeURIComponent(JSON.stringify(Array.from(imagesSelected)));
+    const url = 'openseadragon.html?images=' + encodeURIComponent(JSON.stringify(imageObjectToNamesArray(imagesSelected)));
     window.open(url, '_blank')
+    clearSelection()
 }
 
 function clearSelection() {
+    imagesSelected.forEach(image_object => image_object.material.color.setHex( NEUTRAL_COLOR ))
     imagesSelected.clear()
 }
 
 function hoverIn(image_object) {
-    image_object.material.color.setHex( 0xccffff )
+    if (!imagesSelected.has(image_object)) image_object.material.color.setHex( HOVER_COLOR )
     hover = image_object
 }
 
 function hoverOut() {
-    hover.material.color.setHex( 0xffffff )
+    if (!imagesSelected.has(hover)) hover.material.color.setHex( NEUTRAL_COLOR )
     hover = undefined
 }
 
@@ -107,6 +116,12 @@ function onHover() {
     else if (hover !== undefined) hoverOut();
 
     render();
+}
+
+function imageObjectToNamesArray(objectArray) {
+    const names = []
+    objectArray.forEach(object => names.push(object.name))
+    return names
 }
 
 export {addInteraction, openImagesToOpenSeaDragon, clearSelection}
