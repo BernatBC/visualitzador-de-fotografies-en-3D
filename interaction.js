@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import {render} from './main.js'
+import { getImageParams } from './single-image-loader.js';
 
 var mouse = new THREE.Vector2()
 var raycaster = new THREE.Raycaster();
@@ -8,8 +9,16 @@ var mDragging = false;
 var mDown = false;
 var camera
 var scene
+var controls
 
-function addInteraction(cam, sce) {
+const HOVER_COLOR = 0xccffff
+const SELECTION_COLOR = 0xd6b4fc
+const NEUTRAL_COLOR = 0xffffff
+
+var imagesSelected = new Set();
+
+function addInteraction(ctrl, cam, sce) {
+    controls = ctrl
     camera = cam
     scene = sce
 
@@ -40,20 +49,45 @@ function onClick() {
     if (intersects.length > 0) {
         var object = intersects[0].object;
         if (object.name.startsWith('Sant Quirze de Pedret by Zones')) {
-            const url = 'openseadragon.html?image=' + encodeURIComponent(object.name);
-            window.open(url, '_blank')
+            if (event.button == 0) {
+                const url = 'openseadragon.html?images=' + encodeURIComponent(JSON.stringify(object.name));
+                window.open(url, '_blank')
+                clearSelection()
+            }
+            else {
+                if (imagesSelected.has(object)) {
+                    imagesSelected.delete(object)
+                    object.material.color.setHex( HOVER_COLOR )
+                }
+                else {
+                    imagesSelected.add(object)
+                    object.material.color.setHex( SELECTION_COLOR )
+                }
+            }
         }
     }
       render();
 }
 
+function openImagesToOpenSeaDragon() {
+    if (imagesSelected.size == 0) return;
+    const url = 'openseadragon.html?images=' + encodeURIComponent(JSON.stringify(imageObjectToNamesArray(imagesSelected)));
+    window.open(url, '_blank')
+    clearSelection()
+}
+
+function clearSelection() {
+    imagesSelected.forEach(image_object => image_object.material.color.setHex( NEUTRAL_COLOR ))
+    imagesSelected.clear()
+}
+
 function hoverIn(image_object) {
-    image_object.material.color.setHex( 0xccffff )
+    if (!imagesSelected.has(image_object)) image_object.material.color.setHex( HOVER_COLOR )
     hover = image_object
 }
 
 function hoverOut() {
-    hover.material.color.setHex( 0xffffff )
+    if (!imagesSelected.has(hover)) hover.material.color.setHex( NEUTRAL_COLOR )
     hover = undefined
 }
 
@@ -84,4 +118,10 @@ function onHover() {
     render();
 }
 
-export {addInteraction}
+function imageObjectToNamesArray(objectArray) {
+    const names = []
+    objectArray.forEach(object => names.push(object.name))
+    return names
+}
+
+export {addInteraction, openImagesToOpenSeaDragon, clearSelection}

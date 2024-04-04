@@ -11,8 +11,10 @@ var image_names = []
 var camera_positions = []
 var Rs = []
 var real_positions = []
+var indices = {}
 
-function loadImage(scene, R, t, image_name, image_loader) {
+
+function loadImage(i, scene, R, t, image_name, image_loader) {
     const pos = math.multiply(math.unaryMinus(math.transpose(R)),t)
     const camera_pos = [pos.get([0]), pos.get([1]), pos.get([2])]
     const sphere_geometry = new THREE.SphereGeometry( 0.01, 5, 5 ).translate(camera_pos[0], camera_pos[1], camera_pos[2]).rotateX(Math.PI);
@@ -54,14 +56,15 @@ function loadImage(scene, R, t, image_name, image_loader) {
     image_names.push(image_name)
     camera_positions.push(camera_pos)
     Rs.push(R)
+    indices[image_name] = i
 }
 
 function setSize(value) {
     console.log("New image size: " + String(value))
     for (let i = 0; i < images.length; i++) {
         const image = images[i]
-        const scaling_factor = value/imageSize
-        image.scale.set(scaling_factor, scaling_factor, scaling_factor)
+        image.scale.set(1/imageSize, 1/imageSize, 1/imageSize)
+        image.scale.set(value, value, value)
     }
     imageSize = value
 }
@@ -80,4 +83,14 @@ function setOffset(value) {
     imageOffset = value
 }
 
-export { loadImage, setSize, setOffset }
+function getImageParams(image_name) {
+    let i = indices[image_name]
+    let R = Rs[i]
+    let camera_pos = camera_positions[i]
+    let direction = math.multiply(math.transpose(R), math.transpose(math.matrix([0,0,-1])))
+    let dir = [direction.get([0]), direction.get([1]), direction.get([2])]
+    let new_pos = real_positions[i]
+    return {"image_pos": new_pos,"pos": camera_pos, "dir": dir}
+}
+
+export { loadImage, setSize, setOffset, getImageParams }
