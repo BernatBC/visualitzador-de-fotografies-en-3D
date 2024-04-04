@@ -13,6 +13,7 @@ var Rs = []
 var real_positions = []
 var indices = {}
 
+
 function loadImage(i, scene, R, t, image_name, image_loader) {
     const pos = math.multiply(math.unaryMinus(math.transpose(R)),t)
     const camera_pos = [pos.get([0]), pos.get([1]), pos.get([2])]
