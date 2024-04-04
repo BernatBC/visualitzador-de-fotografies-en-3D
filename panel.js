@@ -5,7 +5,7 @@ import { openImagesToOpenSeaDragon, clearSelection } from './interaction.js';
 
 function createPanel() {
 
-    const panel = new GUI( { width: 310 } );
+    const panel = new GUI( { width: 290 } );
 
     const folder1 = panel.addFolder( 'Image Settings' );
     const folder2 = panel.addFolder( 'OpenSeaDragon' );
@@ -25,8 +25,6 @@ function createPanel() {
     folder2.add(settings, 'Open Selected images to OpenSeaDragon');
     folder2.add(settings, 'Clear Images Selected');
     folder2.open();
-
-
 }
 
 
