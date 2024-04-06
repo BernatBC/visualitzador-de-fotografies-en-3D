@@ -4,10 +4,11 @@ import { setSize, setOffset } from "./single-image-loader.js";
 import { openImagesToOpenSeaDragon, clearSelection } from "./interaction.js";
 
 function createPanel() {
-    const panel = new GUI({ width: 310 });
+    
+    const panel = new GUI( { width: 290 } );
 
-    const folder1 = panel.addFolder("Image Settings");
-    const folder2 = panel.addFolder("OpenSeaDragon");
+    const folder1 = panel.addFolder( 'Image Settings' );
+    const folder2 = panel.addFolder( 'OpenSeaDragon' );
 
     let settings = {
         "Modify image size": 1.0,
