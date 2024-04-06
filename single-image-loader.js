@@ -1,96 +1,136 @@
-import * as THREE from 'three'
-import { create, all } from 'mathjs'
+import * as THREE from "three";
+import { create, all } from "mathjs";
 
-const math = create(all,  {})
+const math = create(all, {});
 
-var imageOffset = 0.1
-var imageSize = 1
+var imageOffset = 0.1;
+var imageSize = 1;
 
-var images = []
-var image_names = []
-var camera_positions = []
-var Rs = []
-var real_positions = []
-var indices = {}
-
+var images = [];
+var image_names = [];
+var camera_positions = [];
+var Rs = [];
+var real_positions = [];
+var indices = {};
 
 function loadImage(i, scene, R, t, image_name, image_loader) {
-    const pos = math.multiply(math.unaryMinus(math.transpose(R)),t)
-    const camera_pos = [pos.get([0]), pos.get([1]), pos.get([2])]
-    const sphere_geometry = new THREE.SphereGeometry( 0.01, 5, 5 ).translate(camera_pos[0], camera_pos[1], camera_pos[2]).rotateX(Math.PI);
-    const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } ); 
-    const sphere = new THREE.Mesh( sphere_geometry, material );
-    scene.add( sphere );
+    const pos = math.multiply(math.unaryMinus(math.transpose(R)), t);
+    const camera_pos = [pos.get([0]), pos.get([1]), pos.get([2])];
+    const sphere_geometry = new THREE.SphereGeometry(0.01, 5, 5)
+        .translate(camera_pos[0], camera_pos[1], camera_pos[2])
+        .rotateX(Math.PI);
+    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const sphere = new THREE.Mesh(sphere_geometry, material);
+    scene.add(sphere);
     //Rotació
     //View direction
-    const view_direction = math.multiply(math.transpose(R), math.transpose(math.matrix([0,0,-1])))
+    const view_direction = math.multiply(
+        math.transpose(R),
+        math.transpose(math.matrix([0, 0, -1]))
+    );
     //View direction VECTOR
-    const x = view_direction.get([0])
-    const y = view_direction.get([1])
-    const z = view_direction.get([2])
+    const x = view_direction.get([0]);
+    const y = view_direction.get([1]);
+    const z = view_direction.get([2]);
 
-    const pyramid_geometry = new THREE.ConeGeometry(0.05,0.05,4).rotateY(Math.PI / 4).translate(0,-0.025,0).rotateX(-Math.PI/2)
+    const pyramid_geometry = new THREE.ConeGeometry(0.05, 0.05, 4)
+        .rotateY(Math.PI / 4)
+        .translate(0, -0.025, 0)
+        .rotateX(-Math.PI / 2);
     const pyramid = new THREE.Mesh(pyramid_geometry, material);
-    pyramid.lookAt(x,-y,-z)
-    pyramid.position.set(camera_pos[0], -camera_pos[1], -camera_pos[2])
+    pyramid.lookAt(x, -y, -z);
+    pyramid.position.set(camera_pos[0], -camera_pos[1], -camera_pos[2]);
     scene.add(pyramid);
 
     // Afegir imatge
-    const SCALE = 1000*imageSize;
+    const SCALE = 1000 * imageSize;
     const offset = imageOffset;
-    const image_path = "/images/low_res/" + image_name
+    const image_path = "/images/low_res/" + image_name;
     const image_texture = image_loader.load(image_path, function () {
         image_texture.colorSpace = THREE.SRGBColorSpace;
-        const image_geometry = new THREE.PlaneGeometry( image_texture.image.width/SCALE,image_texture.image.height/SCALE).rotateY(Math.PI)
-        const image_material = new THREE.MeshBasicMaterial( { map: image_texture } );
-        const image_plane = new THREE.Mesh( image_geometry, image_material );
+        const image_geometry = new THREE.PlaneGeometry(
+            image_texture.image.width / SCALE,
+            image_texture.image.height / SCALE
+        ).rotateY(Math.PI);
+        const image_material = new THREE.MeshBasicMaterial({
+            map: image_texture,
+        });
+        const image_plane = new THREE.Mesh(image_geometry, image_material);
         image_plane.name = image_name;
-        image_plane.lookAt(x,-y,-z)
-        const new_pos = math.add(math.matrix(camera_pos), math.multiply(math.number(offset), view_direction))
-        image_plane.position.set(new_pos.get([0]), -new_pos.get([1]), -new_pos.get([2]))
+        image_plane.lookAt(x, -y, -z);
+        const new_pos = math.add(
+            math.matrix(camera_pos),
+            math.multiply(math.number(offset), view_direction)
+        );
+        image_plane.position.set(
+            new_pos.get([0]),
+            -new_pos.get([1]),
+            -new_pos.get([2])
+        );
         scene.add(image_plane);
-        images.push(image_plane)
-        real_positions.push([new_pos.get([0]), -new_pos.get([1]), -new_pos.get([2])])
-    } );
+        images.push(image_plane);
+        real_positions.push([
+            new_pos.get([0]),
+            -new_pos.get([1]),
+            -new_pos.get([2]),
+        ]);
+    });
 
-    image_names.push(image_name)
-    camera_positions.push(camera_pos)
-    Rs.push(R)
-    indices[image_name] = i
+    image_names.push(image_name);
+    camera_positions.push(camera_pos);
+    Rs.push(R);
+    indices[image_name] = i;
 }
 
 function setSize(value) {
-    console.log("New image size: " + String(value))
+    console.log("New image size: " + String(value));
     for (let i = 0; i < images.length; i++) {
-        const image = images[i]
-        image.scale.set(1/imageSize, 1/imageSize, 1/imageSize)
-        image.scale.set(value, value, value)
+        const image = images[i];
+        image.scale.set(1 / imageSize, 1 / imageSize, 1 / imageSize);
+        image.scale.set(value, value, value);
     }
-    imageSize = value
+    imageSize = value;
 }
 
 function setOffset(value) {
-    console.log("New image offset: " + String(value))
+    console.log("New image offset: " + String(value));
     for (let i = 0; i < images.length; i++) {
-        let camera_pos = camera_positions[i]
-        let R = Rs[i]
-        let image = images[i]
-        let direction = math.multiply(math.transpose(R), math.transpose(math.matrix([0,0,-1])))
-        let new_pos = math.add(math.matrix(camera_pos), math.multiply(math.number(value), direction))
-        image.position.set(new_pos.get([0]), -new_pos.get([1]), -new_pos.get([2]))
-        real_positions.push([new_pos.get([0]), -new_pos.get([1]), -new_pos.get([2])])
+        let camera_pos = camera_positions[i];
+        let R = Rs[i];
+        let image = images[i];
+        let direction = math.multiply(
+            math.transpose(R),
+            math.transpose(math.matrix([0, 0, -1]))
+        );
+        let new_pos = math.add(
+            math.matrix(camera_pos),
+            math.multiply(math.number(value), direction)
+        );
+        image.position.set(
+            new_pos.get([0]),
+            -new_pos.get([1]),
+            -new_pos.get([2])
+        );
+        real_positions.push([
+            new_pos.get([0]),
+            -new_pos.get([1]),
+            -new_pos.get([2]),
+        ]);
     }
-    imageOffset = value
+    imageOffset = value;
 }
 
 function getImageParams(image_name) {
-    let i = indices[image_name]
-    let R = Rs[i]
-    let camera_pos = camera_positions[i]
-    let direction = math.multiply(math.transpose(R), math.transpose(math.matrix([0,0,-1])))
-    let dir = [direction.get([0]), direction.get([1]), direction.get([2])]
-    let new_pos = real_positions[i]
-    return {"image_pos": new_pos,"pos": camera_pos, "dir": dir}
+    let i = indices[image_name];
+    let R = Rs[i];
+    let camera_pos = camera_positions[i];
+    let direction = math.multiply(
+        math.transpose(R),
+        math.transpose(math.matrix([0, 0, -1]))
+    );
+    let dir = [direction.get([0]), direction.get([1]), direction.get([2])];
+    let new_pos = real_positions[i];
+    return { image_pos: new_pos, pos: camera_pos, dir: dir };
 }
 
-export { loadImage, setSize, setOffset, getImageParams }
+export { loadImage, setSize, setOffset, getImageParams };
