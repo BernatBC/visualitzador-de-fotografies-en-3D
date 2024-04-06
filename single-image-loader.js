@@ -133,4 +133,8 @@ function getImageParams(image_name) {
     return { image_pos: new_pos, pos: camera_pos, dir: dir };
 }
 
-export { loadImage, setSize, setOffset, getImageParams };
+function getAllImages() {
+    return images;
+}
+
+export { loadImage, setSize, setOffset, getImageParams, getAllImages };
