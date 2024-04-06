@@ -1,14 +1,19 @@
 import * as THREE from "three";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import { setSize, setOffset } from "./single-image-loader.js";
-import { openImagesToOpenSeaDragon, clearSelection } from "./interaction.js";
+import {
+    openImagesToOpenSeaDragon,
+    clearSelection,
+    applySphericalRadius,
+    openSphericalImages,
+} from "./interaction.js";
 
 function createPanel() {
-    
-    const panel = new GUI( { width: 290 } );
+    const panel = new GUI({ width: 290 });
 
-    const folder1 = panel.addFolder( 'Image Settings' );
-    const folder2 = panel.addFolder( 'OpenSeaDragon' );
+    const folder1 = panel.addFolder("Image Settings");
+    const folder2 = panel.addFolder("Multiple Picked OpenSeaDragon");
+    const folder3 = panel.addFolder("Spherical OpenSeaDragon");
 
     let settings = {
         "Modify image size": 1.0,
@@ -19,6 +24,10 @@ function createPanel() {
         "Clear Images Selected": function () {
             clearSelection();
         },
+        "Open images to OpenSeaDragon": function () {
+            openSphericalImages();
+        },
+        "Modify Spherical Radius": 2.0,
     };
 
     folder1
@@ -32,6 +41,11 @@ function createPanel() {
     folder2.add(settings, "Open Selected images to OpenSeaDragon");
     folder2.add(settings, "Clear Images Selected");
     folder2.open();
+
+    folder3
+        .add(settings, "Modify Spherical Radius", 0.0, 10.0, 0.01)
+        .onChange(applySphericalRadius);
+    folder3.add(settings, "Open images to OpenSeaDragon");
 }
 
 export { createPanel };

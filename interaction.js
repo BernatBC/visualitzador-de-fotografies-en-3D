@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { render } from "./main.js";
-import { getImageParams } from "./single-image-loader.js";
+import { getAllImages } from "./single-image-loader.js";
 import { create, all } from "mathjs";
 
 const math = create(all, {});
@@ -17,6 +17,8 @@ var controls;
 const HOVER_COLOR = 0xccffff;
 const SELECTION_COLOR = 0xd6b4fc;
 const NEUTRAL_COLOR = 0xffffff;
+
+var radius = 2;
 
 var imagesSelected = new Set();
 
@@ -46,7 +48,7 @@ function addInteraction(ctrl, cam, sce) {
 function onClick() {
     event.preventDefault();
     // Avoid clicking images behind GUI
-    if (event.target.tagName === "DIV") return
+    if (event.target.tagName === "DIV") return;
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
@@ -56,7 +58,7 @@ function onClick() {
         if (object.name.startsWith("Sant Quirze de Pedret by Zones")) {
             if (event.button == 0) {
                 const url =
-                    "openseadragon.html?images=" +
+                    "openseadragon.html?mode=single&images=" +
                     encodeURIComponent(JSON.stringify(object.name));
                 window.open(url, "_blank");
                 clearSelection();
@@ -77,7 +79,7 @@ function onClick() {
 function openImagesToOpenSeaDragon() {
     if (imagesSelected.size == 0) return;
     const url =
-        "openseadragon.html?images=" +
+        "openseadragon.html?mode=multiple&images=" +
         encodeURIComponent(JSON.stringify(createJSON(imagesSelected)));
     window.open(url, "_blank");
     clearSelection();
@@ -105,7 +107,7 @@ function onHover() {
     if (mDragging) return;
     event.preventDefault();
     // Avoid clicking images behind GUI
-    if (event.target.tagName === "DIV") return
+    if (event.target.tagName === "DIV") return;
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
@@ -131,14 +133,14 @@ function onHover() {
 }
 
 function createJSON(objectArray) {
-    const json = [];
-    let C = camera.position;
+    let json = [];
+    const C = camera.position;
 
     objectArray.forEach((object) => {
-        let P = object.position;
-        let V = new THREE.Vector3().subVectors(P, C).normalize();
-        let phi = math.acos(V.z);
-        let theta = math.atan2(V.y, V.x);
+        const P = object.position;
+        const V = new THREE.Vector3().subVectors(P, C).normalize();
+        const phi = math.acos(V.z);
+        const theta = math.atan2(V.y, V.x);
         json.push({
             name: object.name,
             phi: phi,
@@ -149,4 +151,39 @@ function createJSON(objectArray) {
     return json;
 }
 
-export { addInteraction, openImagesToOpenSeaDragon, clearSelection };
+function openSphericalImages() {
+    let images = getAllImages();
+    let json = [];
+    const C = camera.position;
+    images.forEach((object) => {
+        const P = object.position;
+        if (C.distanceTo(P) < radius) {
+            const V = new THREE.Vector3().subVectors(P, C).normalize();
+            const phi = math.acos(V.z);
+            const theta = math.atan2(V.y, V.x);
+            json.push({
+                name: object.name,
+                phi: phi,
+                theta: theta,
+            });
+        }
+    });
+
+    const url =
+        "openseadragon.html?mode=spherical&images=" +
+        encodeURIComponent(JSON.stringify(json));
+    window.open(url, "_blank");
+    clearSelection();
+}
+
+function applySphericalRadius(r) {
+    radius = r;
+}
+
+export {
+    addInteraction,
+    openImagesToOpenSeaDragon,
+    clearSelection,
+    openSphericalImages,
+    applySphericalRadius,
+};
