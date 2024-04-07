@@ -31,7 +31,9 @@ if (Array.isArray(parsedImages)) {
             "Phi: " +
                 image.phi.toString() +
                 ", Theta: " +
-                image.theta.toString()
+                image.theta.toString() +
+                ", Height: " +
+                image.height.toString()
         );
         viewer.addTiledImage({
             tileSource: {
@@ -41,6 +43,7 @@ if (Array.isArray(parsedImages)) {
             },
             x: image.phi,
             y: image.theta,
+            height: image.height,
         });
     });
 }

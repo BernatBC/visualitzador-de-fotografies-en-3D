@@ -145,6 +145,7 @@ function createJSON(objectArray) {
             name: object.name,
             phi: phi,
             theta: theta,
+            height: object.geometry.parameters.height,
         });
     });
     console.log(json);
@@ -165,6 +166,7 @@ function openSphericalImages() {
                 name: object.name,
                 phi: phi,
                 theta: theta,
+                height: object.geometry.parameters.height,
             });
         }
     });
