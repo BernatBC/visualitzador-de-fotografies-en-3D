@@ -21,8 +21,7 @@ var radius = 2;
 
 var imagesSelected = new Set();
 
-function addInteraction(ctrl, cam, sce) {
-    controls = ctrl;
+function addInteraction(cam, sce) {
     camera = cam;
     scene = sce;
 
