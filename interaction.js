@@ -58,8 +58,8 @@ function onClick() {
         if (object.name.startsWith("Sant Quirze de Pedret by Zones")) {
             if (event.button == 0) {
                 const url =
-                    "openseadragon.html?mode=single&images=" +
-                    encodeURIComponent(JSON.stringify(object.name));
+                    "openseadragon.html?mode=single&image=" +
+                    encodeURIComponent(object.name);
                 window.open(url, "_blank");
                 clearSelection();
             } else {
@@ -78,9 +78,13 @@ function onClick() {
 
 function openImagesToOpenSeaDragon() {
     if (imagesSelected.size == 0) return;
-    const url =
-        "openseadragon.html?mode=multiple&images=" +
-        encodeURIComponent(JSON.stringify(createJSON(imagesSelected)));
+    let jsonContent = JSON.stringify(createJSON(imagesSelected));
+    /*const fs = require("fs");
+    fs.writeFile("images.json", jsonContent, (err) => {
+        if (err) throw err;
+    });*/
+    localStorage.setItem("images", jsonContent);
+    const url = "openseadragon.html?mode=multiple";
     window.open(url, "_blank");
     clearSelection();
 }
@@ -171,9 +175,14 @@ function openSphericalImages() {
         }
     });
 
-    const url =
-        "openseadragon.html?mode=spherical&images=" +
-        encodeURIComponent(JSON.stringify(json));
+    let jsonContent = JSON.stringify(json);
+    /*const fs = require("fs");
+    fs.writeFile("images.json", jsonContent, (err) => {
+        if (err) throw err;
+    });*/
+    localStorage.setItem("images", jsonContent);
+    const url = "openseadragon.html?mode=spherical";
+
     window.open(url, "_blank");
     clearSelection();
 }

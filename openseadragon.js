@@ -1,17 +1,16 @@
 const urlParams = new URLSearchParams(window.location.search);
-const images = urlParams.get("images");
-const parsedImages = JSON.parse(images);
+const image = urlParams.get("image");
+const mode = urlParams.get("mode");
+
+console.log(mode);
+console.log(image);
 
 var sources = [];
-var overlays = [];
-var i = 0;
 
-console.log(parsedImages);
-
-if (!Array.isArray(parsedImages)) {
+if (mode === "single") {
     sources.push({
         type: "image",
-        url: "images/" + parsedImages,
+        url: "images/" + image,
         buildPyramid: false,
     });
 }
@@ -25,7 +24,11 @@ var viewer = OpenSeadragon({
     preserveViewport: true,
 });
 
-if (Array.isArray(parsedImages)) {
+if (mode !== "single") {
+    var retrievedObject = localStorage.getItem("images");
+    const parsedImages = JSON.parse(retrievedObject);
+    console.log(parsedImages);
+    //const parsedImages = JSON;
     parsedImages.forEach((image) => {
         console.log(
             "Phi: " +
