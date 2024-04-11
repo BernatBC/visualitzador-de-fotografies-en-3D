@@ -12,7 +12,6 @@ var mDragging = false;
 var mDown = false;
 var camera;
 var scene;
-var controls;
 
 const HOVER_COLOR = 0xccffff;
 const SELECTION_COLOR = 0xd6b4fc;
@@ -79,10 +78,6 @@ function onClick() {
 function openImagesToOpenSeaDragon() {
     if (imagesSelected.size == 0) return;
     let jsonContent = JSON.stringify(createJSON(imagesSelected));
-    /*const fs = require("fs");
-    fs.writeFile("images.json", jsonContent, (err) => {
-        if (err) throw err;
-    });*/
     localStorage.setItem("images", jsonContent);
     const url = "openseadragon.html?mode=multiple";
     window.open(url, "_blank");
@@ -176,10 +171,6 @@ function openSphericalImages() {
     });
 
     let jsonContent = JSON.stringify(json);
-    /*const fs = require("fs");
-    fs.writeFile("images.json", jsonContent, (err) => {
-        if (err) throw err;
-    });*/
     localStorage.setItem("images", jsonContent);
     const url = "openseadragon.html?mode=spherical";
 

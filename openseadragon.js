@@ -28,7 +28,6 @@ if (mode !== "single") {
     var retrievedObject = localStorage.getItem("images");
     const parsedImages = JSON.parse(retrievedObject);
     console.log(parsedImages);
-    //const parsedImages = JSON;
     parsedImages.forEach((image) => {
         console.log(
             "Phi: " +
