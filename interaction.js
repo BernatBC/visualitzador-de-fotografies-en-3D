@@ -137,8 +137,8 @@ function createJSON(objectArray) {
     objectArray.forEach((object) => {
         const P = object.position;
         const V = new THREE.Vector3().subVectors(P, C).normalize();
-        const phi = math.acos(V.z);
-        const theta = math.atan2(V.y, V.x);
+        const phi = math.acos(V.y);
+        const theta = math.atan2(V.x, V.z);
         json.push({
             name: object.name,
             phi: phi,
@@ -158,8 +158,8 @@ function openSphericalImages() {
         const P = object.position;
         if (C.distanceTo(P) < radius) {
             const V = new THREE.Vector3().subVectors(P, C).normalize();
-            const phi = math.acos(V.z);
-            const theta = math.atan2(V.y, V.x);
+            const phi = math.acos(V.y);
+            const theta = math.atan2(V.x, V.z);
             json.push({
                 name: object.name,
                 phi: phi,

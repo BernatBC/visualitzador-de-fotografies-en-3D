@@ -43,8 +43,8 @@ if (mode !== "single") {
                 url: "images/" + image.name,
                 buildPyramid: false,
             },
-            x: image.phi,
-            y: image.theta,
+            x: image.theta,
+            y: image.phi,
             height: image.height,
         });
     });
