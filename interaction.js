@@ -158,10 +158,6 @@ function openSphericalImages() {
         const P = object.position;
         if (C.distanceTo(P) < radius) {
             const V = new THREE.Vector3().subVectors(P, C).normalize();
-            console.log("-----");
-            console.log(C);
-            console.log(P);
-            console.log(V);
             const phi = math.acos(V.y);
             const theta = math.atan2(V.x, V.z);
             json.push({
