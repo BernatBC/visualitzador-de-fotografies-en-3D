@@ -13,7 +13,9 @@ var mDown = false;
 var camera;
 var scene;
 
+var abstractPlane;
 var planeObject;
+var planeDistance = 0.2;
 
 const HOVER_COLOR = 0xccffff;
 const SELECTION_COLOR = 0xd6b4fc;
@@ -143,8 +145,8 @@ function createJSON(objectArray) {
         const theta = math.atan2(V.x, V.z);
         json.push({
             name: object.name,
-            phi: phi,
-            theta: theta,
+            x: theta,
+            y: phi,
             height: object.geometry.parameters.height,
         });
     });
@@ -164,8 +166,8 @@ function openSphericalImages() {
             const theta = math.atan2(V.x, V.z);
             json.push({
                 name: object.name,
-                phi: phi,
-                theta: theta,
+                x: theta,
+                y: phi,
                 height: object.geometry.parameters.height,
             });
         }
@@ -198,7 +200,7 @@ function openPlaneImages() {
 }
 
 function createPlaneFromPoints(A, B, C) {
-    const abstractPlane = new THREE.Plane().setFromCoplanarPoints(A, B, C);
+    abstractPlane = new THREE.Plane().setFromCoplanarPoints(A, B, C);
 
     const planeGeometry = new THREE.PlaneGeometry(10, 10);
 
@@ -226,6 +228,37 @@ function cancelPlane() {
     scene.remove(planeObject);
     clearSelection();
     planeObject = null;
+    abstractPlane = null;
+}
+
+function changePlaneDistance(d) {
+    planeDistance = d;
+}
+
+function openPlane() {
+    console.log("opening to openseadragon");
+    let images = getAllImages();
+    let json = [];
+    images.forEach((object) => {
+        const P = object.position;
+        var P2 = new THREE.Vector3();
+        abstractPlane.projectPoint(P, P2);
+        if (P.distanceTo(P2) < planeDistance) {
+            json.push({
+                name: object.name,
+                x: 0,
+                y: 0,
+                height: object.geometry.parameters.height,
+            });
+        }
+    });
+
+    let jsonContent = JSON.stringify(json);
+    localStorage.setItem("images", jsonContent);
+    const url = "openseadragon.html?mode=plane";
+
+    window.open(url, "_blank");
+    //cancelPlane();
 }
 
 export {
@@ -236,4 +269,6 @@ export {
     applySphericalRadius,
     openPlaneImages,
     cancelPlane,
+    changePlaneDistance,
+    openPlane,
 };

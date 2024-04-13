@@ -30,10 +30,10 @@ if (mode !== "single") {
     console.log(parsedImages);
     parsedImages.forEach((image) => {
         console.log(
-            "Phi: " +
-                image.phi.toString() +
-                ", Theta: " +
-                image.theta.toString() +
+            "X: " +
+                image.x.toString() +
+                ", Y: " +
+                image.y.toString() +
                 ", Height: " +
                 image.height.toString()
         );
@@ -43,8 +43,8 @@ if (mode !== "single") {
                 url: "images/" + image.name,
                 buildPyramid: false,
             },
-            x: image.theta,
-            y: image.phi,
+            x: image.x,
+            y: image.y,
             height: image.height,
         });
     });
