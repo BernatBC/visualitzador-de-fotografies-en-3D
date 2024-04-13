@@ -6,6 +6,8 @@ import {
     clearSelection,
     applySphericalRadius,
     openSphericalImages,
+    openPlaneImages,
+    cancelPlane,
 } from "./interaction.js";
 
 function createPanel() {
@@ -14,6 +16,7 @@ function createPanel() {
     const folder1 = panel.addFolder("Image Settings");
     const folder2 = panel.addFolder("Multiple Picked OpenSeaDragon");
     const folder3 = panel.addFolder("Spherical OpenSeaDragon");
+    const folder4 = panel.addFolder("Plane");
 
     let settings = {
         "Modify image size": 1.0,
@@ -23,6 +26,15 @@ function createPanel() {
         },
         "Clear Images Selected": function () {
             clearSelection();
+        },
+        "Open images to OpenSeaDragon": function () {
+            openSphericalImages();
+        },
+        "Create plane": function () {
+            openPlaneImages();
+        },
+        Cancel: function () {
+            cancelPlane();
         },
         "Open images to OpenSeaDragon": function () {
             openSphericalImages();
@@ -46,6 +58,9 @@ function createPanel() {
         .add(settings, "Modify Spherical Radius", 0.0, 10.0, 0.01)
         .onChange(applySphericalRadius);
     folder3.add(settings, "Open images to OpenSeaDragon");
+
+    folder4.add(settings, "Create plane");
+    folder4.add(settings, "Cancel");
 }
 
 export { createPanel };

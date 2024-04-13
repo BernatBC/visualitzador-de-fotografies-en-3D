@@ -13,6 +13,8 @@ var mDown = false;
 var camera;
 var scene;
 
+var planeObject;
+
 const HOVER_COLOR = 0xccffff;
 const SELECTION_COLOR = 0xd6b4fc;
 const NEUTRAL_COLOR = 0xffffff;
@@ -181,10 +183,57 @@ function applySphericalRadius(r) {
     radius = r;
 }
 
+function openPlaneImages() {
+    if (imagesSelected.size != 3) {
+        console.log("You need to select exactly 3 images");
+        return;
+    }
+    const images = Array.from(imagesSelected);
+    planeObject = createPlaneFromPoints(
+        images[0].position,
+        images[1].position,
+        images[2].position
+    );
+    clearSelection();
+}
+
+function createPlaneFromPoints(A, B, C) {
+    const abstractPlane = new THREE.Plane().setFromCoplanarPoints(A, B, C);
+
+    const planeGeometry = new THREE.PlaneGeometry(10, 10);
+
+    var coplanarPoint = abstractPlane.coplanarPoint(A);
+    var focalPoint = new THREE.Vector3().addVectors(
+        coplanarPoint,
+        abstractPlane.normal
+    );
+    planeGeometry.lookAt(focalPoint);
+    planeGeometry.translate(coplanarPoint.x, coplanarPoint.y, coplanarPoint.z);
+
+    const planeMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00ff00,
+        side: THREE.DoubleSide,
+        opacity: 0.2,
+        transparent: true,
+    });
+
+    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    scene.add(plane);
+    return plane;
+}
+
+function cancelPlane() {
+    scene.remove(planeObject);
+    clearSelection();
+    planeObject = null;
+}
+
 export {
     addInteraction,
     openImagesToOpenSeaDragon,
     clearSelection,
     openSphericalImages,
     applySphericalRadius,
+    openPlaneImages,
+    cancelPlane,
 };
