@@ -8,6 +8,8 @@ import {
     openSphericalImages,
     openPlaneImages,
     cancelPlane,
+    changePlaneDistance,
+    openPlane,
 } from "./interaction.js";
 
 function createPanel() {
@@ -36,6 +38,10 @@ function createPanel() {
         Cancel: function () {
             cancelPlane();
         },
+        "Maximum plane distance": 0.2,
+        "Open plane to OpenSeaDragon": function () {
+            openPlane();
+        },
         "Open images to OpenSeaDragon": function () {
             openSphericalImages();
         },
@@ -60,6 +66,10 @@ function createPanel() {
     folder3.add(settings, "Open images to OpenSeaDragon");
 
     folder4.add(settings, "Create plane");
+    folder4
+        .add(settings, "Maximum plane distance", 0.0, 5.0, 0.01)
+        .onChange(changePlaneDistance);
+    folder4.add(settings, "Open plane to OpenSeaDragon");
     folder4.add(settings, "Cancel");
 }
 
