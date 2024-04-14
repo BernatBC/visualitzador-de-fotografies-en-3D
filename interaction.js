@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { render } from "./main.js";
 import { getAllImages } from "./single-image-loader.js";
+import { setScene as setPlaneScene } from "./plane.js";
+import { setScene as setSphereScene } from "./sphere.js";
 import { create, all } from "mathjs";
 
 const math = create(all, {});
@@ -13,21 +15,17 @@ var mDown = false;
 var camera;
 var scene;
 
-var abstractPlane;
-var planeObject;
-var planeDistance = 0.2;
-
 const HOVER_COLOR = 0xccffff;
 const SELECTION_COLOR = 0xd6b4fc;
 const NEUTRAL_COLOR = 0xffffff;
-
-var radius = 2;
 
 var imagesSelected = new Set();
 
 function addInteraction(cam, sce) {
     camera = cam;
     scene = sce;
+    setPlaneScene(sce);
+    setSphereScene(sce);
 
     // OBRIR IMATGES EN OPENSEADRAGON
     window.addEventListener("mousedown", function () {
@@ -154,121 +152,14 @@ function createJSON(objectArray) {
     return json;
 }
 
-function openSphericalImages() {
-    let images = getAllImages();
-    let json = [];
-    const C = camera.position;
-    images.forEach((object) => {
-        const P = object.position;
-        if (C.distanceTo(P) < radius) {
-            const V = new THREE.Vector3().subVectors(P, C).normalize();
-            const phi = math.acos(V.y);
-            const theta = math.atan2(V.x, V.z);
-            json.push({
-                name: object.name,
-                x: theta,
-                y: phi,
-                height: object.geometry.parameters.height,
-            });
-        }
-    });
-
-    let jsonContent = JSON.stringify(json);
-    localStorage.setItem("images", jsonContent);
-    const url = "openseadragon.html?mode=spherical";
-
-    window.open(url, "_blank");
-    clearSelection();
-}
-
-function applySphericalRadius(r) {
-    radius = r;
-}
-
-function openPlaneImages() {
-    if (imagesSelected.size != 3) {
-        console.log("You need to select exactly 3 images");
-        return;
-    }
-    const images = Array.from(imagesSelected);
-    planeObject = createPlaneFromPoints(
-        images[0].position,
-        images[1].position,
-        images[2].position
-    );
-    clearSelection();
-}
-
-function createPlaneFromPoints(A, B, C) {
-    abstractPlane = new THREE.Plane().setFromCoplanarPoints(A, B, C);
-
-    const planeGeometry = new THREE.PlaneGeometry(10, 10);
-
-    var coplanarPoint = abstractPlane.coplanarPoint(A);
-    var focalPoint = new THREE.Vector3().addVectors(
-        coplanarPoint,
-        abstractPlane.normal
-    );
-    planeGeometry.lookAt(focalPoint);
-    planeGeometry.translate(coplanarPoint.x, coplanarPoint.y, coplanarPoint.z);
-
-    const planeMaterial = new THREE.MeshBasicMaterial({
-        color: 0x00ff00,
-        side: THREE.DoubleSide,
-        opacity: 0.2,
-        transparent: true,
-    });
-
-    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    scene.add(plane);
-    return plane;
-}
-
-function cancelPlane() {
-    scene.remove(planeObject);
-    clearSelection();
-    planeObject = null;
-    abstractPlane = null;
-}
-
-function changePlaneDistance(d) {
-    planeDistance = d;
-}
-
-function openPlane() {
-    console.log("opening to openseadragon");
-    let images = getAllImages();
-    let json = [];
-    images.forEach((object) => {
-        const P = object.position;
-        var P2 = new THREE.Vector3();
-        abstractPlane.projectPoint(P, P2);
-        if (P.distanceTo(P2) < planeDistance) {
-            json.push({
-                name: object.name,
-                x: 0,
-                y: 0,
-                height: object.geometry.parameters.height,
-            });
-        }
-    });
-
-    let jsonContent = JSON.stringify(json);
-    localStorage.setItem("images", jsonContent);
-    const url = "openseadragon.html?mode=plane";
-
-    window.open(url, "_blank");
-    //cancelPlane();
+function getSelectedImages() {
+    return imagesSelected;
 }
 
 export {
     addInteraction,
     openImagesToOpenSeaDragon,
     clearSelection,
-    openSphericalImages,
-    applySphericalRadius,
-    openPlaneImages,
-    cancelPlane,
-    changePlaneDistance,
-    openPlane,
+    getSelectedImages,
+    getAllImages,
 };
