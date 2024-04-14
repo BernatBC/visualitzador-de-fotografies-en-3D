@@ -5,16 +5,19 @@ import { create, all } from "mathjs";
 const math = create(all, {});
 
 var radius = 0.5;
-var C;
+
+var P;
+
 var scene;
-var sphereObject;
+var cylinderObject;
 
 function setScene(sce) {
     scene = sce;
 }
 
-function openSphericalImages() {
-    let images = getAllImages();
+function openCylindricalImages() {
+    console.log("opening");
+    /*let images = getAllImages();
     let json = [];
 
     images.forEach((object) => {
@@ -37,51 +40,65 @@ function openSphericalImages() {
     const url = "openseadragon.html?mode=spherical";
 
     window.open(url, "_blank");
-    clearSelection();
+    clearSelection();*/
 }
 
-function applySphericalRadius(r) {
-    sphereObject.scale.set(1 / radius, 1 / radius, 1 / radius);
-    sphereObject.scale.set(r, r, r);
+function applyCylindricalRadius(r) {
+    cylinderObject.scale.set(1 / radius, 1 / radius, 1);
+    cylinderObject.scale.set(r, r, 1);
     radius = r;
 }
 
-function createSphere() {
+function createCylinder() {
     var imagesSelected = getSelectedImages();
-    if (imagesSelected.size != 1) {
-        console.log("You need to select exactly 1 image");
+    if (imagesSelected.size != 2) {
+        console.log("You need to select exactly 2 images");
         return;
     }
     const images = Array.from(imagesSelected);
-    C = images[0].position;
+    const P1 = images[0].position;
+    const P2 = images[1].position;
+    const h = P1.distanceTo(P2);
 
-    const geometry = new THREE.SphereGeometry(1, 32, 16);
+    const V = new THREE.Vector3().subVectors(P2, P1).normalize();
+
+    P = new THREE.Vector3(
+        (P1.x + P2.x) / 2,
+        (P1.y + P2.y) / 2,
+        (P1.z + P2.z) / 2
+    );
+
+    const geometry = new THREE.CylinderGeometry(1, 1, h, 32).rotateX(
+        Math.PI / 2
+    );
     const material = new THREE.MeshBasicMaterial({
         color: 0x00ff00,
         opacity: 0.2,
         transparent: true,
     });
-    sphereObject = new THREE.Mesh(geometry, material);
 
-    scene.add(sphereObject);
+    cylinderObject = new THREE.Mesh(geometry, material);
 
-    sphereObject.scale.set(radius, radius, radius);
-    sphereObject.position.set(C.x, C.y, C.z);
+    scene.add(cylinderObject);
+
+    cylinderObject.scale.set(radius, radius, 1);
+    cylinderObject.lookAt(V);
+    cylinderObject.position.set(P.x, P.y, P.z);
 
     clearSelection();
 }
 
-function cancelSphere() {
-    C = null;
-    scene.remove(sphereObject);
+function cancelCylinder() {
+    P = null;
+    scene.remove(cylinderObject);
     clearSelection();
-    sphereObject = null;
+    cylinderObject = null;
 }
 
 export {
-    openSphericalImages,
-    createSphere,
-    cancelSphere,
-    applySphericalRadius,
+    openCylindricalImages,
+    createCylinder,
+    cancelCylinder,
+    applyCylindricalRadius,
     setScene,
 };
