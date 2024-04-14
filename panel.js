@@ -16,6 +16,13 @@ import {
     openPlane,
 } from "./plane.js";
 
+import {
+    createCylinder,
+    cancelCylinder,
+    applyCylindricalRadius,
+    openCylindricalImages,
+} from "./cylinder.js";
+
 function createPanel() {
     const panel = new GUI({ width: 290 });
 
@@ -23,6 +30,7 @@ function createPanel() {
     const folder2 = panel.addFolder("Individual Selection");
     const folder3 = panel.addFolder("Sphere");
     const folder4 = panel.addFolder("Plane");
+    const folder5 = panel.addFolder("Cylinder");
 
     let settings1 = {
         "Image size": 1.0,
@@ -64,15 +72,26 @@ function createPanel() {
         },
     };
 
+    let settings5 = {
+        "Create Cylinder": function () {
+            createCylinder();
+        },
+        "Open to OpenSeaDragon": function () {
+            openCylindricalImages();
+        },
+        Radius: 0.5,
+        Cancel: function () {
+            cancelCylinder();
+        },
+    };
+
     folder1.add(settings1, "Image size", 0.0, 5.0, 0.01).onChange(setSize);
     folder1
         .add(settings1, "Image separation", 0, 2.0, 0.01)
         .onChange(setOffset);
-    folder1.open();
 
     folder2.add(settings2, "Open to OpenSeaDragon");
     folder2.add(settings2, "Clear Selection");
-    folder2.open();
 
     folder3.add(settings3, "Create Sphere");
     folder3
@@ -87,6 +106,13 @@ function createPanel() {
         .onChange(changePlaneDistance);
     folder4.add(settings4, "Open to OpenSeaDragon");
     folder4.add(settings4, "Cancel");
+
+    folder5.add(settings5, "Create Cylinder");
+    folder5
+        .add(settings5, "Radius", 0.0, 5.0, 0.01)
+        .onChange(applyCylindricalRadius);
+    folder5.add(settings5, "Open to OpenSeaDragon");
+    folder5.add(settings5, "Cancel");
 }
 
 export { createPanel };

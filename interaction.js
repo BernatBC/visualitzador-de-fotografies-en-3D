@@ -3,6 +3,7 @@ import { render } from "./main.js";
 import { getAllImages } from "./single-image-loader.js";
 import { setScene as setPlaneScene } from "./plane.js";
 import { setScene as setSphereScene } from "./sphere.js";
+import { setScene as setCylinderScene } from "./cylinder.js";
 import { create, all } from "mathjs";
 
 const math = create(all, {});
@@ -26,6 +27,7 @@ function addInteraction(cam, sce) {
     scene = sce;
     setPlaneScene(sce);
     setSphereScene(sce);
+    setCylinderScene(sce);
 
     // OBRIR IMATGES EN OPENSEADRAGON
     window.addEventListener("mousedown", function () {
