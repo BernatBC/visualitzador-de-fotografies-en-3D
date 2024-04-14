@@ -1,13 +1,13 @@
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import { setSize, setOffset } from "./single-image-loader.js";
+import { openImagesToOpenSeaDragon, clearSelection } from "./interaction.js";
+
 import {
-    openImagesToOpenSeaDragon,
-    clearSelection,
     applySphericalRadius,
     openSphericalImages,
     cancelSphere,
     createSphere,
-} from "./interaction.js";
+} from "./sphere.js";
 
 import {
     createPlane,
@@ -45,7 +45,7 @@ function createPanel() {
         "Open to OpenSeaDragon": function () {
             openSphericalImages();
         },
-        Radius: 2.0,
+        Radius: 0.5,
         Cancel: function () {
             cancelSphere();
         },
@@ -76,7 +76,7 @@ function createPanel() {
 
     folder3.add(settings3, "Create Sphere");
     folder3
-        .add(settings3, "Radius", 0.0, 10.0, 0.01)
+        .add(settings3, "Radius", 0.0, 5.0, 0.01)
         .onChange(applySphericalRadius);
     folder3.add(settings3, "Open to OpenSeaDragon");
     folder3.add(settings3, "Cancel");

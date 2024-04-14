@@ -1,5 +1,8 @@
 import * as THREE from "three";
 import { getSelectedImages, clearSelection, getAllImages } from "./interaction";
+import { create, all } from "mathjs";
+
+const math = create(all, {});
 
 var abstractPlane;
 var planeObject;
