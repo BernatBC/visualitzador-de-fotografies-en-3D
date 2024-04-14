@@ -185,7 +185,7 @@ function applySphericalRadius(r) {
     radius = r;
 }
 
-function openPlaneImages() {
+function createPlane() {
     if (imagesSelected.size != 3) {
         console.log("You need to select exactly 3 images");
         return;
@@ -261,14 +261,24 @@ function openPlane() {
     //cancelPlane();
 }
 
+function createSphere() {
+    console.log("Creating sphere");
+}
+
+function cancelSphere() {
+    console.log("Canceling sphere");
+}
+
 export {
     addInteraction,
     openImagesToOpenSeaDragon,
     clearSelection,
     openSphericalImages,
     applySphericalRadius,
-    openPlaneImages,
+    createPlane,
     cancelPlane,
     changePlaneDistance,
     openPlane,
+    createSphere,
+    cancelSphere,
 };

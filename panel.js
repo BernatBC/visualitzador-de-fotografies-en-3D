@@ -6,71 +6,85 @@ import {
     clearSelection,
     applySphericalRadius,
     openSphericalImages,
-    openPlaneImages,
+    createPlane,
     cancelPlane,
     changePlaneDistance,
     openPlane,
+    cancelSphere,
+    createSphere,
 } from "./interaction.js";
 
 function createPanel() {
     const panel = new GUI({ width: 290 });
 
     const folder1 = panel.addFolder("Image Settings");
-    const folder2 = panel.addFolder("Multiple Picked OpenSeaDragon");
-    const folder3 = panel.addFolder("Spherical OpenSeaDragon");
+    const folder2 = panel.addFolder("Individual Selection");
+    const folder3 = panel.addFolder("Sphere");
     const folder4 = panel.addFolder("Plane");
 
-    let settings = {
-        "Modify image size": 1.0,
-        "Modify image separation": 0.2,
-        "Open Selected images to OpenSeaDragon": function () {
-            openImagesToOpenSeaDragon();
-        },
-        "Clear Images Selected": function () {
+    let settings1 = {
+        "Image size": 1.0,
+        "Image separation": 0.2,
+    };
+
+    let settings2 = {
+        "Clear Selection": function () {
             clearSelection();
         },
-        "Open images to OpenSeaDragon": function () {
+        "Open to OpenSeaDragon": function () {
+            openImagesToOpenSeaDragon();
+        },
+    };
+
+    let settings3 = {
+        "Create Sphere": function () {
+            createSphere();
+        },
+        "Open to OpenSeaDragon": function () {
             openSphericalImages();
         },
-        "Create plane": function () {
-            openPlaneImages();
+        Radius: 2.0,
+        Cancel: function () {
+            cancelSphere();
+        },
+    };
+
+    let settings4 = {
+        "Create Plane": function () {
+            createPlane();
         },
         Cancel: function () {
             cancelPlane();
         },
-        "Maximum plane distance": 0.2,
-        "Open plane to OpenSeaDragon": function () {
+        "Max distance": 0.2,
+        "Open to OpenSeaDragon": function () {
             openPlane();
         },
-        "Open images to OpenSeaDragon": function () {
-            openSphericalImages();
-        },
-        "Modify Spherical Radius": 2.0,
     };
 
+    folder1.add(settings1, "Image size", 0.0, 5.0, 0.01).onChange(setSize);
     folder1
-        .add(settings, "Modify image size", 0.0, 5.0, 0.01)
-        .onChange(setSize);
-    folder1
-        .add(settings, "Modify image separation", 0, 2.0, 0.01)
+        .add(settings1, "Image separation", 0, 2.0, 0.01)
         .onChange(setOffset);
     folder1.open();
 
-    folder2.add(settings, "Open Selected images to OpenSeaDragon");
-    folder2.add(settings, "Clear Images Selected");
+    folder2.add(settings2, "Open to OpenSeaDragon");
+    folder2.add(settings2, "Clear Selection");
     folder2.open();
 
+    folder3.add(settings3, "Create Sphere");
     folder3
-        .add(settings, "Modify Spherical Radius", 0.0, 10.0, 0.01)
+        .add(settings3, "Radius", 0.0, 10.0, 0.01)
         .onChange(applySphericalRadius);
-    folder3.add(settings, "Open images to OpenSeaDragon");
+    folder3.add(settings3, "Open to OpenSeaDragon");
+    folder4.add(settings3, "Cancel");
 
-    folder4.add(settings, "Create plane");
+    folder4.add(settings4, "Create Plane");
     folder4
-        .add(settings, "Maximum plane distance", 0.0, 5.0, 0.01)
+        .add(settings4, "Max distance", 0.0, 5.0, 0.01)
         .onChange(changePlaneDistance);
-    folder4.add(settings, "Open plane to OpenSeaDragon");
-    folder4.add(settings, "Cancel");
+    folder4.add(settings4, "Open to OpenSeaDragon");
+    folder4.add(settings4, "Cancel");
 }
 
 export { createPanel };
