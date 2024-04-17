@@ -57,9 +57,8 @@ function createSphere() {
 
     const geometry = new THREE.SphereGeometry(1, 32, 16);
     const material = new THREE.MeshBasicMaterial({
-        color: 0x00ff00,
-        opacity: 0.2,
-        transparent: true,
+        color: 0x0000ff,
+        wireframe: true,
     });
     sphereObject = new THREE.Mesh(geometry, material);
 

@@ -31,7 +31,7 @@ function createPlane() {
 function createPlaneFromPoints(A, B, C) {
     abstractPlane = new THREE.Plane().setFromCoplanarPoints(A, B, C);
 
-    const planeGeometry = new THREE.PlaneGeometry(10, 10);
+    const planeGeometry = new THREE.PlaneGeometry(10, 10, 16, 16);
 
     var coplanarPoint = abstractPlane.coplanarPoint(A);
     var focalPoint = new THREE.Vector3().addVectors(
@@ -42,10 +42,9 @@ function createPlaneFromPoints(A, B, C) {
     planeGeometry.translate(coplanarPoint.x, coplanarPoint.y, coplanarPoint.z);
 
     const planeMaterial = new THREE.MeshBasicMaterial({
-        color: 0x00ff00,
         side: THREE.DoubleSide,
-        opacity: 0.2,
-        transparent: true,
+        color: 0x0000ff,
+        wireframe: true,
     });
 
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);

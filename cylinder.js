@@ -72,9 +72,8 @@ function createCylinder() {
         Math.PI / 2
     );
     const material = new THREE.MeshBasicMaterial({
-        color: 0x00ff00,
-        opacity: 0.2,
-        transparent: true,
+        color: 0x0000ff,
+        wireframe: true,
     });
 
     cylinderObject = new THREE.Mesh(geometry, material);
