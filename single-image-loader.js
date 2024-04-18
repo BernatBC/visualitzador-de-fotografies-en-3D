@@ -58,7 +58,7 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
             -new_pos.get([1]),
             -new_pos.get([2]),
         ]);
-        const verticePositions = image_geometry.getAttribute("position");
+        /*const verticePositions = image_geometry.getAttribute("position");
         for (let k = 0; k < 4; k++) {
             const vertice = new THREE.Vector3().fromBufferAttribute(
                 verticePositions,
@@ -75,7 +75,7 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
             const line = new THREE.Line(geometry, material);
             scene.add(line);
         }
-        console.log("----");
+        console.log("----");*/
     });
 
     image_names.push(image_name);
