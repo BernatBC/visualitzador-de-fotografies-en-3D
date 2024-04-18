@@ -8,10 +8,31 @@ console.log(image);
 var sources = [];
 
 if (mode === "single") {
-    sources.push({
-        type: "image",
-        url: "images/" + image,
-        buildPyramid: false,
+    var imageName = image.substr(0, image.lastIndexOf(".")) + ".dzi";
+    sources.push("images/" + imageName);
+} else {
+    var retrievedObject = localStorage.getItem("images");
+    const parsedImages = JSON.parse(retrievedObject);
+    console.log(parsedImages);
+    parsedImages.forEach((image) => {
+        var imageName =
+            image.name.substr(0, image.name.lastIndexOf(".")) + ".dzi";
+        console.log(
+            imageName +
+                " - " +
+                "X: " +
+                image.x.toString() +
+                ", Y: " +
+                image.y.toString() +
+                ", Height: " +
+                image.height.toString()
+        );
+        sources.push({
+            tileSource: "images/" + imageName,
+            x: image.x,
+            y: image.y,
+            height: image.height,
+        });
     });
 }
 
@@ -23,29 +44,3 @@ var viewer = OpenSeadragon({
     showNavigator: true,
     preserveViewport: true,
 });
-
-if (mode !== "single") {
-    var retrievedObject = localStorage.getItem("images");
-    const parsedImages = JSON.parse(retrievedObject);
-    console.log(parsedImages);
-    parsedImages.forEach((image) => {
-        console.log(
-            "X: " +
-                image.x.toString() +
-                ", Y: " +
-                image.y.toString() +
-                ", Height: " +
-                image.height.toString()
-        );
-        viewer.addTiledImage({
-            tileSource: {
-                type: "image",
-                url: "images/" + image.name,
-                buildPyramid: false,
-            },
-            x: image.x,
-            y: image.y,
-            height: image.height,
-        });
-    });
-}
