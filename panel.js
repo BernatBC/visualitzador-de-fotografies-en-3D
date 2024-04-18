@@ -13,6 +13,8 @@ import {
     createPlane,
     cancelPlane,
     changePlaneDistance,
+    changePlaneHeight,
+    changePlaneWidth,
     openPlane,
 } from "./plane.js";
 
@@ -66,6 +68,8 @@ function createPanel() {
         Cancel: function () {
             cancelPlane();
         },
+        Width: 1,
+        Height: 1,
         "Max distance": 0.2,
         "Open to OpenSeaDragon": function () {
             openPlane();
@@ -101,6 +105,10 @@ function createPanel() {
     folder3.add(settings3, "Cancel");
 
     folder4.add(settings4, "Create Plane");
+    folder4.add(settings4, "Width", 0.0, 5.0, 0.01).onChange(changePlaneWidth);
+    folder4
+        .add(settings4, "Height", 0.0, 5.0, 0.01)
+        .onChange(changePlaneHeight);
     folder4
         .add(settings4, "Max distance", 0.0, 5.0, 0.01)
         .onChange(changePlaneDistance);
