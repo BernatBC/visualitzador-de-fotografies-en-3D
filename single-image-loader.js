@@ -3,7 +3,7 @@ import { create, all } from "mathjs";
 
 const math = create(all, {});
 
-var imageOffset = 0.1;
+var imageOffset = 0.2;
 var imageSize = 1;
 
 var images = [];
@@ -16,13 +16,6 @@ var indices = {};
 function loadImage(i, scene, R, t, image_name, image_loader) {
     const pos = math.multiply(math.unaryMinus(math.transpose(R)), t);
     const camera_pos = [pos.get([0]), pos.get([1]), pos.get([2])];
-    const sphere_geometry = new THREE.SphereGeometry(0.01, 5, 5)
-        .translate(camera_pos[0], camera_pos[1], camera_pos[2])
-        .rotateX(Math.PI);
-    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const sphere = new THREE.Mesh(sphere_geometry, material);
-    scene.add(sphere);
-    //Rotació
     //View direction
     const view_direction = math.multiply(
         math.transpose(R),
@@ -33,17 +26,8 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
     const y = view_direction.get([1]);
     const z = view_direction.get([2]);
 
-    const pyramid_geometry = new THREE.ConeGeometry(0.05, 0.05, 4)
-        .rotateY(Math.PI / 4)
-        .translate(0, -0.025, 0)
-        .rotateX(-Math.PI / 2);
-    const pyramid = new THREE.Mesh(pyramid_geometry, material);
-    pyramid.lookAt(x, -y, -z);
-    pyramid.position.set(camera_pos[0], -camera_pos[1], -camera_pos[2]);
-    scene.add(pyramid);
-
     // Afegir imatge
-    const SCALE = 1000 * imageSize;
+    const SCALE = 1500 * imageSize;
     const offset = imageOffset;
     const image_path = "/images/low_res/" + image_name;
     const image_texture = image_loader.load(image_path, function () {
@@ -74,6 +58,24 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
             -new_pos.get([1]),
             -new_pos.get([2]),
         ]);
+        const verticePositions = image_geometry.getAttribute("position");
+        for (let k = 0; k < 4; k++) {
+            const vertice = new THREE.Vector3().fromBufferAttribute(
+                verticePositions,
+                k
+            );
+            image_plane.localToWorld(vertice);
+            console.log(vertice);
+            const points = [
+                vertice,
+                new THREE.Vector3(pos.get([0]), -pos.get([1]), -pos.get([2])),
+            ];
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+            const line = new THREE.Line(geometry, material);
+            scene.add(line);
+        }
+        console.log("----");
     });
 
     image_names.push(image_name);
