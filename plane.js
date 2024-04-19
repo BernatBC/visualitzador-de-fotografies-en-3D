@@ -6,6 +6,8 @@ const math = create(all, {});
 
 var abstractPlane;
 var planeObject;
+var planeHeight = 1;
+var planeWidth = 1;
 var planeDistance = 0.2;
 var scene;
 
@@ -31,15 +33,14 @@ function createPlane() {
 function createPlaneFromPoints(A, B, C) {
     abstractPlane = new THREE.Plane().setFromCoplanarPoints(A, B, C);
 
-    const planeGeometry = new THREE.PlaneGeometry(10, 10, 16, 16);
+    const planeGeometry = new THREE.PlaneGeometry(1, 1, 16, 16);
 
-    var coplanarPoint = abstractPlane.coplanarPoint(A);
+    var coplanarPoint = abstractPlane.coplanarPoint(new THREE.Vector3(A));
     var focalPoint = new THREE.Vector3().addVectors(
         coplanarPoint,
         abstractPlane.normal
     );
     planeGeometry.lookAt(focalPoint);
-    planeGeometry.translate(coplanarPoint.x, coplanarPoint.y, coplanarPoint.z);
 
     const planeMaterial = new THREE.MeshBasicMaterial({
         side: THREE.DoubleSide,
@@ -49,6 +50,7 @@ function createPlaneFromPoints(A, B, C) {
 
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
     scene.add(plane);
+    plane.position.set(A.x, A.y, A.z);
     return plane;
 }
 
@@ -61,6 +63,18 @@ function cancelPlane() {
 
 function changePlaneDistance(d) {
     planeDistance = d;
+}
+
+function changePlaneHeight(h) {
+    planeObject.scale.set(1, 1 / planeHeight, 1 / planeWidth);
+    planeObject.scale.set(1, h, planeWidth);
+    planeHeight = h;
+}
+
+function changePlaneWidth(w) {
+    planeObject.scale.set(1, 1 / planeHeight, 1 / planeWidth);
+    planeObject.scale.set(1, planeHeight, w);
+    planeWidth = w;
 }
 
 function openPlane() {
@@ -89,4 +103,12 @@ function openPlane() {
     //cancelPlane();
 }
 
-export { setScene, createPlane, cancelPlane, changePlaneDistance, openPlane };
+export {
+    setScene,
+    createPlane,
+    cancelPlane,
+    changePlaneDistance,
+    changePlaneHeight,
+    changePlaneWidth,
+    openPlane,
+};
