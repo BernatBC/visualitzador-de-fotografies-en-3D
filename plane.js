@@ -5,7 +5,7 @@ import { create, all } from "mathjs";
 const math = create(all, {});
 
 var abstractPlane;
-var planeObject;
+var boxObject;
 var planeHeight = 1;
 var planeWidth = 1;
 var planeDistance = 0.2;
@@ -22,7 +22,7 @@ function createPlane() {
         return;
     }
     const images = Array.from(imagesSelected);
-    planeObject = createPlaneFromPoints(
+    boxObject = createPlaneFromPoints(
         images[0].position,
         images[1].position,
         images[2].position
@@ -33,47 +33,51 @@ function createPlane() {
 function createPlaneFromPoints(A, B, C) {
     abstractPlane = new THREE.Plane().setFromCoplanarPoints(A, B, C);
 
-    const planeGeometry = new THREE.PlaneGeometry(1, 1, 16, 16);
-
     var coplanarPoint = abstractPlane.coplanarPoint(new THREE.Vector3(A));
     var focalPoint = new THREE.Vector3().addVectors(
         coplanarPoint,
         abstractPlane.normal
     );
-    planeGeometry.lookAt(focalPoint);
 
-    const planeMaterial = new THREE.MeshBasicMaterial({
-        side: THREE.DoubleSide,
+    const boxGeometry = new THREE.BoxGeometry(1, 1, 1, 10, 10, 10);
+    const boxMaterial = new THREE.MeshBasicMaterial({
         color: 0x0000ff,
         wireframe: true,
     });
+    const box = new THREE.Mesh(boxGeometry, boxMaterial);
+    scene.add(box);
+    box.lookAt(focalPoint);
+    box.position.set(A.x, A.y, A.z);
+    box.scale.set(planeWidth, planeHeight, planeDistance);
 
-    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    scene.add(plane);
-    plane.position.set(A.x, A.y, A.z);
-    return plane;
+    return box;
 }
 
 function cancelPlane() {
-    scene.remove(planeObject);
+    scene.remove(boxObject);
     clearSelection();
-    planeObject = null;
+    boxObject = null;
     abstractPlane = null;
 }
 
 function changePlaneDistance(d) {
+    boxObject.scale.set(1 / planeWidth, 1 / planeHeight, 1 / planeDistance);
+    boxObject.scale.set(planeWidth, planeHeight, d);
+
     planeDistance = d;
 }
 
 function changePlaneHeight(h) {
-    planeObject.scale.set(1, 1 / planeHeight, 1 / planeWidth);
-    planeObject.scale.set(1, h, planeWidth);
+    boxObject.scale.set(1 / planeWidth, 1 / planeHeight, 1 / planeDistance);
+    boxObject.scale.set(planeWidth, h, planeDistance);
+
     planeHeight = h;
 }
 
 function changePlaneWidth(w) {
-    planeObject.scale.set(1, 1 / planeHeight, 1 / planeWidth);
-    planeObject.scale.set(1, planeHeight, w);
+    boxObject.scale.set(1 / planeWidth, 1 / planeHeight, 1 / planeDistance);
+    boxObject.scale.set(w, planeHeight, planeDistance);
+
     planeWidth = w;
 }
 
