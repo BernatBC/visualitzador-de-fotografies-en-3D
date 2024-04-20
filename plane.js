@@ -40,15 +40,15 @@ function createPlaneFromPoints(A, B, C) {
     );
 
     const boxGeometry = new THREE.BoxGeometry(1, 1, 1, 10, 10, 10);
-    boxGeometry.lookAt(focalPoint);
     const boxMaterial = new THREE.MeshBasicMaterial({
         color: 0x0000ff,
         wireframe: true,
     });
     const box = new THREE.Mesh(boxGeometry, boxMaterial);
     scene.add(box);
-    box.position.set(coplanarPoint.x, coplanarPoint.y, coplanarPoint.z);
-    //box.scale.set(planeDistance, planeHeight, planeWidth);
+    box.lookAt(focalPoint);
+    box.position.set(A.x, A.y, A.z);
+    box.scale.set(planeWidth, planeHeight, planeDistance);
 
     return box;
 }
@@ -61,22 +61,22 @@ function cancelPlane() {
 }
 
 function changePlaneDistance(d) {
-    boxObject.scale.set(1 / planeDistance, 1 / planeHeight, 1 / planeWidth);
-    boxObject.scale.set(d, planeHeight, planeWidth);
+    boxObject.scale.set(1 / planeWidth, 1 / planeHeight, 1 / planeDistance);
+    boxObject.scale.set(planeWidth, planeHeight, d);
 
     planeDistance = d;
 }
 
 function changePlaneHeight(h) {
-    boxObject.scale.set(1 / planeDistance, 1 / planeHeight, 1 / planeWidth);
-    boxObject.scale.set(planeDistance, h, planeWidth);
+    boxObject.scale.set(1 / planeWidth, 1 / planeHeight, 1 / planeDistance);
+    boxObject.scale.set(planeWidth, h, planeDistance);
 
     planeHeight = h;
 }
 
 function changePlaneWidth(w) {
-    boxObject.scale.set(1 / planeDistance, 1 / planeHeight, 1 / planeWidth);
-    boxObject.scale.set(planeDistance, planeHeight, w);
+    boxObject.scale.set(1 / planeWidth, 1 / planeHeight, 1 / planeDistance);
+    boxObject.scale.set(w, planeHeight, planeDistance);
 
     planeWidth = w;
 }
