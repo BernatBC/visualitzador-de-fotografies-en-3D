@@ -10,6 +10,7 @@ var planeHeight = 1;
 var planeWidth = 1;
 var planeDistance = 0.2;
 var scene;
+var centerPoint;
 
 function setScene(sce) {
     scene = sce;
@@ -49,7 +50,7 @@ function createPlaneFromPoints(A, B, C) {
     box.lookAt(focalPoint);
     box.position.set(A.x, A.y, A.z);
     box.scale.set(planeWidth, planeHeight, planeDistance);
-
+    centerPoint = A;
     return box;
 }
 
@@ -58,6 +59,7 @@ function cancelPlane() {
     clearSelection();
     boxObject = null;
     abstractPlane = null;
+    centerPoint = null;
 }
 
 function changePlaneDistance(d) {
@@ -85,15 +87,35 @@ function openPlane() {
     console.log("opening to openseadragon");
     let images = getAllImages();
     let json = [];
+
+    const N = new THREE.Vector3(
+        abstractPlane.normal.x,
+        abstractPlane.normal.y,
+        abstractPlane.normal.z
+    ).normalize();
+    const T = new THREE.Vector3(N.x, N.y, N.z)
+        .cross(new THREE.Vector3(0, 1, 0))
+        .normalize();
+    const B = new THREE.Vector3(N.x, N.y, N.z).cross(T).normalize();
+
     images.forEach((object) => {
         const P = object.position;
         var P2 = new THREE.Vector3();
         abstractPlane.projectPoint(P, P2);
-        if (P.distanceTo(P2) < planeDistance) {
+
+        const V = new THREE.Vector3().subVectors(P, centerPoint);
+        const tv = new THREE.Vector3(V.x, V.y, V.z).dot(T);
+        const bv = new THREE.Vector3(V.x, V.y, V.z).dot(B);
+
+        if (
+            P.distanceTo(P2) < planeDistance / 2 &&
+            math.abs(tv) < planeWidth / 2 &&
+            math.abs(bv) < planeHeight / 2
+        ) {
             json.push({
                 name: object.name,
-                x: 0,
-                y: 0,
+                x: -tv,
+                y: bv,
                 height: object.geometry.parameters.height,
             });
         }
