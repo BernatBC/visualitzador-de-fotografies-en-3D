@@ -1,5 +1,11 @@
 import * as THREE from "three";
-import { getSelectedImages, clearSelection, getAllImages } from "./interaction";
+import {
+    getSelectedImages,
+    clearSelection,
+    getAllImages,
+    paintRangeImages,
+    clearRangeImages,
+} from "./interaction";
 import { create, all } from "mathjs";
 
 const math = create(all, {});
@@ -29,6 +35,7 @@ function createPlane() {
         images[2].position
     );
     clearSelection();
+    paintRange();
 }
 
 function createPlaneFromPoints(A, B, C) {
@@ -60,27 +67,34 @@ function cancelPlane() {
     boxObject = null;
     abstractPlane = null;
     centerPoint = null;
+    clearRange();
 }
 
 function changePlaneDistance(d) {
+    clearRange();
     boxObject.scale.set(1 / planeWidth, 1 / planeHeight, 1 / planeDistance);
     boxObject.scale.set(planeWidth, planeHeight, d);
 
     planeDistance = d;
+    paintRange();
 }
 
 function changePlaneHeight(h) {
+    clearRange();
     boxObject.scale.set(1 / planeWidth, 1 / planeHeight, 1 / planeDistance);
     boxObject.scale.set(planeWidth, h, planeDistance);
 
     planeHeight = h;
+    paintRange();
 }
 
 function changePlaneWidth(w) {
+    clearRange();
     boxObject.scale.set(1 / planeWidth, 1 / planeHeight, 1 / planeDistance);
     boxObject.scale.set(w, planeHeight, planeDistance);
 
     planeWidth = w;
+    paintRange();
 }
 
 function openPlane() {
@@ -127,6 +141,43 @@ function openPlane() {
 
     window.open(url, "_blank");
     //cancelPlane();
+}
+
+function paintRange() {
+    let images = getAllImages();
+    let rangeImages = new Set();
+
+    const N = new THREE.Vector3(
+        abstractPlane.normal.x,
+        abstractPlane.normal.y,
+        abstractPlane.normal.z
+    ).normalize();
+    const T = new THREE.Vector3(N.x, N.y, N.z)
+        .cross(new THREE.Vector3(0, 1, 0))
+        .normalize();
+    const B = new THREE.Vector3(N.x, N.y, N.z).cross(T).normalize();
+
+    images.forEach((object) => {
+        const P = object.position;
+        var P2 = new THREE.Vector3();
+        abstractPlane.projectPoint(P, P2);
+
+        const V = new THREE.Vector3().subVectors(P, centerPoint);
+        const tv = new THREE.Vector3(V.x, V.y, V.z).dot(T);
+        const bv = new THREE.Vector3(V.x, V.y, V.z).dot(B);
+
+        if (
+            P.distanceTo(P2) < planeDistance / 2 &&
+            math.abs(tv) < planeWidth / 2 &&
+            math.abs(bv) < planeHeight / 2
+        )
+            rangeImages.add(object);
+    });
+    paintRangeImages(rangeImages);
+}
+
+function clearRange() {
+    clearRangeImages();
 }
 
 export {

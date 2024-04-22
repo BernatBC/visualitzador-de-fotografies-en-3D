@@ -1,5 +1,11 @@
 import * as THREE from "three";
-import { getAllImages, clearSelection, getSelectedImages } from "./interaction";
+import {
+    getAllImages,
+    clearSelection,
+    getSelectedImages,
+    paintRangeImages,
+    clearRangeImages,
+} from "./interaction";
 import { create, all } from "mathjs";
 
 const math = create(all, {});
@@ -41,9 +47,11 @@ function openSphericalImages() {
 }
 
 function applySphericalRadius(r) {
+    clearRange();
     sphereObject.scale.set(1 / radius, 1 / radius, 1 / radius);
     sphereObject.scale.set(r, r, r);
     radius = r;
+    paintRange();
 }
 
 function createSphere() {
@@ -68,6 +76,7 @@ function createSphere() {
     sphereObject.position.set(C.x, C.y, C.z);
 
     clearSelection();
+    paintRange();
 }
 
 function cancelSphere() {
@@ -75,6 +84,23 @@ function cancelSphere() {
     scene.remove(sphereObject);
     clearSelection();
     sphereObject = null;
+    clearRange();
+}
+
+function paintRange() {
+    let images = getAllImages();
+    let rangeImages = new Set();
+    images.forEach((object) => {
+        const P = object.position;
+        if (C.distanceTo(P) < radius) {
+            rangeImages.add(object);
+        }
+    });
+    paintRangeImages(rangeImages);
+}
+
+function clearRange() {
+    clearRangeImages();
 }
 
 export {

@@ -19,8 +19,10 @@ var scene;
 const HOVER_COLOR = 0xccffff;
 const SELECTION_COLOR = 0xd6b4fc;
 const NEUTRAL_COLOR = 0xffffff;
+const RANGE_COLOR = 0xfcae1e;
 
 var imagesSelected = new Set();
+var rangeImages = new Set();
 
 function addInteraction(cam, sce) {
     camera = cam;
@@ -65,12 +67,14 @@ function onClick() {
                 window.open(url, "_blank");
                 clearSelection();
             } else {
-                if (imagesSelected.has(object)) {
-                    imagesSelected.delete(object);
-                    object.material.color.setHex(HOVER_COLOR);
-                } else {
-                    imagesSelected.add(object);
-                    object.material.color.setHex(SELECTION_COLOR);
+                if (!rangeImages.has(object)) {
+                    if (imagesSelected.has(object)) {
+                        imagesSelected.delete(object);
+                        object.material.color.setHex(HOVER_COLOR);
+                    } else {
+                        imagesSelected.add(object);
+                        object.material.color.setHex(SELECTION_COLOR);
+                    }
                 }
             }
         }
@@ -158,10 +162,28 @@ function getSelectedImages() {
     return imagesSelected;
 }
 
+function paintRangeImages(images) {
+    rangeImages = images;
+    rangeImages.forEach((object) => {
+        object.material.color.setHex(RANGE_COLOR);
+    });
+}
+
+function clearRangeImages() {
+    rangeImages.forEach((object) => {
+        if (imagesSelected.has(object))
+            object.material.color.setHex(SELECTION_COLOR);
+        else object.material.color.setHex(NEUTRAL_COLOR);
+    });
+    rangeImages = new Set();
+}
+
 export {
     addInteraction,
     openImagesToOpenSeaDragon,
     clearSelection,
     getSelectedImages,
     getAllImages,
+    clearRangeImages,
+    paintRangeImages,
 };
