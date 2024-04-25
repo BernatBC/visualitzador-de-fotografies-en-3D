@@ -23,6 +23,7 @@ import {
     cancelCylinder,
     applyCylindricalRadius,
     openCylindricalImages,
+    applyCylindricalHeight,
 } from "./cylinder.js";
 
 function createPanel() {
@@ -84,6 +85,7 @@ function createPanel() {
             openCylindricalImages();
         },
         Radius: 0.5,
+        Height: 1.0,
         Cancel: function () {
             cancelCylinder();
         },
@@ -119,6 +121,9 @@ function createPanel() {
     folder5
         .add(settings5, "Radius", 0.0, 5.0, 0.01)
         .onChange(applyCylindricalRadius);
+    folder5
+        .add(settings5, "Height", 0.0, 5.0, 0.01)
+        .onChange(applyCylindricalHeight);
     folder5.add(settings5, "Open to OpenSeaDragon");
     folder5.add(settings5, "Cancel");
 }

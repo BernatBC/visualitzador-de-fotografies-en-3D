@@ -10,6 +10,7 @@ var P;
 
 var scene;
 var cylinderObject;
+var height = 1;
 
 function setScene(sce) {
     scene = sce;
@@ -44,8 +45,8 @@ function openCylindricalImages() {
 }
 
 function applyCylindricalRadius(r) {
-    cylinderObject.scale.set(1 / radius, 1 / radius, 1);
-    cylinderObject.scale.set(r, r, 1);
+    cylinderObject.scale.set(1 / radius, 1 / radius, 1 / height);
+    cylinderObject.scale.set(r, r, height);
     radius = r;
 }
 
@@ -58,7 +59,6 @@ function createCylinder() {
     const images = Array.from(imagesSelected);
     const P1 = images[0].position;
     const P2 = images[1].position;
-    const h = P1.distanceTo(P2);
 
     const V = new THREE.Vector3().subVectors(P2, P1).normalize();
 
@@ -68,7 +68,7 @@ function createCylinder() {
         (P1.z + P2.z) / 2
     );
 
-    const geometry = new THREE.CylinderGeometry(1, 1, h, 32).rotateX(
+    const geometry = new THREE.CylinderGeometry(1, 1, 1, 32).rotateX(
         Math.PI / 2
     );
     const material = new THREE.MeshBasicMaterial({
@@ -80,11 +80,17 @@ function createCylinder() {
 
     scene.add(cylinderObject);
 
-    cylinderObject.scale.set(radius, radius, 1);
+    cylinderObject.scale.set(radius, radius, height);
     cylinderObject.lookAt(V);
     cylinderObject.position.set(P.x, P.y, P.z);
 
     clearSelection();
+}
+
+function applyCylindricalHeight(h) {
+    cylinderObject.scale.set(1 / radius, 1 / radius, 1 / height);
+    cylinderObject.scale.set(radius, radius, h);
+    height = h;
 }
 
 function cancelCylinder() {
@@ -100,4 +106,5 @@ export {
     cancelCylinder,
     applyCylindricalRadius,
     setScene,
+    applyCylindricalHeight,
 };
