@@ -28,21 +28,22 @@ function openCylindricalImages() {
     let images = getAllImages();
     let json = [];
 
+    const V = new THREE.Vector3(vector.x, vector.y, vector.z).multiplyScalar(
+        height
+    );
     const endPoint1 = new THREE.Vector3(
         centerPoint.x,
         centerPoint.y,
         centerPoint.z
-    ).add(vector);
+    ).add(V);
     const endPoint2 = new THREE.Vector3(
         centerPoint.x,
         centerPoint.y,
         centerPoint.z
-    ).sub(vector);
-    const infiniteVector = new THREE.Vector3(
-        vector.x,
-        vector.y,
-        vector.z
-    ).multiplyScalar(1000);
+    ).sub(V);
+    const infiniteVector = new THREE.Vector3(V.x, V.y, V.z).multiplyScalar(
+        1000
+    );
     const point1 = new THREE.Vector3(
         centerPoint.x,
         centerPoint.y,
@@ -57,19 +58,33 @@ function openCylindricalImages() {
     const segment = new THREE.Line3(endPoint1, endPoint2);
     const infiniteLine = new THREE.Line3(point1, point2);
 
+    var originProjected = new THREE.Vector3();
+    const origin = new THREE.Vector3(0, 0, 0);
+    infiniteLine.closestPointToPoint(origin, false, originProjected);
+    const originVector = new THREE.Vector3()
+        .subVectors(originProjected, origin)
+        .normalize();
+
     images.forEach((object) => {
-        const P = object.position;
-        var lDistance = new THREE.Vector3();
-        var sDistance = new THREE.Vector3();
-        infiniteLine.closestPointToPoint(P, false, lDistance);
-        segment.closestPointToPoint(P, false, sDistance);
-        const lineDistance = lDistance.distanceTo(P).toFixed(5);
-        const segmentDistance = sDistance.distanceTo(P).toFixed(5);
+        const P = new THREE.Vector3().copy(object.position);
+        var lProjected = new THREE.Vector3();
+        var sProjected = new THREE.Vector3();
+        infiniteLine.closestPointToPoint(P, true, lProjected);
+        segment.closestPointToPoint(P, true, sProjected);
+        const lineDistance = lProjected.distanceTo(P).toFixed(5);
+        const segmentDistance = sProjected.distanceTo(P).toFixed(5);
         if (lineDistance < radius && lineDistance == segmentDistance) {
+            const pointVector = new THREE.Vector3()
+                .subVectors(sProjected, P)
+                .normalize();
+            const x = originVector.angleTo(pointVector);
+            var y = centerPoint.distanceTo(sProjected);
+            if (sProjected.distanceTo(point2) > sProjected.distanceTo(point1))
+                y = -y;
             json.push({
                 name: object.name,
-                x: 0,
-                y: 0,
+                x: x,
+                y: y,
                 height: object.geometry.parameters.height,
             });
         }
@@ -158,21 +173,22 @@ function cancelCylinder() {
 function paintRange() {
     let images = getAllImages();
     let rangeImages = new Set();
+    const V = new THREE.Vector3(vector.x, vector.y, vector.z).multiplyScalar(
+        height
+    );
     const endPoint1 = new THREE.Vector3(
         centerPoint.x,
         centerPoint.y,
         centerPoint.z
-    ).add(vector);
+    ).add(V);
     const endPoint2 = new THREE.Vector3(
         centerPoint.x,
         centerPoint.y,
         centerPoint.z
-    ).sub(vector);
-    const infiniteVector = new THREE.Vector3(
-        vector.x,
-        vector.y,
-        vector.z
-    ).multiplyScalar(1000);
+    ).sub(V);
+    const infiniteVector = new THREE.Vector3(V.x, V.y, V.z).multiplyScalar(
+        1000
+    );
     const point1 = new THREE.Vector3(
         centerPoint.x,
         centerPoint.y,
@@ -188,12 +204,12 @@ function paintRange() {
     const infiniteLine = new THREE.Line3(point1, point2);
     images.forEach((object) => {
         const P = new THREE.Vector3().copy(object.position);
-        var lDistance = new THREE.Vector3();
-        var sDistance = new THREE.Vector3();
-        infiniteLine.closestPointToPoint(P, false, lDistance);
-        segment.closestPointToPoint(P, false, sDistance);
-        const lineDistance = lDistance.distanceTo(P).toFixed(5);
-        const segmentDistance = sDistance.distanceTo(P).toFixed(5);
+        var lProjected = new THREE.Vector3();
+        var sProjected = new THREE.Vector3();
+        infiniteLine.closestPointToPoint(P, true, lProjected);
+        segment.closestPointToPoint(P, true, sProjected);
+        const lineDistance = lProjected.distanceTo(P).toFixed(5);
+        const segmentDistance = sProjected.distanceTo(P).toFixed(5);
         if (lineDistance < radius && lineDistance == segmentDistance) {
             rangeImages.add(object);
         }
