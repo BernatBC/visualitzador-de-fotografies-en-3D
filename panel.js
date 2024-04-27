@@ -1,5 +1,5 @@
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import { setSize, setOffset } from "./single-image-loader.js";
+import { setSize, setOffset, setWireframe } from "./single-image-loader.js";
 import { openImagesToOpenSeaDragon, clearSelection } from "./interaction.js";
 
 import {
@@ -38,6 +38,7 @@ function createPanel() {
     let settings1 = {
         "Image size": 1.0,
         "Image separation": 0.2,
+        "Image wireframe": true,
     };
 
     let settings2 = {
@@ -95,6 +96,7 @@ function createPanel() {
     folder1
         .add(settings1, "Image separation", 0, 2.0, 0.01)
         .onChange(setOffset);
+    folder1.add(settings1, "Image wireframe").onChange(setWireframe);
 
     folder2.add(settings2, "Open to OpenSeaDragon");
     folder2.add(settings2, "Clear Selection");

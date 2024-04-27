@@ -51,6 +51,7 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
 
         const verticePositions = image_geometry.getAttribute("position");
         var wireFrameObject = new THREE.Object3D();
+        wireFrameObject.name = "wireframe";
         // Center to vertice
         for (let k = 0; k < 4; k++) {
             const vertice = new THREE.Vector3().fromBufferAttribute(
@@ -130,4 +131,19 @@ function getAllImages() {
     return images;
 }
 
-export { loadImage, setSize, setOffset, getImageParams, getAllImages };
+function setWireframe(enable) {
+    console.log("Setting wireframe: " + enable);
+    for (let i = 0; i < images.length; i++) {
+        let image = images[i];
+        image.children[0].visible = enable;
+    }
+}
+
+export {
+    loadImage,
+    setSize,
+    setOffset,
+    getImageParams,
+    getAllImages,
+    setWireframe,
+};
