@@ -51,12 +51,33 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
 
         const verticePositions = image_geometry.getAttribute("position");
         var wireFrameObject = new THREE.Object3D();
+        // Center to vertice
         for (let k = 0; k < 4; k++) {
             const vertice = new THREE.Vector3().fromBufferAttribute(
                 verticePositions,
                 k
             );
             const points = [vertice, new THREE.Vector3(0, 0, 0)];
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+            const line = new THREE.Line(geometry, material);
+            wireFrameObject.add(line);
+        }
+        //Image countorn
+        for (let k = 0; k < 4; k++) {
+            const vertice1 = new THREE.Vector3().fromBufferAttribute(
+                verticePositions,
+                k
+            );
+            let a = 1;
+            if (k == 1) a = 3;
+            else if (k == 2) a = 0;
+            else if (k == 3) a = 2;
+            const vertice2 = new THREE.Vector3().fromBufferAttribute(
+                verticePositions,
+                a
+            );
+            const points = [vertice1, vertice2];
             const geometry = new THREE.BufferGeometry().setFromPoints(points);
             const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
             const line = new THREE.Line(geometry, material);
