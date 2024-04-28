@@ -58,8 +58,8 @@ function onClick() {
     raycaster.setFromCamera(mouse, camera);
     var intersects = raycaster.intersectObject(scene, true);
     if (intersects.length > 0) {
-        var object = intersects[0].object;
-        if (object.name.startsWith("Sant Quirze de Pedret by Zones")) {
+        var object = firstImage(intersects);
+        if (object != null) {
             if (event.button == 0) {
                 const url =
                     "openseadragon.html?mode=single&image=" +
@@ -120,8 +120,8 @@ function onHover() {
     raycaster.setFromCamera(mouse, camera);
     var intersects = raycaster.intersectObject(scene, true);
     if (intersects.length > 0) {
-        var object = intersects[0].object;
-        if (object.name.startsWith("Sant Quirze de Pedret by Zones")) {
+        var object = firstImage(intersects);
+        if (object != null) {
             // New Hover
             if (hover === undefined) hoverIn(object);
             // Replace hover
@@ -177,6 +177,14 @@ function clearRangeImages() {
         else object.material.color.setHex(NEUTRAL_COLOR);
     });
     rangeImages = new Set();
+}
+
+function firstImage(objects) {
+    for (let i = 0; i < objects.length; i++) {
+        if (objects[i].object.name.startsWith("Sant Quirze de Pedret by Zones"))
+            return objects[i].object;
+    }
+    return null;
 }
 
 export {
