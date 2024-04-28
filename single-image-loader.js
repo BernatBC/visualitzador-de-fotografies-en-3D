@@ -62,6 +62,7 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
             const geometry = new THREE.BufferGeometry().setFromPoints(points);
             const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
             const line = new THREE.Line(geometry, material);
+            line.name = "wireframe-line";
             wireFrameObject.add(line);
         }
         //Image countorn
@@ -82,6 +83,7 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
             const geometry = new THREE.BufferGeometry().setFromPoints(points);
             const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
             const line = new THREE.Line(geometry, material);
+            line.name = "wireframe-line";
             wireFrameObject.add(line);
         }
         image_plane.add(wireFrameObject);
