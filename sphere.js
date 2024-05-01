@@ -47,7 +47,7 @@ function openSphericalImages() {
 }
 
 function applySphericalRadius(r) {
-    clearRange();
+    clearRangeImages();
     sphereObject.scale.set(1 / radius, 1 / radius, 1 / radius);
     sphereObject.scale.set(r, r, r);
     radius = r;
@@ -84,7 +84,7 @@ function cancelSphere() {
     scene.remove(sphereObject);
     clearSelection();
     sphereObject = null;
-    clearRange();
+    clearRangeImages();
 }
 
 function paintRange() {
@@ -99,14 +99,4 @@ function paintRange() {
     paintRangeImages(rangeImages);
 }
 
-function clearRange() {
-    clearRangeImages();
-}
-
-export {
-    openSphericalImages,
-    createSphere,
-    cancelSphere,
-    applySphericalRadius,
-    setScene,
-};
+export { openSphericalImages, createSphere, cancelSphere, applySphericalRadius, setScene };

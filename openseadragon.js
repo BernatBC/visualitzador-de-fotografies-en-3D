@@ -15,8 +15,7 @@ if (mode === "single") {
     const parsedImages = JSON.parse(retrievedObject);
     console.log(parsedImages);
     parsedImages.forEach((image) => {
-        var imageName =
-            image.name.substr(0, image.name.lastIndexOf(".")) + ".dzi";
+        var imageName = image.name.substr(0, image.name.lastIndexOf(".")) + ".dzi";
         console.log(
             imageName +
                 " - " +

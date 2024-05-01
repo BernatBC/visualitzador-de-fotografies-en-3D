@@ -56,29 +56,27 @@ function onClick() {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
+
     var intersects = raycaster.intersectObject(scene, true);
-    if (intersects.length > 0) {
-        var object = firstImage(intersects);
-        if (object != null) {
-            if (event.button == 0) {
-                const url =
-                    "openseadragon.html?mode=single&image=" +
-                    encodeURIComponent(object.name);
-                window.open(url, "_blank");
-                clearSelection();
-            } else {
-                if (!rangeImages.has(object)) {
-                    if (imagesSelected.has(object)) {
-                        imagesSelected.delete(object);
-                        object.material.color.setHex(HOVER_COLOR);
-                    } else {
-                        imagesSelected.add(object);
-                        object.material.color.setHex(SELECTION_COLOR);
-                    }
-                }
-            }
+    if (intersects.length == 0) return;
+
+    var object = firstImage(intersects);
+    if (object == null) return;
+
+    if (event.button == 0) {
+        const url = "openseadragon.html?mode=single&image=" + encodeURIComponent(object.name);
+        window.open(url, "_blank");
+        clearSelection();
+    } else if (!rangeImages.has(object)) {
+        if (imagesSelected.has(object)) {
+            imagesSelected.delete(object);
+            object.material.color.setHex(HOVER_COLOR);
+        } else {
+            imagesSelected.add(object);
+            object.material.color.setHex(SELECTION_COLOR);
         }
     }
+
     render();
 }
 
@@ -92,9 +90,7 @@ function openImagesToOpenSeaDragon() {
 }
 
 function clearSelection() {
-    imagesSelected.forEach((image_object) =>
-        image_object.material.color.setHex(NEUTRAL_COLOR)
-    );
+    imagesSelected.forEach((image_object) => image_object.material.color.setHex(NEUTRAL_COLOR));
     imagesSelected.clear();
 }
 
@@ -172,8 +168,7 @@ function paintRangeImages(images) {
 
 function clearRangeImages() {
     rangeImages.forEach((object) => {
-        if (imagesSelected.has(object))
-            object.material.color.setHex(SELECTION_COLOR);
+        if (imagesSelected.has(object)) object.material.color.setHex(SELECTION_COLOR);
         else object.material.color.setHex(NEUTRAL_COLOR);
     });
     rangeImages = new Set();
