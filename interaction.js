@@ -95,7 +95,7 @@ function clearSelection() {
 }
 
 function hoverIn(image_object) {
-    if (!imagesSelected.has(hover) && !rangeImages.has(hover))
+    if (!imagesSelected.has(image_object) && !rangeImages.has(image_object))
         image_object.material.color.setHex(HOVER_COLOR);
     hover = image_object;
 }
