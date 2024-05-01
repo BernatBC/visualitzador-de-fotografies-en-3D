@@ -36,9 +36,7 @@ async function loadImages(scene, images_file, cameras_file) {
                 lines[line_number + 2].split(" ").map(parseFloat),
                 lines[line_number + 3].split(" ").map(parseFloat),
             ]);
-            const t = math.matrix(
-                lines[line_number + 4].split(" ").map(parseFloat)
-            );
+            const t = math.matrix(lines[line_number + 4].split(" ").map(parseFloat));
             loadImage(i, scene, R, t, image_list[i], image_loader);
         }
     });

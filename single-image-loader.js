@@ -54,10 +54,7 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
         wireFrameObject.name = "wireframe";
         // Center to vertice
         for (let k = 0; k < 4; k++) {
-            const vertice = new THREE.Vector3().fromBufferAttribute(
-                verticePositions,
-                k
-            );
+            const vertice = new THREE.Vector3().fromBufferAttribute(verticePositions, k);
             const points = [vertice, new THREE.Vector3(0, 0, 0)];
             const geometry = new THREE.BufferGeometry().setFromPoints(points);
             const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
@@ -67,18 +64,12 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
         }
         //Image countorn
         for (let k = 0; k < 4; k++) {
-            const vertice1 = new THREE.Vector3().fromBufferAttribute(
-                verticePositions,
-                k
-            );
+            const vertice1 = new THREE.Vector3().fromBufferAttribute(verticePositions, k);
             let a = 1;
             if (k == 1) a = 3;
             else if (k == 2) a = 0;
             else if (k == 3) a = 2;
-            const vertice2 = new THREE.Vector3().fromBufferAttribute(
-                verticePositions,
-                a
-            );
+            const vertice2 = new THREE.Vector3().fromBufferAttribute(verticePositions, a);
             const points = [vertice1, vertice2];
             const geometry = new THREE.BufferGeometry().setFromPoints(points);
             const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
@@ -116,19 +107,6 @@ function setOffset(value) {
     imageOffset = value;
 }
 
-function getImageParams(image_name) {
-    let i = indices[image_name];
-    let R = Rs[i];
-    let camera_pos = camera_positions[i];
-    let direction = math.multiply(
-        math.transpose(R),
-        math.transpose(math.matrix([0, 0, -1]))
-    );
-    let dir = [direction.get([0]), direction.get([1]), direction.get([2])];
-    let new_pos = real_positions[i];
-    return { image_pos: new_pos, pos: camera_pos, dir: dir };
-}
-
 function getAllImages() {
     return images;
 }
@@ -141,11 +119,4 @@ function setWireframe(enable) {
     }
 }
 
-export {
-    loadImage,
-    setSize,
-    setOffset,
-    getImageParams,
-    getAllImages,
-    setWireframe,
-};
+export { loadImage, setSize, setOffset, getAllImages, setWireframe };

@@ -2,12 +2,7 @@ import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import { setSize, setOffset, setWireframe } from "./single-image-loader.js";
 import { openImagesToOpenSeaDragon, clearSelection } from "./interaction.js";
 
-import {
-    applySphericalRadius,
-    openSphericalImages,
-    cancelSphere,
-    createSphere,
-} from "./sphere.js";
+import { applySphericalRadius, openSphericalImages, cancelSphere, createSphere } from "./sphere.js";
 
 import {
     createPlane,
@@ -93,39 +88,27 @@ function createPanel() {
     };
 
     folder1.add(settings1, "Image size", 0.0, 5.0, 0.01).onChange(setSize);
-    folder1
-        .add(settings1, "Image separation", 0, 2.0, 0.01)
-        .onChange(setOffset);
+    folder1.add(settings1, "Image separation", 0, 2.0, 0.01).onChange(setOffset);
     folder1.add(settings1, "Image wireframe").onChange(setWireframe);
 
     folder2.add(settings2, "Open to OpenSeaDragon");
     folder2.add(settings2, "Clear Selection");
 
     folder3.add(settings3, "Create Sphere");
-    folder3
-        .add(settings3, "Radius", 0.0, 5.0, 0.01)
-        .onChange(applySphericalRadius);
+    folder3.add(settings3, "Radius", 0.0, 5.0, 0.01).onChange(applySphericalRadius);
     folder3.add(settings3, "Open to OpenSeaDragon");
     folder3.add(settings3, "Cancel");
 
     folder4.add(settings4, "Create Plane");
     folder4.add(settings4, "Width", 0.0, 5.0, 0.01).onChange(changePlaneWidth);
-    folder4
-        .add(settings4, "Height", 0.0, 5.0, 0.01)
-        .onChange(changePlaneHeight);
-    folder4
-        .add(settings4, "Max distance", 0.0, 5.0, 0.01)
-        .onChange(changePlaneDistance);
+    folder4.add(settings4, "Height", 0.0, 5.0, 0.01).onChange(changePlaneHeight);
+    folder4.add(settings4, "Max distance", 0.0, 5.0, 0.01).onChange(changePlaneDistance);
     folder4.add(settings4, "Open to OpenSeaDragon");
     folder4.add(settings4, "Cancel");
 
     folder5.add(settings5, "Create Cylinder");
-    folder5
-        .add(settings5, "Radius", 0.0, 5.0, 0.01)
-        .onChange(applyCylindricalRadius);
-    folder5
-        .add(settings5, "Height", 0.0, 5.0, 0.01)
-        .onChange(applyCylindricalHeight);
+    folder5.add(settings5, "Radius", 0.0, 5.0, 0.01).onChange(applyCylindricalRadius);
+    folder5.add(settings5, "Height", 0.0, 5.0, 0.01).onChange(applyCylindricalHeight);
     folder5.add(settings5, "Open to OpenSeaDragon");
     folder5.add(settings5, "Cancel");
 }

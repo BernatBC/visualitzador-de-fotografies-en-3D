@@ -29,11 +29,7 @@ function createPlane() {
         return;
     }
     const images = Array.from(imagesSelected);
-    boxObject = createPlaneFromPoints(
-        images[0].position,
-        images[1].position,
-        images[2].position
-    );
+    boxObject = createPlaneFromPoints(images[0].position, images[1].position, images[2].position);
     clearSelection();
     paintRange();
 }
@@ -42,10 +38,7 @@ function createPlaneFromPoints(A, B, C) {
     abstractPlane = new THREE.Plane().setFromCoplanarPoints(A, B, C);
 
     var coplanarPoint = abstractPlane.coplanarPoint(new THREE.Vector3(A));
-    var focalPoint = new THREE.Vector3().addVectors(
-        coplanarPoint,
-        abstractPlane.normal
-    );
+    var focalPoint = new THREE.Vector3().addVectors(coplanarPoint, abstractPlane.normal);
 
     const boxGeometry = new THREE.BoxGeometry(1, 1, 1, 10, 10, 10);
     const boxMaterial = new THREE.MeshBasicMaterial({
@@ -67,11 +60,11 @@ function cancelPlane() {
     boxObject = null;
     abstractPlane = null;
     centerPoint = null;
-    clearRange();
+    clearRangeImages();
 }
 
 function changePlaneDistance(d) {
-    clearRange();
+    clearRangeImages();
     boxObject.scale.set(1 / planeWidth, 1 / planeHeight, 1 / planeDistance);
     boxObject.scale.set(planeWidth, planeHeight, d);
 
@@ -80,7 +73,7 @@ function changePlaneDistance(d) {
 }
 
 function changePlaneHeight(h) {
-    clearRange();
+    clearRangeImages();
     boxObject.scale.set(1 / planeWidth, 1 / planeHeight, 1 / planeDistance);
     boxObject.scale.set(planeWidth, h, planeDistance);
 
@@ -89,7 +82,7 @@ function changePlaneHeight(h) {
 }
 
 function changePlaneWidth(w) {
-    clearRange();
+    clearRangeImages();
     boxObject.scale.set(1 / planeWidth, 1 / planeHeight, 1 / planeDistance);
     boxObject.scale.set(w, planeHeight, planeDistance);
 
@@ -107,9 +100,7 @@ function openPlane() {
         abstractPlane.normal.y,
         abstractPlane.normal.z
     ).normalize();
-    const T = new THREE.Vector3(N.x, N.y, N.z)
-        .cross(new THREE.Vector3(0, 1, 0))
-        .normalize();
+    const T = new THREE.Vector3(N.x, N.y, N.z).cross(new THREE.Vector3(0, 1, 0)).normalize();
     const B = new THREE.Vector3(N.x, N.y, N.z).cross(T).normalize();
 
     images.forEach((object) => {
@@ -152,9 +143,7 @@ function paintRange() {
         abstractPlane.normal.y,
         abstractPlane.normal.z
     ).normalize();
-    const T = new THREE.Vector3(N.x, N.y, N.z)
-        .cross(new THREE.Vector3(0, 1, 0))
-        .normalize();
+    const T = new THREE.Vector3(N.x, N.y, N.z).cross(new THREE.Vector3(0, 1, 0)).normalize();
     const B = new THREE.Vector3(N.x, N.y, N.z).cross(T).normalize();
 
     images.forEach((object) => {
@@ -174,10 +163,6 @@ function paintRange() {
             rangeImages.add(object);
     });
     paintRangeImages(rangeImages);
-}
-
-function clearRange() {
-    clearRangeImages();
 }
 
 export {

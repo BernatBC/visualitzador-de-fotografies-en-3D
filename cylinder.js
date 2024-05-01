@@ -6,9 +6,6 @@ import {
     paintRangeImages,
     clearRangeImages,
 } from "./interaction";
-import { create, all } from "mathjs";
-
-const math = create(all, {});
 
 var radius = 0.5;
 
@@ -28,32 +25,16 @@ function openCylindricalImages() {
     let images = getAllImages();
     let json = [];
 
-    const V = new THREE.Vector3(vector.x, vector.y, vector.z).multiplyScalar(
-        height
+    const V = new THREE.Vector3(vector.x, vector.y, vector.z).multiplyScalar(height);
+    const endPoint1 = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z).add(V);
+    const endPoint2 = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z).sub(V);
+    const infiniteVector = new THREE.Vector3(V.x, V.y, V.z).multiplyScalar(1000);
+    const point1 = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z).add(
+        infiniteVector
     );
-    const endPoint1 = new THREE.Vector3(
-        centerPoint.x,
-        centerPoint.y,
-        centerPoint.z
-    ).add(V);
-    const endPoint2 = new THREE.Vector3(
-        centerPoint.x,
-        centerPoint.y,
-        centerPoint.z
-    ).sub(V);
-    const infiniteVector = new THREE.Vector3(V.x, V.y, V.z).multiplyScalar(
-        1000
+    const point2 = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z).sub(
+        infiniteVector
     );
-    const point1 = new THREE.Vector3(
-        centerPoint.x,
-        centerPoint.y,
-        centerPoint.z
-    ).add(infiniteVector);
-    const point2 = new THREE.Vector3(
-        centerPoint.x,
-        centerPoint.y,
-        centerPoint.z
-    ).sub(infiniteVector);
 
     const segment = new THREE.Line3(endPoint1, endPoint2);
     const infiniteLine = new THREE.Line3(point1, point2);
@@ -61,9 +42,7 @@ function openCylindricalImages() {
     var originProjected = new THREE.Vector3();
     const origin = new THREE.Vector3(0, 0, 0);
     infiniteLine.closestPointToPoint(origin, false, originProjected);
-    const originVector = new THREE.Vector3()
-        .subVectors(originProjected, origin)
-        .normalize();
+    const originVector = new THREE.Vector3().subVectors(originProjected, origin).normalize();
 
     images.forEach((object) => {
         const P = new THREE.Vector3().copy(object.position);
@@ -74,13 +53,10 @@ function openCylindricalImages() {
         const lineDistance = lProjected.distanceTo(P).toFixed(5);
         const segmentDistance = sProjected.distanceTo(P).toFixed(5);
         if (lineDistance < radius && lineDistance == segmentDistance) {
-            const pointVector = new THREE.Vector3()
-                .subVectors(sProjected, P)
-                .normalize();
+            const pointVector = new THREE.Vector3().subVectors(sProjected, P).normalize();
             const x = originVector.angleTo(pointVector);
             var y = centerPoint.distanceTo(sProjected);
-            if (sProjected.distanceTo(point2) > sProjected.distanceTo(point1))
-                y = -y;
+            if (sProjected.distanceTo(point2) > sProjected.distanceTo(point1)) y = -y;
             json.push({
                 name: object.name,
                 x: x,
@@ -118,15 +94,9 @@ function createCylinder() {
 
     const V = new THREE.Vector3().subVectors(P2, P1).normalize();
 
-    centerPoint = new THREE.Vector3(
-        (P1.x + P2.x) / 2,
-        (P1.y + P2.y) / 2,
-        (P1.z + P2.z) / 2
-    );
+    centerPoint = new THREE.Vector3((P1.x + P2.x) / 2, (P1.y + P2.y) / 2, (P1.z + P2.z) / 2);
 
-    const geometry = new THREE.CylinderGeometry(1, 1, 1, 32).rotateX(
-        Math.PI / 2
-    );
+    const geometry = new THREE.CylinderGeometry(1, 1, 1, 32).rotateX(Math.PI / 2);
     const material = new THREE.MeshBasicMaterial({
         color: 0x0000ff,
         wireframe: true,
@@ -140,15 +110,8 @@ function createCylinder() {
     cylinderObject.lookAt(V);
     cylinderObject.position.set(centerPoint.x, centerPoint.y, centerPoint.z);
 
-    centerPoint = new THREE.Vector3(
-        centerPoint.x,
-        centerPoint.y,
-        centerPoint.z
-    );
-    vector = new THREE.Vector3(V.x, V.y, V.z)
-        .normalize()
-        .divideScalar(2)
-        .multiplyScalar(height);
+    centerPoint = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z);
+    vector = new THREE.Vector3(V.x, V.y, V.z).normalize().divideScalar(2).multiplyScalar(height);
     clearSelection();
     paintRange();
 }
@@ -173,32 +136,16 @@ function cancelCylinder() {
 function paintRange() {
     let images = getAllImages();
     let rangeImages = new Set();
-    const V = new THREE.Vector3(vector.x, vector.y, vector.z).multiplyScalar(
-        height
+    const V = new THREE.Vector3(vector.x, vector.y, vector.z).multiplyScalar(height);
+    const endPoint1 = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z).add(V);
+    const endPoint2 = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z).sub(V);
+    const infiniteVector = new THREE.Vector3(V.x, V.y, V.z).multiplyScalar(1000);
+    const point1 = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z).add(
+        infiniteVector
     );
-    const endPoint1 = new THREE.Vector3(
-        centerPoint.x,
-        centerPoint.y,
-        centerPoint.z
-    ).add(V);
-    const endPoint2 = new THREE.Vector3(
-        centerPoint.x,
-        centerPoint.y,
-        centerPoint.z
-    ).sub(V);
-    const infiniteVector = new THREE.Vector3(V.x, V.y, V.z).multiplyScalar(
-        1000
+    const point2 = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z).sub(
+        infiniteVector
     );
-    const point1 = new THREE.Vector3(
-        centerPoint.x,
-        centerPoint.y,
-        centerPoint.z
-    ).add(infiniteVector);
-    const point2 = new THREE.Vector3(
-        centerPoint.x,
-        centerPoint.y,
-        centerPoint.z
-    ).sub(infiniteVector);
 
     const segment = new THREE.Line3(endPoint1, endPoint2);
     const infiniteLine = new THREE.Line3(point1, point2);
