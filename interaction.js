@@ -95,14 +95,14 @@ function clearSelection() {
 }
 
 function hoverIn(image_object) {
-    if (imagesSelected.has(image_object) || rangeImages.has(image_object)) return;
-    image_object.material.color.setHex(HOVER_COLOR);
+    if (!imagesSelected.has(hover) && !rangeImages.has(hover))
+        image_object.material.color.setHex(HOVER_COLOR);
     hover = image_object;
 }
 
 function hoverOut() {
-    if (imagesSelected.has(hover) || rangeImages.has(hover)) return;
-    hover.material.color.setHex(NEUTRAL_COLOR);
+    if (!imagesSelected.has(hover) && !rangeImages.has(hover))
+        hover.material.color.setHex(NEUTRAL_COLOR);
     hover = undefined;
 }
 
