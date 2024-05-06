@@ -27,7 +27,7 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
     const z = view_direction.get([2]);
 
     // Afegir imatge
-    const SCALE = 1500 * imageSize;
+    const SCALE = 2000 * imageSize;
     const image_path = "/images/low_res/" + image_name;
     const image_texture = image_loader.load(image_path, function () {
         image_texture.colorSpace = THREE.SRGBColorSpace;
@@ -57,7 +57,12 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
             const vertice = new THREE.Vector3().fromBufferAttribute(verticePositions, k);
             const points = [vertice, new THREE.Vector3(0, 0, 0)];
             const geometry = new THREE.BufferGeometry().setFromPoints(points);
-            const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+            const material = new THREE.LineBasicMaterial({
+                color: 0x0000ff,
+                transparent: true,
+                opacity: 0.25,
+                linewidth: 0.1,
+            });
             const line = new THREE.Line(geometry, material);
             line.name = "wireframe-line";
             wireFrameObject.add(line);
@@ -72,7 +77,12 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
             const vertice2 = new THREE.Vector3().fromBufferAttribute(verticePositions, a);
             const points = [vertice1, vertice2];
             const geometry = new THREE.BufferGeometry().setFromPoints(points);
-            const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+            const material = new THREE.LineBasicMaterial({
+                color: 0x0000ff,
+                transparent: true,
+                opacity: 0.25,
+                linewidth: 0.1,
+            });
             const line = new THREE.Line(geometry, material);
             line.name = "wireframe-line";
             wireFrameObject.add(line);
