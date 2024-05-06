@@ -6,6 +6,7 @@ import {
     paintRangeImages,
     clearRangeImages,
 } from "./interaction";
+import { setSliderValue } from "./panel";
 
 var radius = 0.5;
 
@@ -91,7 +92,8 @@ function createCylinder() {
     const P1 = images[0].position;
     const P2 = images[1].position;
 
-    const V = new THREE.Vector3().subVectors(P2, P1).normalize();
+    const V = new THREE.Vector3().subVectors(P2, P1);
+    height = V.length();
 
     centerPoint = new THREE.Vector3((P1.x + P2.x) / 2, (P1.y + P2.y) / 2, (P1.z + P2.z) / 2);
 
@@ -101,7 +103,7 @@ function createCylinder() {
         wireframe: true,
         transparent: true,
         opacity: 0.25,
-        linewidth: 0.1,
+        wireframeLinewidth: 0.1,
     });
 
     cylinderObject = new THREE.Mesh(geometry, material);
@@ -109,13 +111,14 @@ function createCylinder() {
     scene.add(cylinderObject);
 
     cylinderObject.scale.set(radius, radius, height);
-    cylinderObject.lookAt(V);
+    cylinderObject.lookAt(V.normalize());
     cylinderObject.position.set(centerPoint.x, centerPoint.y, centerPoint.z);
 
     centerPoint = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z);
     vector = new THREE.Vector3(V.x, V.y, V.z).normalize().divideScalar(2).multiplyScalar(height);
     clearSelection();
     paintRange();
+    setSliderValue("Cylinder", "Height", height);
 }
 
 function applyCylindricalHeight(h) {

@@ -46,7 +46,7 @@ function createPlaneFromPoints(A, B, C) {
         wireframe: true,
         transparent: true,
         opacity: 0.25,
-        linewidth: 0.1,
+        wireframeLinewidth: 0.1,
     });
     const box = new THREE.Mesh(boxGeometry, boxMaterial);
     scene.add(box);
