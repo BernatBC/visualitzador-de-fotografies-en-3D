@@ -21,9 +21,9 @@ import {
     applyCylindricalHeight,
 } from "./cylinder.js";
 
-function createPanel() {
-    const panel = new GUI({ width: 290 });
+const panel = new GUI({ width: 290 });
 
+function createPanel() {
     const folder1 = panel.addFolder("Image Settings");
     const folder2 = panel.addFolder("Individual Selection");
     const folder3 = panel.addFolder("Sphere");
@@ -113,4 +113,12 @@ function createPanel() {
     folder5.add(settings5, "Cancel");
 }
 
-export { createPanel };
+function setSliderValue(folder, slider_name, value) {
+    panel.children.forEach((c) => {
+        if (c._title !== folder) return;
+        for (var i = 0; i < c.controllers.length; i++)
+            if (c.controllers[i].property === slider_name) c.controllers[i].setValue(value);
+    });
+}
+
+export { createPanel, setSliderValue };

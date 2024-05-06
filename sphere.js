@@ -69,7 +69,7 @@ function createSphere() {
         wireframe: true,
         transparent: true,
         opacity: 0.25,
-        linewidth: 0.1,
+        wireframeLinewidth: 0.1,
     });
     sphereObject = new THREE.Mesh(geometry, material);
 
