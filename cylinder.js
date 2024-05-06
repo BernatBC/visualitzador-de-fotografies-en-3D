@@ -56,11 +56,10 @@ function openCylindricalImages() {
             const pointVector = new THREE.Vector3().subVectors(sProjected, P).normalize();
             const x = originVector.angleTo(pointVector);
             var y = centerPoint.distanceTo(sProjected);
-            if (sProjected.distanceTo(point2) > sProjected.distanceTo(point1)) y = -y;
             json.push({
                 name: object.name,
                 x: x,
-                y: y,
+                y: -y,
                 height: object.geometry.parameters.height,
             });
         }
