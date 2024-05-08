@@ -63,7 +63,7 @@ function createSphere() {
     const images = Array.from(imagesSelected);
     C = images[0].position;
 
-    const geometry = new THREE.SphereGeometry(1, 32, 16);
+    const geometry = new THREE.SphereGeometry(1, 10, 10);
     const material = new THREE.MeshBasicMaterial({
         color: 0x000000,
         wireframe: true,
