@@ -47,13 +47,13 @@ const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
 createPanel();
-/*
+
 //MODEL LOADER
 const gltfLoader = new GLTFLoader();
 gltfLoader.load("models/pedret10/MNAC-AbsSud-LowPoly.glb", (object) => {
     //gltfLoader.load('models/pedret/pedret_XIII_text4K.glb',(object) => {
     scene.add(object.scene.rotateX(-Math.PI / 2));
-});*/
+});
 
 await loadImages(
     scene,
