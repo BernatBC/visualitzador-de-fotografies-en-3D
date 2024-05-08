@@ -67,7 +67,7 @@ function createPanel() {
         },
         Width: 1,
         Height: 1,
-        "Max distance": 0.2,
+        "Max distance": 0.1,
         "Open to OpenSeaDragon": function () {
             openPlane();
         },
@@ -100,8 +100,8 @@ function createPanel() {
     folder3.add(settings3, "Cancel");
 
     folder4.add(settings4, "Create Plane");
-    folder4.add(settings4, "Width", 0.0, 5.0, 0.01).onChange(changePlaneWidth);
-    folder4.add(settings4, "Height", 0.0, 5.0, 0.01).onChange(changePlaneHeight);
+    folder4.add(settings4, "Width", 0.0, 10.0, 0.01).onChange(changePlaneWidth);
+    folder4.add(settings4, "Height", 0.0, 10.0, 0.01).onChange(changePlaneHeight);
     folder4.add(settings4, "Max distance", 0.0, 5.0, 0.01).onChange(changePlaneDistance);
     folder4.add(settings4, "Open to OpenSeaDragon");
     folder4.add(settings4, "Cancel");
