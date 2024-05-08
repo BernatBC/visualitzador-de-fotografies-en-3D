@@ -62,6 +62,7 @@ function openCylindricalImages() {
                 x: x,
                 y: -y,
                 height: object.geometry.parameters.height,
+                zoom: object.userData.zoom,
             });
         }
     });

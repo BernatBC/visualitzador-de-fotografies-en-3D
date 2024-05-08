@@ -17,6 +17,7 @@ function read_image_list(filePath) {
 
 async function loadImages(scene, images_file, cameras_file) {
     const image_list = await read_image_list(images_file);
+    const min_focal = 2500;
 
     //CAMERAS LOADER
     const image_loader = new THREE.TextureLoader();
@@ -31,13 +32,16 @@ async function loadImages(scene, images_file, cameras_file) {
             //Descarta les imatges lsp
             if (image_list[i].endsWith(".lsp")) continue;
 
+            const focalLength = lines[line_number].split(" ").map(parseFloat)[0];
+            const zoom = focalLength / min_focal;
+
             const R = math.matrix([
                 lines[line_number + 1].split(" ").map(parseFloat),
                 lines[line_number + 2].split(" ").map(parseFloat),
                 lines[line_number + 3].split(" ").map(parseFloat),
             ]);
             const t = math.matrix(lines[line_number + 4].split(" ").map(parseFloat));
-            loadImage(i, scene, R, t, image_list[i], image_loader);
+            loadImage(i, scene, R, t, zoom, image_list[i], image_loader);
         }
     });
 }
