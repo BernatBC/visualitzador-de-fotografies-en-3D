@@ -64,12 +64,7 @@ function createPlaneFromPoints(A, B, C) {
     const centerY =
         (math.max(coordsA.y, coordsB.y, coordsC.y) + math.min(coordsA.y, coordsB.y, coordsC.y)) / 2;
 
-    console.log(centerX);
-    console.log(centerY);
-
     centerPoint = planeCoordsToWorldCoords(new THREE.Vector2(centerX, centerY));
-
-    // Calculate width and height
 
     var coplanarPoint = abstractPlane.coplanarPoint(new THREE.Vector3().copy(centerPoint));
     var focalPoint = new THREE.Vector3().addVectors(coplanarPoint, abstractPlane.normal);
@@ -174,13 +169,10 @@ function worldCoordsToPlaneCoords(P) {
 
 function planeCoordsToWorldCoords(P) {
     let V = new THREE.Vector3().copy(t).multiplyScalar(-P.x);
-    console.log(V);
     const B = new THREE.Vector3().copy(b).multiplyScalar(P.y);
-    console.log(B);
     V.add(B);
-    console.log(V);
     V.add(centerPoint);
-    console.log(V);
+
     return V;
 }
 
