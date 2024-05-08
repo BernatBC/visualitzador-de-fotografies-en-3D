@@ -14,9 +14,13 @@ var abstractPlane;
 var boxObject;
 var planeHeight = 1;
 var planeWidth = 1;
-var planeDistance = 0.2;
+var planeDistance = 0.1;
 var scene;
 var centerPoint;
+
+var N;
+var t;
+var b;
 
 function setScene(sce) {
     scene = sce;
@@ -37,7 +41,37 @@ function createPlane() {
 function createPlaneFromPoints(A, B, C) {
     abstractPlane = new THREE.Plane().setFromCoplanarPoints(A, B, C);
 
-    var coplanarPoint = abstractPlane.coplanarPoint(new THREE.Vector3(A));
+    centerPoint = new THREE.Vector3(
+        (A.x + B.x + C.x) / 3,
+        (A.y + B.y + C.y) / 3,
+        (A.z + B.z + C.z) / 3
+    );
+
+    N = new THREE.Vector3().copy(abstractPlane.normal).normalize();
+    t = new THREE.Vector3().copy(N).cross(new THREE.Vector3(0, 1, 0)).normalize();
+    b = new THREE.Vector3().copy(N).cross(t).normalize();
+
+    const coordsA = worldCoordsToPlaneCoords(A);
+    const coordsB = worldCoordsToPlaneCoords(B);
+    const coordsC = worldCoordsToPlaneCoords(C);
+    planeWidth =
+        math.max(coordsA.x, coordsB.x, coordsC.x) - math.min(coordsA.x, coordsB.x, coordsC.x);
+    planeHeight =
+        math.max(coordsA.y, coordsB.y, coordsC.y) - math.min(coordsA.y, coordsB.y, coordsC.y);
+
+    const centerX =
+        (math.max(coordsA.x, coordsB.x, coordsC.x) + math.min(coordsA.x, coordsB.x, coordsC.x)) / 2;
+    const centerY =
+        (math.max(coordsA.y, coordsB.y, coordsC.y) + math.min(coordsA.y, coordsB.y, coordsC.y)) / 2;
+
+    console.log(centerX);
+    console.log(centerY);
+
+    centerPoint = planeCoordsToWorldCoords(new THREE.Vector2(centerX, centerY));
+
+    // Calculate width and height
+
+    var coplanarPoint = abstractPlane.coplanarPoint(new THREE.Vector3().copy(centerPoint));
     var focalPoint = new THREE.Vector3().addVectors(coplanarPoint, abstractPlane.normal);
 
     const boxGeometry = new THREE.BoxGeometry(1, 1, 1, 10, 10, 10);
@@ -49,11 +83,12 @@ function createPlaneFromPoints(A, B, C) {
         wireframeLinewidth: 0.1,
     });
     const box = new THREE.Mesh(boxGeometry, boxMaterial);
+
     scene.add(box);
     box.lookAt(focalPoint);
-    box.position.set(A.x, A.y, A.z);
+    box.position.set(centerPoint.x, centerPoint.y, centerPoint.z);
     box.scale.set(planeWidth, planeHeight, planeDistance);
-    centerPoint = A;
+
     return box;
 }
 
@@ -63,6 +98,9 @@ function cancelPlane() {
     boxObject = null;
     abstractPlane = null;
     centerPoint = null;
+    N = null;
+    t = null;
+    b = null;
     clearRangeImages();
 }
 
@@ -98,32 +136,22 @@ function openPlane() {
     let images = getAllImages();
     let json = [];
 
-    const N = new THREE.Vector3(
-        abstractPlane.normal.x,
-        abstractPlane.normal.y,
-        abstractPlane.normal.z
-    ).normalize();
-    const T = new THREE.Vector3(N.x, N.y, N.z).cross(new THREE.Vector3(0, 1, 0)).normalize();
-    const B = new THREE.Vector3(N.x, N.y, N.z).cross(T).normalize();
-
     images.forEach((object) => {
         const P = object.position;
         var P2 = new THREE.Vector3();
         abstractPlane.projectPoint(P, P2);
 
-        const V = new THREE.Vector3().subVectors(P, centerPoint);
-        const tv = new THREE.Vector3(V.x, V.y, V.z).dot(T);
-        const bv = new THREE.Vector3(V.x, V.y, V.z).dot(B);
+        const coords = worldCoordsToPlaneCoords(P);
 
         if (
             P.distanceTo(P2) < planeDistance / 2 &&
-            math.abs(tv) < planeWidth / 2 &&
-            math.abs(bv) < planeHeight / 2
+            math.abs(coords.x) < planeWidth / 2 &&
+            math.abs(coords.y) < planeHeight / 2
         ) {
             json.push({
                 name: object.name,
-                x: -tv,
-                y: bv,
+                x: coords.x,
+                y: coords.y,
                 height: object.geometry.parameters.height,
             });
         }
@@ -137,31 +165,40 @@ function openPlane() {
     //cancelPlane();
 }
 
+function worldCoordsToPlaneCoords(P) {
+    const V = new THREE.Vector3().subVectors(P, centerPoint);
+    const tv = new THREE.Vector3().copy(V).dot(t);
+    const bv = new THREE.Vector3().copy(V).dot(b);
+    return { x: -tv, y: bv };
+}
+
+function planeCoordsToWorldCoords(P) {
+    let V = new THREE.Vector3().copy(t).multiplyScalar(-P.x);
+    console.log(V);
+    const B = new THREE.Vector3().copy(b).multiplyScalar(P.y);
+    console.log(B);
+    V.add(B);
+    console.log(V);
+    V.add(centerPoint);
+    console.log(V);
+    return V;
+}
+
 function paintRange() {
     let images = getAllImages();
     let rangeImages = new Set();
-
-    const N = new THREE.Vector3(
-        abstractPlane.normal.x,
-        abstractPlane.normal.y,
-        abstractPlane.normal.z
-    ).normalize();
-    const T = new THREE.Vector3(N.x, N.y, N.z).cross(new THREE.Vector3(0, 1, 0)).normalize();
-    const B = new THREE.Vector3(N.x, N.y, N.z).cross(T).normalize();
 
     images.forEach((object) => {
         const P = object.position;
         var P2 = new THREE.Vector3();
         abstractPlane.projectPoint(P, P2);
 
-        const V = new THREE.Vector3().subVectors(P, centerPoint);
-        const tv = new THREE.Vector3(V.x, V.y, V.z).dot(T);
-        const bv = new THREE.Vector3(V.x, V.y, V.z).dot(B);
+        const coords = worldCoordsToPlaneCoords(P);
 
         if (
             P.distanceTo(P2) < planeDistance / 2 &&
-            math.abs(tv) < planeWidth / 2 &&
-            math.abs(bv) < planeHeight / 2
+            math.abs(coords.x) < planeWidth / 2 &&
+            math.abs(coords.y) < planeHeight / 2
         )
             rangeImages.add(object);
     });
