@@ -13,7 +13,7 @@ var Rs = [];
 var real_positions = [];
 var indices = {};
 
-function loadImage(i, scene, R, t, image_name, image_loader) {
+function loadImage(i, scene, R, t, zoom, image_name, image_loader) {
     const pos = math.multiply(math.unaryMinus(math.transpose(R)), t);
     const camera_pos = [pos.get([0]), pos.get([1]), pos.get([2])];
     //View direction
@@ -89,6 +89,7 @@ function loadImage(i, scene, R, t, image_name, image_loader) {
         }
         image_plane.add(wireFrameObject);
         scene.add(image_plane);
+        image_plane.userData = { zoom: zoom };
     });
 
     image_names.push(image_name);

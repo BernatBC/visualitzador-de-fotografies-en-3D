@@ -24,13 +24,15 @@ if (mode === "single") {
                 ", Y: " +
                 image.y.toString() +
                 ", Height: " +
-                image.height.toString()
+                image.height.toString() +
+                ", Zoom: " +
+                image.zoom.toString()
         );
         sources.push({
             tileSource: "images/" + imageName,
             x: image.x,
             y: image.y,
-            height: image.height,
+            height: (2 * image.height) / image.zoom,
         });
     });
 }
