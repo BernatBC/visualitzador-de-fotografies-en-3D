@@ -7,15 +7,9 @@ var imageOffset = 0.2;
 var imageSize = 1;
 
 var images = [];
-var image_names = [];
-var camera_positions = [];
-var Rs = [];
-var real_positions = [];
-var indices = {};
 
-function loadImage(i, scene, R, t, zoom, image_name, image_loader) {
+function loadImage(scene, R, t, zoom, image_name, image_loader) {
     const pos = math.multiply(math.unaryMinus(math.transpose(R)), t);
-    const camera_pos = [pos.get([0]), pos.get([1]), pos.get([2])];
     //View direction
     const view_direction = math.multiply(
         math.transpose(R),
@@ -46,8 +40,6 @@ function loadImage(i, scene, R, t, zoom, image_name, image_loader) {
         image_plane.position.set(pos.get([0]), -pos.get([1]), -pos.get([2]));
 
         image_plane.scale.set(imageSize, imageSize, imageOffset);
-
-        images.push(image_plane);
 
         const verticePositions = image_geometry.getAttribute("position");
         var wireFrameObject = new THREE.Object3D();
@@ -90,12 +82,8 @@ function loadImage(i, scene, R, t, zoom, image_name, image_loader) {
         image_plane.add(wireFrameObject);
         scene.add(image_plane);
         image_plane.userData = { zoom: zoom };
+        images.push(image_plane);
     });
-
-    image_names.push(image_name);
-    camera_positions.push(camera_pos);
-    Rs.push(R);
-    indices[image_name] = i;
 }
 
 function setSize(value) {
