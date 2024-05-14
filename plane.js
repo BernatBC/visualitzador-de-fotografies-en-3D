@@ -148,6 +148,7 @@ function openPlane() {
                 x: coords.x,
                 y: coords.y,
                 height: object.geometry.parameters.height,
+                width: object.geometry.parameters.width,
                 zoom: object.userData.zoom,
             });
         }
