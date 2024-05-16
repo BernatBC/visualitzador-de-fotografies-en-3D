@@ -5,6 +5,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { loadImages } from "./multiple-image-loader.js";
 import { addInteraction } from "./interaction.js";
 import { createPanel } from "./panel.js";
+import { setIntersectionPosition } from "./single-image-loader.js";
 
 //INIT
 THREE.Cache.enabled = true;
@@ -53,6 +54,7 @@ const gltfLoader = new GLTFLoader();
 gltfLoader.load("models/pedret10/MNAC-AbsSud-LowPoly.glb", (object) => {
     //gltfLoader.load('models/pedret/pedret_XIII_text4K.glb',(object) => {
     scene.add(object.scene.rotateX(-Math.PI / 2));
+    setIntersectionPosition(scene);
 });
 
 await loadImages(

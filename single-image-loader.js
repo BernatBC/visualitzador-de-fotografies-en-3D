@@ -3,6 +3,7 @@ import { create, all } from "mathjs";
 
 const math = create(all, {});
 
+var raycaster = new THREE.Raycaster();
 var imageOffset = 0.2;
 var imageSize = 1;
 
@@ -16,9 +17,11 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
         math.transpose(math.matrix([0, 0, -1]))
     );
     //View direction VECTOR
-    const x = view_direction.get([0]);
-    const y = view_direction.get([1]);
-    const z = view_direction.get([2]);
+    const direction = new THREE.Vector3(
+        view_direction.get([0]),
+        -view_direction.get([1]),
+        -view_direction.get([2])
+    );
 
     // Afegir imatge
     const SCALE = 2000 * imageSize;
@@ -36,7 +39,7 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
         });
         const image_plane = new THREE.Mesh(image_geometry, image_material);
         image_plane.name = image_name;
-        image_plane.lookAt(x, -y, -z);
+        image_plane.lookAt(direction);
         image_plane.position.set(pos.get([0]), -pos.get([1]), -pos.get([2]));
 
         image_plane.scale.set(imageSize, imageSize, imageOffset);
@@ -81,7 +84,7 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
         }
         image_plane.add(wireFrameObject);
         scene.add(image_plane);
-        image_plane.userData = { zoom: zoom };
+        image_plane.userData = { zoom: zoom, direction: direction, intersection: null };
         images.push(image_plane);
     });
 }
@@ -118,4 +121,22 @@ function setWireframe(enable) {
     }
 }
 
-export { loadImage, setSize, setOffset, getAllImages, setWireframe };
+function setIntersectionPosition(scene) {
+    images.forEach((i) => {
+        i.userData.intersection = new THREE.Vector3().copy(
+            getIntersectionPosition(scene, i.position, i.userData.direction)
+        );
+    });
+}
+
+function getIntersectionPosition(scene, position, direction) {
+    raycaster.set(position, direction);
+    var intersections = raycaster.intersectObject(scene, true);
+    if (intersections.length == 0) return position;
+    for (let i = 0; i < intersections.length; i++)
+        if (intersections[i].object.name.startsWith("Mesh")) return intersections[i].point;
+
+    return position;
+}
+
+export { loadImage, setSize, setOffset, getAllImages, setWireframe, setIntersectionPosition };
