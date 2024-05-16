@@ -33,7 +33,7 @@ async function loadImages(scene, images_file, cameras_file) {
             if (image_list[i].endsWith(".lsp")) continue;
 
             const focalLength = lines[line_number].split(" ").map(parseFloat)[0];
-            const zoom = focalLength / min_focal;
+            const zoom = math.sqrt(focalLength / min_focal);
 
             const R = math.matrix([
                 lines[line_number + 1].split(" ").map(parseFloat),
