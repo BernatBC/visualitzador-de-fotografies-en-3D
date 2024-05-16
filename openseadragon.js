@@ -16,6 +16,11 @@ if (mode === "single") {
 } else {
     console.log(parsedImages);
     parsedImages.forEach((image) => {
+        image.x = parseFloat(image.x);
+        image.y = parseFloat(image.y);
+        image.height = parseFloat(image.height);
+        image.width = parseFloat(image.width);
+        image.zoom = parseFloat(image.zoom);
         var imageName = image.name.substr(0, image.name.lastIndexOf(".")) + ".dzi";
         sources.push({
             tileSource: "images/" + imageName,
@@ -42,8 +47,8 @@ viewer.addHandler("open", function () {
 var overlapping = true;
 
 function distribute(images) {
-    console.log("--------");
     while (overlapping) {
+        console.log("--------");
         overlapping = false;
         for (let i = 0; i < images.length; i++) align(images[i], images, i);
     }
@@ -51,6 +56,7 @@ function distribute(images) {
 
 function align(a, images, i) {
     console.log("ALIGNING: " + a.name);
+    console.log(getLeft(a) + "," + getRight(a) + "," + getTop(a) + "," + getBottom(a));
     var output = { x: 0, y: 0 };
     images.forEach((b) => {
         if (a.name === b.name) return;
@@ -61,32 +67,53 @@ function align(a, images, i) {
         //console.log(a);
         //console.log(b);
         //console.log(intersection);
-        var dist = getDistance(a, b);
+        var diff = getDistance(a, b);
+        console.log("DIFF");
+        console.log(diff);
         //console.log("Distance: " + dist.x + ", " + dist.y);
+        console.log("INTERSECTION: " + intersection.width + ", " + intersection.height);
         if (a.width < b.width / 2) {
-            if (abs(dist.x) > abs(dist.y)) {
-                output.x += sign(dist.x) * intersection.width;
+            if (abs(diff.x) > abs(diff.y)) {
+                output.y += self.sign(diff.y) * intersection.height;
             } else {
-                output.y += sign(dist.y) * intersection.height;
+                output.y += self.sign(diff.y) * intersection.height;
             }
         } else {
             if (intersection.width < intersection.height) {
-                output.x += sign(dist.x) * intersection.width;
+                output.x += self.sign(diff.x) * intersection.width;
             } else {
-                output.y += sign(dist.y) * intersection.height;
+                output.y += self.sign(diff.y) * intersection.height;
             }
         }
+        console.log("output: " + output.x + ", " + output.y);
+        if (output.x != 0 || output.y != 0) {
+            moveImage(a, output, i);
+            return;
+        }
     });
-    console.log("output: " + output.x + ", " + output.y);
-    if (output.x != 0 || output.y != 0) moveImage(a, output, i);
-    console.log("---");
 }
 
 function getIntersection(a, b) {
+    console.log("A");
+    console.log("top: " + getTop(a));
+    console.log("bottom: " + getBottom(a));
+    console.log("left: " + getLeft(a));
+    console.log("right: " + getRight(a));
+    console.log("B");
+    console.log("top: " + getTop(b));
+    console.log("bottom: " + getBottom(b));
+    console.log("left: " + getLeft(a));
+    console.log("right: " + getRight(b));
+
     var left = max(getLeft(a), getLeft(b));
     var top = min(getTop(a), getTop(b));
     var right = min(getRight(a), getRight(b));
     var bottom = max(getBottom(a), getBottom(b));
+    console.log("I");
+    console.log("top: " + top);
+    console.log("bottom: " + bottom);
+    console.log("left: " + left);
+    console.log("right: " + right);
 
     if (bottom < top && right > left) {
         return {
@@ -103,6 +130,8 @@ function getIntersection(a, b) {
 }
 
 function moveImage(a, output, i) {
+    console.log("BEFORE");
+    console.log(a.name + ": " + a.x + ", " + a.y);
     a.x += output.x;
     a.y += output.y;
     console.log("NEW POSITION");
@@ -138,15 +167,20 @@ function getBottom(a) {
 }
 
 function getDistance(a, b) {
+    console.log("Get dist");
+    console.log(a.x);
+    console.log(b.x);
+    console.log(a.y);
+    console.log(b.y);
     return { x: a.x - b.x, y: a.y - b.y };
 }
 
 function getRealHeight(a) {
-    return (2 * a.height) / a.zoom;
+    return a.height / a.zoom;
 }
 
 function getRealWidth(a) {
-    return (2 * a.width) / a.zoom;
+    return a.width / a.zoom;
 }
 
 function abs(a) {
