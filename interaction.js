@@ -140,7 +140,7 @@ function createJSON(objectArray) {
     const C = camera.position;
 
     objectArray.forEach((object) => {
-        const P = object.position;
+        const P = object.userData.intersection;
         const V = new THREE.Vector3().subVectors(P, C).normalize();
         const phi = math.acos(V.y);
         const theta = math.atan2(V.x, V.z);

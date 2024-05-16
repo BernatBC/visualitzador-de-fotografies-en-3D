@@ -46,7 +46,7 @@ function openCylindricalImages() {
     const originVector = new THREE.Vector3().subVectors(originProjected, origin).normalize();
 
     images.forEach((object) => {
-        const P = new THREE.Vector3().copy(object.position);
+        const P = new THREE.Vector3().copy(object.userData.intersection);
         var lProjected = new THREE.Vector3();
         var sProjected = new THREE.Vector3();
         infiniteLine.closestPointToPoint(P, true, lProjected);
