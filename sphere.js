@@ -34,6 +34,7 @@ function openSphericalImages() {
                 x: theta,
                 y: phi,
                 height: object.geometry.parameters.height,
+                width: object.geometry.parameters.width,
                 zoom: object.userData.zoom,
             });
         }
