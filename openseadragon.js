@@ -24,8 +24,8 @@ if (mode === "single") {
         var imageName = image.name.substr(0, image.name.lastIndexOf(".")) + ".dzi";
         sources.push({
             tileSource: "images/" + imageName,
-            x: image.x,
-            y: image.y,
+            x: image.x - getRealWidth(image) / 2,
+            y: image.y - getRealHeight(image) / 2,
             height: getRealHeight(image),
         });
     });
@@ -47,7 +47,7 @@ viewer.addHandler("open", function () {
 var overlapping = true;
 
 function distribute(images) {
-    while (overlapping) {
+    for (let i = 0; i < 3 && overlapping; i++) {
         console.log("--------");
         overlapping = false;
         for (let i = 0; i < images.length; i++) align(images[i], images, i);
@@ -61,20 +61,17 @@ function align(a, images, i) {
     images.forEach((b) => {
         if (a.name === b.name) return;
         var intersection = getIntersection(a, b);
-        if (!intersection) return;
+        if (!intersection) {
+            console.log("NO OVERLAPPING!!!!");
+            return;
+        }
         console.log("OVERLAPPING: " + a.name + ", " + b.name);
         overlapping = true;
-        //console.log(a);
-        //console.log(b);
-        //console.log(intersection);
+
         var diff = getDistance(a, b);
-        console.log("DIFF");
-        console.log(diff);
-        //console.log("Distance: " + dist.x + ", " + dist.y);
-        console.log("INTERSECTION: " + intersection.width + ", " + intersection.height);
         if (a.width < b.width / 2) {
             if (abs(diff.x) > abs(diff.y)) {
-                output.y += self.sign(diff.y) * intersection.height;
+                output.x += self.sign(diff.x) * intersection.width;
             } else {
                 output.y += self.sign(diff.y) * intersection.height;
             }
@@ -85,7 +82,6 @@ function align(a, images, i) {
                 output.y += self.sign(diff.y) * intersection.height;
             }
         }
-        console.log("output: " + output.x + ", " + output.y);
         if (output.x != 0 || output.y != 0) {
             moveImage(a, output, i);
             return;
@@ -94,26 +90,10 @@ function align(a, images, i) {
 }
 
 function getIntersection(a, b) {
-    console.log("A");
-    console.log("top: " + getTop(a));
-    console.log("bottom: " + getBottom(a));
-    console.log("left: " + getLeft(a));
-    console.log("right: " + getRight(a));
-    console.log("B");
-    console.log("top: " + getTop(b));
-    console.log("bottom: " + getBottom(b));
-    console.log("left: " + getLeft(a));
-    console.log("right: " + getRight(b));
-
     var left = max(getLeft(a), getLeft(b));
     var top = min(getTop(a), getTop(b));
     var right = min(getRight(a), getRight(b));
     var bottom = max(getBottom(a), getBottom(b));
-    console.log("I");
-    console.log("top: " + top);
-    console.log("bottom: " + bottom);
-    console.log("left: " + left);
-    console.log("right: " + right);
 
     if (bottom < top && right > left) {
         return {
@@ -130,14 +110,14 @@ function getIntersection(a, b) {
 }
 
 function moveImage(a, output, i) {
-    console.log("BEFORE");
-    console.log(a.name + ": " + a.x + ", " + a.y);
     a.x += output.x;
     a.y += output.y;
     console.log("NEW POSITION");
     console.log(a.name + ": " + a.x + ", " + a.y);
     var item = viewer.world.getItemAt(i);
-    item.setPosition(new OpenSeadragon.Point(a.x, a.y));
+    item.setPosition(
+        new OpenSeadragon.Point(a.x - getRealWidth(a) / 2, a.y - getRealHeight(a) / 2)
+    );
 }
 
 function max(a, b) {
@@ -189,6 +169,6 @@ function abs(a) {
 }
 
 function sign(a) {
-    if (a < 0) return -1;
-    return 1;
+    if (a < 0) return -1.05;
+    return 1.05;
 }
