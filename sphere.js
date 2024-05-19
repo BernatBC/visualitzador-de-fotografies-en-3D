@@ -24,7 +24,8 @@ function openSphericalImages() {
     let json = [];
 
     images.forEach((object) => {
-        const P = object.userData.intersection;
+        let P = object.userData.intersection;
+        if (P == null) P = object.position;
         if (C.distanceTo(P) < radius) {
             const V = new THREE.Vector3().subVectors(P, C).normalize();
             const phi = math.acos(V.y);

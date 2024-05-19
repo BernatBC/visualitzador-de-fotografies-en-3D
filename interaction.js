@@ -4,6 +4,7 @@ import { getAllImages } from "./single-image-loader.js";
 import { setScene as setPlaneScene } from "./plane.js";
 import { setScene as setSphereScene } from "./sphere.js";
 import { setScene as setCylinderScene } from "./cylinder.js";
+import { setSelection } from "./panel.js";
 import { create, all } from "mathjs";
 
 const math = create(all, {});
@@ -15,6 +16,7 @@ var mDragging = false;
 var mDown = false;
 var camera;
 var scene;
+var figureAdded = false;
 
 const HOVER_COLOR = 0xccffff;
 const SELECTION_COLOR = 0xd6b4fc;
@@ -67,7 +69,8 @@ function onClick() {
         const url = "openseadragon.html?mode=single&image=" + encodeURIComponent(object.name);
         window.open(url, "_blank");
         clearSelection();
-    } else if (!rangeImages.has(object)) {
+    } else if (figureAdded) return;
+    else if (!rangeImages.has(object)) {
         if (imagesSelected.has(object)) {
             imagesSelected.delete(object);
             object.material.color.setHex(HOVER_COLOR);
@@ -75,6 +78,7 @@ function onClick() {
             imagesSelected.add(object);
             object.material.color.setHex(SELECTION_COLOR);
         }
+        setSelection(imagesSelected.size);
     }
 
     render();
@@ -140,7 +144,8 @@ function createJSON(objectArray) {
     const C = camera.position;
 
     objectArray.forEach((object) => {
-        const P = object.userData.intersection;
+        let P = object.userData.intersection;
+        if (P == null) P = object.position;
         const V = new THREE.Vector3().subVectors(P, C).normalize();
         const phi = math.acos(V.y);
         const theta = math.atan2(V.x, V.z);
@@ -184,6 +189,10 @@ function firstImage(objects) {
     return null;
 }
 
+function setFigureBoolean(b) {
+    figureAdded = b;
+}
+
 export {
     addInteraction,
     openImagesToOpenSeaDragon,
@@ -192,4 +201,5 @@ export {
     getAllImages,
     clearRangeImages,
     paintRangeImages,
+    setFigureBoolean,
 };
