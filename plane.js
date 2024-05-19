@@ -132,7 +132,8 @@ function openPlane() {
     let json = [];
 
     images.forEach((object) => {
-        const P = object.userData.intersection;
+        let P = object.userData.intersection;
+        if (P == null) P = object.position;
         var P2 = new THREE.Vector3();
         abstractPlane.projectPoint(P, P2);
 
