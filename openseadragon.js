@@ -18,8 +18,7 @@ if (mode === "single") {
     parsedImages.forEach((image) => {
         image.x = parseFloat(image.x);
         image.y = parseFloat(image.y);
-        image.height = parseFloat(image.height);
-        image.width = parseFloat(image.width);
+        image.heightToWidthRatio = parseFloat(image.heightToWidthRatio);
         image.zoom = parseFloat(image.zoom);
         var imageName = image.name.substr(0, image.name.lastIndexOf(".")) + ".dzi";
         sources.push({
@@ -47,7 +46,7 @@ viewer.addHandler("open", function () {
 var overlapping = true;
 
 function distribute(images) {
-    for (let i = 0; i < 5 && overlapping; i++) {
+    for (let i = 0; i < 25 && overlapping; i++) {
         overlapping = false;
         for (let i = 0; i < images.length; i++) align(images[i], images, i);
     }
@@ -143,11 +142,13 @@ function getDistance(a, b) {
 }
 
 function getRealHeight(a) {
-    return a.height / a.zoom;
+    if (a.isLandscape) return a.heightToWidthRatio / a.zoom;
+    return 1 / a.zoom;
 }
 
 function getRealWidth(a) {
-    return a.width / a.zoom;
+    if (a.isLandscape) return 1 / a.zoom;
+    return 1 / (a.zoom * a.heightToWidthRatio);
 }
 
 function abs(a) {

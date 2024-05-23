@@ -34,7 +34,7 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
         let height = 1;
         if (isLandscape) height = heightToWidthRelation;
         else width = 1 / heightToWidthRelation;
-        console.log("Height: " + height + ", Width: " + width);
+
         const image_geometry = new THREE.PlaneGeometry(width / SCALE, height / SCALE)
             .rotateY(Math.PI)
             .translate(0, 0, 1);
@@ -92,8 +92,8 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
             zoom: zoom,
             direction: direction,
             intersection: null,
-            landscape: isLandscape,
-            heightToWidthRelation: heightToWidthRelation,
+            isLandscape: isLandscape,
+            heightToWidthRatio: heightToWidthRelation,
         };
         images.push(image_plane);
     });

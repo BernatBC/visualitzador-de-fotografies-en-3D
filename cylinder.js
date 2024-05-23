@@ -62,8 +62,8 @@ function openCylindricalImages() {
                 name: object.name,
                 x: x,
                 y: -y,
-                height: object.geometry.parameters.height,
-                width: object.geometry.parameters.width,
+                isLandscape: object.userData.isLandscape,
+                heightToWidthRatio: object.userData.heightToWidthRatio,
                 zoom: object.userData.zoom,
             });
         }
