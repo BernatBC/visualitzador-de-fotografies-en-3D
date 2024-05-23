@@ -24,14 +24,18 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
     );
 
     // Afegir imatge
-    const SCALE = 2000 * imageSize;
+    const SCALE = 5 * imageSize;
     const image_path = "/images/low_res/" + image_name;
     const image_texture = image_loader.load(image_path, function () {
         image_texture.colorSpace = THREE.SRGBColorSpace;
-        const image_geometry = new THREE.PlaneGeometry(
-            image_texture.image.width / SCALE,
-            image_texture.image.height / SCALE
-        )
+        const isLandscape = image_texture.image.width > image_texture.image.height;
+        const heightToWidthRelation = image_texture.image.height / image_texture.image.width;
+        let width = 1;
+        let height = 1;
+        if (isLandscape) height = heightToWidthRelation;
+        else width = 1 / heightToWidthRelation;
+        console.log("Height: " + height + ", Width: " + width);
+        const image_geometry = new THREE.PlaneGeometry(width / SCALE, height / SCALE)
             .rotateY(Math.PI)
             .translate(0, 0, 1);
         const image_material = new THREE.MeshBasicMaterial({
@@ -84,7 +88,13 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
         }
         image_plane.add(wireFrameObject);
         scene.add(image_plane);
-        image_plane.userData = { zoom: zoom, direction: direction, intersection: null };
+        image_plane.userData = {
+            zoom: zoom,
+            direction: direction,
+            intersection: null,
+            landscape: isLandscape,
+            heightToWidthRelation: heightToWidthRelation,
+        };
         images.push(image_plane);
     });
 }
