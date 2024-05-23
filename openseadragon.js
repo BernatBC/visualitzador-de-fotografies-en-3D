@@ -5,6 +5,9 @@ const mode = urlParams.get("mode");
 const retrievedObject = localStorage.getItem("images");
 const parsedImages = JSON.parse(retrievedObject);
 
+var overlapping;
+var regularZoom = true;
+
 console.log(mode);
 console.log(image);
 
@@ -23,14 +26,19 @@ if (mode === "single") {
         var imageName = image.name.substr(0, image.name.lastIndexOf(".")) + ".dzi";
         sources.push({
             tileSource: "images/" + imageName,
-            x: image.x - getRealWidth(image) / 2,
-            y: image.y - getRealHeight(image) / 2,
-            height: getRealHeight(image),
+            x: image.x - getWidth(image) / 2,
+            y: image.y - getHeight(image) / 2,
+            height: getHeight(image),
         });
     });
 }
 
 var viewer = OpenSeadragon({
+    zoomInButton: "zoom-in",
+    zoomOutButton: "zoom-out",
+    homeButton: "home",
+    fullPageButton: "full-page",
+
     id: "openseadragon1",
     prefixUrl: "openseadragon/images/",
     tileSources: sources,
@@ -43,9 +51,8 @@ viewer.addHandler("open", function () {
     distribute(parsedImages);
 });
 
-var overlapping = true;
-
 function distribute(images) {
+    overlapping = true;
     for (let i = 0; i < 25 && overlapping; i++) {
         overlapping = false;
         for (let i = 0; i < images.length; i++) align(images[i], images, i);
@@ -106,9 +113,26 @@ function moveImage(a, output, i) {
     a.x += output.x;
     a.y += output.y;
     var item = viewer.world.getItemAt(i);
-    item.setPosition(
-        new OpenSeadragon.Point(a.x - getRealWidth(a) / 2, a.y - getRealHeight(a) / 2)
-    );
+    item.setPosition(new OpenSeadragon.Point(a.x - getHeight(a) / 2, a.y - getHeight(a) / 2));
+}
+
+function invertZoom() {
+    regularZoom = !regularZoom;
+    if (regularZoom) {
+        document.getElementById("invert-zoom").style.display = "inline";
+        document.getElementById("regular-zoom").style.display = "none";
+    } else {
+        document.getElementById("invert-zoom").style.display = "none";
+        document.getElementById("regular-zoom").style.display = "inline";
+    }
+
+    for (let i = 0; i < parsedImages.length; i++) {
+        const a = parsedImages[i];
+        var item = viewer.world.getItemAt(i);
+        item.setHeight(getHeight(a));
+        item.setPosition(new OpenSeadragon.Point(a.x - getWidth(a) / 2, a.y - getHeight(a) / 2));
+    }
+    distribute(parsedImages);
 }
 
 function max(a, b) {
@@ -122,23 +146,33 @@ function min(a, b) {
 }
 
 function getLeft(a) {
-    return a.x - getRealWidth(a) / 2;
+    return a.x - getWidth(a) / 2;
 }
 
 function getRight(a) {
-    return a.x + getRealWidth(a) / 2;
+    return a.x + getWidth(a) / 2;
 }
 
 function getTop(a) {
-    return a.y + getRealHeight(a) / 2;
+    return a.y + getHeight(a) / 2;
 }
 
 function getBottom(a) {
-    return a.y - getRealHeight(a) / 2;
+    return a.y - getHeight(a) / 2;
 }
 
 function getDistance(a, b) {
     return { x: a.x - b.x, y: a.y - b.y };
+}
+
+function getHeight(a) {
+    if (regularZoom) return getRealHeight(a);
+    return getOppositeHeight(a);
+}
+
+function getWidth(a) {
+    if (regularZoom) return getRealWidth(a);
+    return getOppositeWidth(a);
 }
 
 function getRealHeight(a) {
@@ -149,6 +183,16 @@ function getRealHeight(a) {
 function getRealWidth(a) {
     if (a.isLandscape) return 1 / a.zoom;
     return 1 / (a.zoom * a.heightToWidthRatio);
+}
+
+function getOppositeHeight(a) {
+    if (a.isLandscape) return (a.heightToWidthRatio * a.zoom) / 3;
+    return a.zoom / 3;
+}
+
+function getOppositeWidth(a) {
+    if (a.isLandscape) return a.zoom / 3;
+    return a.zoom / (3 * a.heightToWidthRatio);
 }
 
 function abs(a) {
