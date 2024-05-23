@@ -1,0 +1,11 @@
+a {
+    padding: 5px;
+}
+
+a:hover {
+color: 808080
+}
+
+#ui {
+    margin: 10px;
+}

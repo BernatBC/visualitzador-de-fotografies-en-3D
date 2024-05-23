@@ -31,6 +31,11 @@ if (mode === "single") {
 }
 
 var viewer = OpenSeadragon({
+    zoomInButton: "zoom-in",
+    zoomOutButton: "zoom-out",
+    homeButton: "home",
+    fullPageButton: "full-page",
+
     id: "openseadragon1",
     prefixUrl: "openseadragon/images/",
     tileSources: sources,
