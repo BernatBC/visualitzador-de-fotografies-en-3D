@@ -133,20 +133,25 @@ function setWireframe(enable) {
 
 function setIntersectionPosition(scene) {
     images.forEach((i) => {
-        i.userData.intersection = new THREE.Vector3().copy(
-            getIntersectionPosition(scene, i.position, i.userData.direction)
+        const intersectionPosition = getIntersectionPosition(
+            scene,
+            i.position,
+            i.userData.direction
         );
+        if (intersectionPosition == null) i.userData.intersection = null;
+        else i.userData.intersection = new THREE.Vector3().copy(intersectionPosition);
     });
 }
 
 function getIntersectionPosition(scene, position, direction) {
     raycaster.set(position, direction);
     var intersections = raycaster.intersectObject(scene, true);
-    if (intersections.length == 0) return position;
+    if (intersections.length == 0) return null;
     for (let i = 0; i < intersections.length; i++)
-        if (intersections[i].object.name.startsWith("Mesh")) return intersections[i].point;
+        if (intersections[i].object.name.startsWith("Mesh") || !intersections[i].object.name)
+            return intersections[i].point;
 
-    return position;
+    return null;
 }
 
 export { loadImage, setSize, setOffset, getAllImages, setWireframe, setIntersectionPosition };
