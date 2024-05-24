@@ -57,6 +57,7 @@ viewer.addHandler("open", function () {
 function distribute(images) {
     overlapping = true;
     for (let i = 0; i < 25 && overlapping; i++) {
+        console.log("i: " + i);
         overlapping = false;
         for (let i = 0; i < images.length; i++) align(images[i], images, i);
     }
@@ -68,7 +69,10 @@ function align(a, images, i) {
         if (a.name === b.name) return;
         var intersection = getIntersection(a, b);
         if (!intersection) return;
-
+        console.log("intersection between:");
+        console.log(a);
+        console.log(b);
+        console.log("---");
         overlapping = true;
 
         var diff = getDistance(a, b);
@@ -90,6 +94,7 @@ function align(a, images, i) {
         moveImage(a, output, i);
         return;
     }
+    console.log("NO INTERSECTION");
 }
 
 function getIntersection(a, b) {
@@ -133,9 +138,9 @@ function invertZoom() {
         const a = parsedImages[i];
         var item = viewer.world.getItemAt(i);
         //var cornerPos = getCornerPosition(a);
-        //var centerPos = getCenterPosition(a);
-        //a.x = parseFloat(centerPos.x);
-        //a.y = parseFloat(centerPos.y);
+        var centerPos = getCenterPosition(a);
+        a.x = parseFloat(centerPos.x);
+        a.y = parseFloat(centerPos.y);
         item.setHeight(getHeight(a));
         item.setPosition(new OpenSeadragon.Point(a.x - getWidth(a) / 2, a.y - getHeight(a) / 2));
         //item.setPosition(new OpenSeadragon.Point(cornerPos.x, cornerPos.y));
