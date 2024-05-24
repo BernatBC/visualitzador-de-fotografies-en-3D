@@ -7,16 +7,29 @@
 </head>
 
 <div id="ui">
-    <a id="home"><i class="fa-solid fa-house"></i></a>
-    <a id="zoom-in"><i class="fas fa-magnifying-glass-plus"></i></a>
-    <a id="zoom-out"><i class="fas fa-magnifying-glass-minus"></i></a>
-    <a id="full-page"><i class="fa-solid fa-expand"></i></a>
-    <a id="invert-zoom" href="javascript:invertZoom()"
-        ><i class="fa-solid fa-up-right-and-down-left-from-center"></i
-    ></a>
-    <a id="regular-zoom" style="display: none" href="javascript:invertZoom()"
-        ><i class="fa-solid fa-down-left-and-up-right-to-center"></i
-    ></a>
+    <a id="home"><i class="fa-solid fa-camera"></i> Center camera</a>
+    <a id="zoom-in"><i class="fas fa-magnifying-glass-plus"></i> Zoom In</a>
+    <a id="zoom-out"><i class="fas fa-magnifying-glass-minus"></i> Zoom Out</a>
+    <a id="full-page"><i class="fa-solid fa-expand"></i> Full Screen</a>
+    <a id="invert-zoom" href="javascript:invertZoom()" title="Increase details"
+        ><i class="fa-solid fa-up-right-and-down-left-from-center"></i> Increase Deatils</a
+    >
+    <a id="regular-zoom" style="display: none" href="javascript:invertZoom()" title="Reduce details"
+        ><i class="fa-solid fa-down-left-and-up-right-to-center"></i> Reduce Details</a
+    >
+    <a
+        id="real-position"
+        style="display: none"
+        href="javascript:togglePosition()"
+        title="Set real position"
+        ><i class="fa-solid fa-location-dot"></i> Set real position</a
+    >
+    <a
+        id="intersection-position"
+        href="javascript:togglePosition()"
+        title="Set intersection position"
+        ><i class="fa-solid fa-location-dot"></i> Set intersection position</a
+    >
 </div>
 <div id="openseadragon1" style="width: 100vw"></div>
 <script src="openseadragon/openseadragon.min.js"></script>

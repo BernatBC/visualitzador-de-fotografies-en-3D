@@ -140,6 +140,7 @@ function setIntersectionPosition(scene) {
         );
         if (intersectionPosition == null) i.userData.intersection = null;
         else i.userData.intersection = new THREE.Vector3().copy(intersectionPosition);
+        //if (i.userData.intersection != null) i.visible = false;
     });
 }
 

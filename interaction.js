@@ -144,15 +144,14 @@ function createJSON(objectArray) {
     const C = camera.position;
 
     objectArray.forEach((object) => {
-        let P = object.userData.intersection;
-        if (P == null) P = object.position;
-        const V = new THREE.Vector3().subVectors(P, C).normalize();
-        const phi = math.acos(V.y);
-        const theta = math.atan2(V.x, V.z);
+        const real_pos = get2DCoords(C, object.position);
+        const intersection_pos = get2DCoords(C, object.userData.intersection);
         json.push({
             name: object.name,
-            x: theta,
-            y: phi,
+            x_real: real_pos.x,
+            y_real: real_pos.y,
+            x_inter: intersection_pos.x,
+            y_inter: intersection_pos.y,
             isLandscape: object.userData.isLandscape,
             heightToWidthRatio: object.userData.heightToWidthRatio,
             zoom: object.userData.zoom,
@@ -160,6 +159,16 @@ function createJSON(objectArray) {
     });
     console.log(json);
     return json;
+}
+
+function get2DCoords(C, P) {
+    console.log("---");
+    console.log(C);
+    console.log(P);
+    const V = new THREE.Vector3().subVectors(P, C).normalize();
+    const phi = math.acos(V.y);
+    const theta = math.atan2(V.x, V.z);
+    return { x: theta, y: phi };
 }
 
 function getSelectedImages() {

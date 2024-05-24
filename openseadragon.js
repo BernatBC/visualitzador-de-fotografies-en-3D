@@ -7,6 +7,7 @@ const parsedImages = JSON.parse(retrievedObject);
 
 var overlapping;
 var regularZoom = true;
+var realPosition = true;
 
 console.log(mode);
 console.log(image);
@@ -19,15 +20,17 @@ if (mode === "single") {
 } else {
     console.log(parsedImages);
     parsedImages.forEach((image) => {
-        image.x = parseFloat(image.x);
-        image.y = parseFloat(image.y);
+        const centerPos = getCenterPosition(image);
+        image.x = parseFloat(centerPos.x);
+        image.y = parseFloat(centerPos.y);
         image.heightToWidthRatio = parseFloat(image.heightToWidthRatio);
         image.zoom = parseFloat(image.zoom);
         var imageName = image.name.substr(0, image.name.lastIndexOf(".")) + ".dzi";
+        const cornerPos = getCornerPosition(image);
         sources.push({
             tileSource: "images/" + imageName,
-            x: image.x - getWidth(image) / 2,
-            y: image.y - getHeight(image) / 2,
+            x: cornerPos.x,
+            y: cornerPos.y,
             height: getHeight(image),
         });
     });
@@ -129,8 +132,37 @@ function invertZoom() {
     for (let i = 0; i < parsedImages.length; i++) {
         const a = parsedImages[i];
         var item = viewer.world.getItemAt(i);
+        //var cornerPos = getCornerPosition(a);
+        //var centerPos = getCenterPosition(a);
+        //a.x = parseFloat(centerPos.x);
+        //a.y = parseFloat(centerPos.y);
         item.setHeight(getHeight(a));
         item.setPosition(new OpenSeadragon.Point(a.x - getWidth(a) / 2, a.y - getHeight(a) / 2));
+        //item.setPosition(new OpenSeadragon.Point(cornerPos.x, cornerPos.y));
+    }
+    distribute(parsedImages);
+}
+
+function togglePosition() {
+    realPosition = !realPosition;
+    if (realPosition) {
+        document.getElementById("intersection-position").style.display = "inline";
+        document.getElementById("real-position").style.display = "none";
+    } else {
+        document.getElementById("intersection-position").style.display = "none";
+        document.getElementById("real-position").style.display = "inline";
+    }
+
+    for (let i = 0; i < parsedImages.length; i++) {
+        const a = parsedImages[i];
+        var item = viewer.world.getItemAt(i);
+        //var cornerPos = getCornerPosition(a);
+        var centerPos = getCenterPosition(a);
+        a.x = parseFloat(centerPos.x);
+        a.y = parseFloat(centerPos.y);
+        item.setHeight(getHeight(a));
+        item.setPosition(new OpenSeadragon.Point(a.x - getWidth(a) / 2, a.y - getHeight(a) / 2));
+        //item.setPosition(new OpenSeadragon.Point(cornerPos.x, cornerPos.y));
     }
     distribute(parsedImages);
 }
@@ -175,6 +207,16 @@ function getWidth(a) {
     return getOppositeWidth(a);
 }
 
+function getCenterPosition(a) {
+    if (realPosition) return { x: a.x_real, y: a.y_real };
+    return { x: a.x_inter, y: a.y_inter };
+}
+
+function getCornerPosition(a) {
+    if (realPosition) return { x: a.x_real - getWidth(a) / 2, y: a.y_real - getHeight(a) };
+    return { x: a.x_inter - getWidth(a), y: a.y_inter - getHeight(a) };
+}
+
 function getRealHeight(a) {
     if (a.isLandscape) return a.heightToWidthRatio / a.zoom;
     return 1 / a.zoom;
@@ -201,6 +243,6 @@ function abs(a) {
 }
 
 function sign(a) {
-    if (a < 0) return -1.05;
-    return 1.05;
+    if (a < 0) return -1.01;
+    return 1.01;
 }
