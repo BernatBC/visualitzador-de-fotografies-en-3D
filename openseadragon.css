@@ -1,12 +1,21 @@
 a {
     color: 000000;
-    padding: 5px;
+margin: 5px;
 }
 
 a:hover {
-color: 808080
+color: rgb(80,80,255);
 }
 
 #ui {
     margin: 10px;
+    border-radius: 10px;
+    padding: 5px;
+    position: absolute;
+    background-color: rgb(200, 200, 200);
+    z-index: 1;
+}
+
+.container {
+    position: relative;
 }

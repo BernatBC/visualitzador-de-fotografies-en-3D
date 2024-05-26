@@ -46,8 +46,7 @@ function openCylindricalImages() {
     const originVector = new THREE.Vector3().subVectors(originProjected, origin).normalize();
 
     images.forEach((object) => {
-        let P = new THREE.Vector3().copy(object.userData.intersection);
-        if (P == null) P = object.position;
+        let P = object.position;
         var lProjected = new THREE.Vector3();
         var sProjected = new THREE.Vector3();
         infiniteLine.closestPointToPoint(P, true, lProjected);
@@ -58,10 +57,11 @@ function openCylindricalImages() {
             const pointVector = new THREE.Vector3().subVectors(sProjected, P).normalize();
             const x = originVector.angleTo(pointVector);
             var y = centerPoint.distanceTo(sProjected);
+            if (sProjected.y > centerPoint.y) y = -y;
             json.push({
                 name: object.name,
                 x: x,
-                y: -y,
+                y: y,
                 isLandscape: object.userData.isLandscape,
                 heightToWidthRatio: object.userData.heightToWidthRatio,
                 zoom: object.userData.zoom,
@@ -71,7 +71,7 @@ function openCylindricalImages() {
 
     let jsonContent = JSON.stringify(json);
     localStorage.setItem("images", jsonContent);
-    const url = "openseadragon.html?mode=spherical";
+    const url = "openseadragon.html?mode=cylindrical";
 
     window.open(url, "_blank");
     clearSelection();
