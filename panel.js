@@ -138,7 +138,7 @@ function createPanel() {
     };
 
     folder1.add(settings1, "Image size", 0.0, 5.0, 0.01).onChange(setSize);
-    folder1.add(settings1, "Image separation", 0, 2.0, 0.01).onChange(setOffset);
+    folder1.add(settings1, "Image separation", 0.01, 2.0, 0.01).onChange(setOffset);
     folder1.add(settings1, "Image wireframe").onChange(setWireframe);
 
     folder2.add(settings2, "Open to OpenSeaDragon");
