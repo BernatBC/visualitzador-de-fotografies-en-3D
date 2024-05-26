@@ -1,11 +1,10 @@
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import { setSize, setOffset, setWireframe } from "./single-image-loader.js";
-import { openImagesToOpenSeaDragon, clearSelection, setFigureBoolean } from "./interaction.js";
+import { openImagesToOpenSeaDragon, clearSelection, setSelectionMode } from "./interaction.js";
 
-import { applySphericalRadius, openSphericalImages, cancelSphere, createSphere } from "./sphere.js";
+import { applySphericalRadius, openSphericalImages, cancelSphere } from "./sphere.js";
 
 import {
-    createPlane,
     cancelPlane,
     changePlaneDistance,
     changePlaneHeight,
@@ -14,7 +13,6 @@ import {
 } from "./plane.js";
 
 import {
-    createCylinder,
     cancelCylinder,
     applyCylindricalRadius,
     openCylindricalImages,
@@ -29,6 +27,8 @@ const folder3 = panel.addFolder("Sphere");
 const folder4 = panel.addFolder("Plane");
 const folder5 = panel.addFolder("Cylinder");
 
+const infoElement = document.getElementById("info");
+
 function createPanel() {
     let settings1 = {
         "Image size": 1.0,
@@ -39,25 +39,35 @@ function createPanel() {
     let settings2 = {
         "Clear Selection": function () {
             clearSelection();
-            setSelection(0);
+
+            hideFolder("Individual Selection");
+            showFolder("Sphere");
+            showFolder("Plane");
+            showFolder("Cylinder");
         },
         "Open to OpenSeaDragon": function () {
             openImagesToOpenSeaDragon();
-            setSelection(0);
+
+            hideFolder("Individual Selection");
+            showFolder("Sphere");
+            showFolder("Plane");
+            showFolder("Cylinder");
         },
     };
 
     let settings3 = {
         "Create Sphere": function () {
-            createSphere();
-            showController("Sphere", "Radius");
-            showController("Sphere", "Open to OpenSeaDragon");
             showController("Sphere", "Cancel");
             hideController("Sphere", "Create Sphere");
+            hideController("Sphere", "Radius");
+            hideController("Sphere", "Open to OpenSeaDragon");
+
             hideFolder("Individual Selection");
             hideFolder("Plane");
             hideFolder("Cylinder");
-            setFigureBoolean(true);
+
+            setMessage("Select 1 image");
+            setSelectionMode("sphere");
         },
         "Open to OpenSeaDragon": function () {
             openSphericalImages();
@@ -65,28 +75,36 @@ function createPanel() {
         Radius: 0.5,
         Cancel: function () {
             cancelSphere();
-            hideController("Sphere", "Radius");
-            hideController("Sphere", "Open to OpenSeaDragon");
+
             hideController("Sphere", "Cancel");
             showController("Sphere", "Create Sphere");
-            setSelection(0);
-            setFigureBoolean(false);
+            hideController("Sphere", "Radius");
+            hideController("Sphere", "Open to OpenSeaDragon");
+
+            showFolder("Plane");
+            showFolder("Cylinder");
+            hideFolder("Individual Selection");
+
+            resetMessage();
+            setSelectionMode("multi");
         },
     };
 
     let settings4 = {
         "Create Plane": function () {
-            createPlane();
-            showController("Plane", "Width");
-            showController("Plane", "Height");
-            showController("Plane", "Max distance");
-            showController("Plane", "Open to OpenSeaDragon");
+            hideController("Plane", "Width");
+            hideController("Plane", "Height");
+            hideController("Plane", "Max distance");
+            hideController("Plane", "Open to OpenSeaDragon");
             showController("Plane", "Cancel");
             hideController("Plane", "Create Plane");
+
             hideFolder("Individual Selection");
             hideFolder("Sphere");
             hideFolder("Cylinder");
-            setFigureBoolean(true);
+
+            setMessage("Select 3 images");
+            setSelectionMode("plane");
         },
         Cancel: function () {
             cancelPlane();
@@ -96,8 +114,13 @@ function createPanel() {
             hideController("Plane", "Open to OpenSeaDragon");
             hideController("Plane", "Cancel");
             showController("Plane", "Create Plane");
-            setSelection(0);
-            setFigureBoolean(false);
+
+            showFolder("Sphere");
+            showFolder("Cylinder");
+            hideFolder("Individual Selection");
+
+            resetMessage();
+            setSelectionMode("multi");
         },
         Width: 1,
         Height: 1,
@@ -109,16 +132,18 @@ function createPanel() {
 
     let settings5 = {
         "Create Cylinder": function () {
-            createCylinder();
-            showController("Cylinder", "Radius");
-            showController("Cylinder", "Height");
-            showController("Cylinder", "Open to OpenSeaDragon");
+            hideController("Cylinder", "Radius");
+            hideController("Cylinder", "Height");
+            hideController("Cylinder", "Open to OpenSeaDragon");
             showController("Cylinder", "Cancel");
             hideController("Cylinder", "Create Cylinder");
+
             hideFolder("Individual Selection");
             hideFolder("Sphere");
             hideFolder("Plane");
-            setFigureBoolean(true);
+
+            setMessage("Select 2 images");
+            setSelectionMode("cylinder");
         },
         "Open to OpenSeaDragon": function () {
             openCylindricalImages();
@@ -127,18 +152,24 @@ function createPanel() {
         Height: 1.0,
         Cancel: function () {
             cancelCylinder();
+
             hideController("Cylinder", "Radius");
             hideController("Cylinder", "Height");
             hideController("Cylinder", "Open to OpenSeaDragon");
             hideController("Cylinder", "Cancel");
             showController("Cylinder", "Create Cylinder");
-            setSelection(0);
-            setFigureBoolean(false);
+
+            showFolder("Sphere");
+            showFolder("Plane");
+            hideFolder("Individual Selection");
+
+            resetMessage();
+            setSelectionMode("multi");
         },
     };
 
     folder1.add(settings1, "Image size", 0.0, 5.0, 0.01).onChange(setSize);
-    folder1.add(settings1, "Image separation", 0, 2.0, 0.01).onChange(setOffset);
+    folder1.add(settings1, "Image separation", 0.01, 2.0, 0.01).onChange(setOffset);
     folder1.add(settings1, "Image wireframe").onChange(setWireframe);
 
     folder2.add(settings2, "Open to OpenSeaDragon");
@@ -164,9 +195,9 @@ function createPanel() {
 
     // Initialize panel
     hideFolder("Individual Selection");
-    hideFolder("Sphere");
-    hideFolder("Plane");
-    hideFolder("Cylinder");
+    //hideFolder("Sphere");
+    //hideFolder("Plane");
+    //hideFolder("Cylinder");
     hideController("Sphere", "Radius");
     hideController("Sphere", "Open to OpenSeaDragon");
     hideController("Sphere", "Cancel");
@@ -219,34 +250,59 @@ function showFolder(folder) {
     });
 }
 
-function setSelection(number) {
-    console.log("Selected: " + number);
-    if (number === 0) {
-        hideFolder("Individual Selection");
-        hideFolder("Sphere");
-        hideFolder("Plane");
-        hideFolder("Cylinder");
-    } else if (number === 1) {
-        showFolder("Individual Selection");
-        showFolder("Sphere");
-        hideFolder("Plane");
-        hideFolder("Cylinder");
-    } else if (number === 2) {
-        showFolder("Individual Selection");
-        hideFolder("Sphere");
-        hideFolder("Plane");
-        showFolder("Cylinder");
-    } else if (number === 3) {
-        showFolder("Individual Selection");
-        hideFolder("Sphere");
-        showFolder("Plane");
-        hideFolder("Cylinder");
-    } else {
-        showFolder("Individual Selection");
-        hideFolder("Sphere");
-        hideFolder("Plane");
-        hideFolder("Cylinder");
-    }
+function setMessage(message) {
+    infoElement.innerText = message;
 }
 
-export { createPanel, setSliderValue, setSelection };
+function resetMessage() {
+    infoElement.innerText =
+        "Open an image with left click, select images with right click or create a figure";
+}
+
+function setSphereSettings() {
+    showController("Sphere", "Cancel");
+    hideController("Sphere", "Create Sphere");
+    showController("Sphere", "Radius");
+    showController("Sphere", "Open to OpenSeaDragon");
+
+    setMessage("");
+}
+
+function setCylinderSettings() {
+    showController("Cylinder", "Radius");
+    showController("Cylinder", "Height");
+    showController("Cylinder", "Open to OpenSeaDragon");
+    showController("Cylinder", "Cancel");
+    hideController("Cylinder", "Create Cylinder");
+
+    setMessage("");
+}
+
+function setPlaneSettings() {
+    showController("Plane", "Width");
+    showController("Plane", "Height");
+    showController("Plane", "Max distance");
+    showController("Plane", "Open to OpenSeaDragon");
+    showController("Plane", "Cancel");
+    hideController("Plane", "Create Plane");
+
+    setMessage("");
+}
+
+function setMultiSettings() {
+    showFolder("Individual Selection");
+    hideFolder("Sphere");
+    hideFolder("Plane");
+    hideFolder("Cylinder");
+
+    setMessage("");
+}
+
+export {
+    createPanel,
+    setSliderValue,
+    setSphereSettings,
+    setCylinderSettings,
+    setPlaneSettings,
+    setMultiSettings,
+};

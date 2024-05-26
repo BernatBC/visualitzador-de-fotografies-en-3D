@@ -13,13 +13,18 @@ THREE.Cache.enabled = true;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xdadada);
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / (window.innerHeight - 25),
+    0.1,
+    1000
+);
 camera.position.set(5, 5, 5);
 
 const renderer = new THREE.WebGLRenderer({
     antialias: true,
 });
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth, window.innerHeight - 25);
 document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -68,9 +73,9 @@ addInteraction(camera, scene);
 window.addEventListener("resize", onWindowResize, false);
 
 function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.aspect = window.innerWidth / (window.innerHeight - 25);
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth, window.innerHeight - 25);
     render();
 }
 

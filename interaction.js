@@ -1,10 +1,15 @@
 import * as THREE from "three";
 import { render } from "./main.js";
 import { getAllImages } from "./single-image-loader.js";
-import { setScene as setPlaneScene } from "./plane.js";
-import { setScene as setSphereScene } from "./sphere.js";
-import { setScene as setCylinderScene } from "./cylinder.js";
-import { setSelection } from "./panel.js";
+import { createPlane, setScene as setPlaneScene } from "./plane.js";
+import { createSphere, setScene as setSphereScene } from "./sphere.js";
+import { createCylinder, setScene as setCylinderScene } from "./cylinder.js";
+import {
+    setSphereSettings,
+    setCylinderSettings,
+    setPlaneSettings,
+    setMultiSettings,
+} from "./panel.js";
 import { create, all } from "mathjs";
 
 const math = create(all, {});
@@ -16,7 +21,7 @@ var mDragging = false;
 var mDown = false;
 var camera;
 var scene;
-var figureAdded = false;
+var mode = "multi";
 
 const HOVER_COLOR = 0xccffff;
 const SELECTION_COLOR = 0xd6b4fc;
@@ -69,16 +74,24 @@ function onClick() {
         const url = "openseadragon.html?mode=single&image=" + encodeURIComponent(object.name);
         window.open(url, "_blank");
         clearSelection();
-    } else if (figureAdded) return;
-    else if (!rangeImages.has(object)) {
+    } else if (!rangeImages.has(object)) {
         if (imagesSelected.has(object)) {
             imagesSelected.delete(object);
             object.material.color.setHex(HOVER_COLOR);
         } else {
             imagesSelected.add(object);
             object.material.color.setHex(SELECTION_COLOR);
+            if (mode === "sphere" && imagesSelected.size == 1) {
+                createSphere();
+                setSphereSettings();
+            } else if (mode === "cylinder" && imagesSelected.size == 2) {
+                createCylinder();
+                setCylinderSettings();
+            } else if (mode === "plane" && imagesSelected.size == 3) {
+                createPlane();
+                setPlaneSettings();
+            } else if (mode === "multi") setMultiSettings();
         }
-        setSelection(imagesSelected.size);
     }
 
     render();
@@ -198,8 +211,8 @@ function firstImage(objects) {
     return null;
 }
 
-function setFigureBoolean(b) {
-    figureAdded = b;
+function setSelectionMode(m) {
+    mode = m;
 }
 
 export {
@@ -210,5 +223,5 @@ export {
     getAllImages,
     clearRangeImages,
     paintRangeImages,
-    setFigureBoolean,
+    setSelectionMode,
 };
