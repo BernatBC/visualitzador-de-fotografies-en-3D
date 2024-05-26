@@ -26,7 +26,7 @@ function openCylindricalImages() {
     let images = getAllImages();
     let json = [];
 
-    const V = new THREE.Vector3(vector.x, vector.y, vector.z).multiplyScalar(height);
+    const V = new THREE.Vector3(vector.x, vector.y, vector.z).multiplyScalar(height / 2);
     const endPoint1 = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z).add(V);
     const endPoint2 = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z).sub(V);
     const infiniteVector = new THREE.Vector3(V.x, V.y, V.z).multiplyScalar(1000);
@@ -118,7 +118,7 @@ function createCylinder() {
     cylinderObject.position.set(centerPoint.x, centerPoint.y, centerPoint.z);
 
     centerPoint = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z);
-    vector = new THREE.Vector3(V.x, V.y, V.z).normalize().divideScalar(2).multiplyScalar(height);
+    vector = new THREE.Vector3(V.x, V.y, V.z).normalize();
     clearSelection();
     paintRange();
     setSliderValue("Cylinder", "Height", height);
@@ -144,7 +144,7 @@ function cancelCylinder() {
 function paintRange() {
     let images = getAllImages();
     let rangeImages = new Set();
-    const V = new THREE.Vector3(vector.x, vector.y, vector.z).multiplyScalar(height);
+    const V = new THREE.Vector3(vector.x, vector.y, vector.z).multiplyScalar(height / 2);
     const endPoint1 = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z).add(V);
     const endPoint2 = new THREE.Vector3(centerPoint.x, centerPoint.y, centerPoint.z).sub(V);
     const infiniteVector = new THREE.Vector3(V.x, V.y, V.z).multiplyScalar(1000);
