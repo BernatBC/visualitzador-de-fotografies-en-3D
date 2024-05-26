@@ -1,7 +1,9 @@
 a {
     color: 000000;
     text-decoration: none;
-margin: 5px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin: 3px
 }
 
 a:hover {
