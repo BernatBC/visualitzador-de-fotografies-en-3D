@@ -26,6 +26,7 @@ function openSphericalImages() {
     images.forEach((object) => {
         let P_inter = object.userData.intersection;
         let P_real = object.position;
+        if (P_inter == null) return;
         if (C.distanceTo(P_real) < radius) {
             const real_pos = get2DCoords(P_real);
             const inter_pos = get2DCoords(P_inter);

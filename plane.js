@@ -134,6 +134,7 @@ function openPlane() {
     images.forEach((object) => {
         const P_real = object.position;
         const P_inter = object.userData.intersection;
+        if (P_inter == null) return;
         var P2 = new THREE.Vector3();
         abstractPlane.projectPoint(P_real, P2);
 

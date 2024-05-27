@@ -48,6 +48,7 @@ function openCylindricalImages() {
     images.forEach((object) => {
         const P_real = new THREE.Vector3().copy(object.position);
         const P_inter = new THREE.Vector3().copy(object.userData.intersection);
+        if (P_inter == null) return;
 
         var lProjected = new THREE.Vector3();
         var sProjected = new THREE.Vector3();

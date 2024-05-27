@@ -58,7 +58,6 @@ createPanel();
 const gltfLoader = new GLTFLoader();
 //gltfLoader.load("models/pedret10/MNAC-AbsSud-LowPoly.glb", (object) => {
 gltfLoader.load("models/pedret/pedret_XII_text4K.glb", (object) => {
-    const wrapper = new THREE.Object3D();
     const matrix = new THREE.Matrix4().set(
         -0.996301,
         0.069092,
@@ -80,18 +79,18 @@ gltfLoader.load("models/pedret/pedret_XII_text4K.glb", (object) => {
     const pos = new THREE.Vector3().setFromMatrixPosition(matrix);
     const scale = new THREE.Vector3().setFromMatrixScale(matrix);
     const rotation = new THREE.Quaternion().setFromRotationMatrix(matrix);
-    console.log(pos);
-    console.log(scale);
-    console.log(rotation);
+
+    console.log(object.scene);
+
     object.scene.position.copy(pos);
     object.scene.scale.copy(scale);
     object.scene.quaternion.copy(rotation);
 
-    console.log(object.scene);
-
+    const wrapper = new THREE.Object3D();
+    wrapper.name = "model";
     wrapper.add(object.scene);
-
     wrapper.rotateX(-Math.PI / 2);
+
     scene.add(wrapper);
     setIntersectionPosition(scene);
 });
