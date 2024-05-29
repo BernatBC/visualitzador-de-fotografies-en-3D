@@ -132,22 +132,26 @@ function openPlane() {
     let json = [];
 
     images.forEach((object) => {
-        let P = object.userData.intersection;
-        if (P == null) P = object.position;
+        const P_real = object.position;
+        const P_inter = object.userData.intersection;
+        if (P_inter == null) return;
         var P2 = new THREE.Vector3();
-        abstractPlane.projectPoint(P, P2);
+        abstractPlane.projectPoint(P_real, P2);
 
-        const coords = worldCoordsToPlaneCoords(P);
+        const real_pos = get2DCoords(P_real);
 
         if (
             P.distanceTo(P2) < planeDistance / 2 &&
-            math.abs(coords.x) < planeWidth / 2 &&
-            math.abs(coords.y) < planeHeight / 2
+            math.abs(real_pos.x) < planeWidth / 2 &&
+            math.abs(real_pos.y) < planeHeight / 2
         ) {
+            const inter_pos = get2DCoords(P_inter);
             json.push({
                 name: object.name,
-                x: coords.x,
-                y: coords.y,
+                x_real: real_pos.x,
+                y_real: real_pos.y,
+                x_inter: inter_pos.x,
+                y_inter: inter_pos.y,
                 isLandscape: object.userData.isLandscape,
                 heightToWidthRatio: object.userData.heightToWidthRatio,
                 zoom: object.userData.zoom,
@@ -161,6 +165,12 @@ function openPlane() {
 
     window.open(url, "_blank");
     //cancelPlane();
+}
+
+function get2DCoords(P) {
+    var P2 = new THREE.Vector3();
+    abstractPlane.projectPoint(P, P2);
+    return worldCoordsToPlaneCoords(P);
 }
 
 function worldCoordsToPlaneCoords(P) {

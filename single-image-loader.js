@@ -140,6 +140,7 @@ function setIntersectionPosition(scene) {
         );
         if (intersectionPosition == null) i.userData.intersection = null;
         else i.userData.intersection = new THREE.Vector3().copy(intersectionPosition);
+        //if (i.userData.intersection != null) i.visible = false;
     });
 }
 
@@ -147,10 +148,19 @@ function getIntersectionPosition(scene, position, direction) {
     raycaster.set(position, direction);
     var intersections = raycaster.intersectObject(scene, true);
     if (intersections.length == 0) return null;
-    for (let i = 0; i < intersections.length; i++)
-        if (intersections[i].object.name.startsWith("Mesh") || !intersections[i].object.name)
+    for (let i = 0; i < intersections.length; i++) {
+        if (
+            !intersections[i].object.name ||
+            intersections[i].object.name === "model" ||
+            intersections[i].object.name.startsWith("PEDRET")
+        )
             return intersections[i].point;
-
+        else if (
+            intersections[i].object.name != "wireframe-line" &&
+            !intersections[i].object.name.startsWith("Sant Quirze de Pedret by Zones/")
+        )
+            console.log(intersections[i].object.name);
+    }
     return null;
 }
 

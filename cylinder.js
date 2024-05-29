@@ -46,22 +46,25 @@ function openCylindricalImages() {
     const originVector = new THREE.Vector3().subVectors(originProjected, origin).normalize();
 
     images.forEach((object) => {
-        let P = object.position;
+        const P_real = new THREE.Vector3().copy(object.position);
+        const P_inter = new THREE.Vector3().copy(object.userData.intersection);
+        if (P_inter == null) return;
+
         var lProjected = new THREE.Vector3();
         var sProjected = new THREE.Vector3();
-        infiniteLine.closestPointToPoint(P, true, lProjected);
-        segment.closestPointToPoint(P, true, sProjected);
-        const lineDistance = lProjected.distanceTo(P).toFixed(5);
-        const segmentDistance = sProjected.distanceTo(P).toFixed(5);
+        infiniteLine.closestPointToPoint(P_real, true, lProjected);
+        segment.closestPointToPoint(P_real, true, sProjected);
+        const lineDistance = lProjected.distanceTo(P_real).toFixed(5);
+        const segmentDistance = sProjected.distanceTo(P_real).toFixed(5);
         if (lineDistance < radius && lineDistance == segmentDistance) {
-            const pointVector = new THREE.Vector3().subVectors(sProjected, P).normalize();
-            const x = originVector.angleTo(pointVector);
-            var y = centerPoint.distanceTo(sProjected);
-            if (sProjected.y > centerPoint.y) y = -y;
+            const real_pos = get2DCoords(P_real, segment, originVector);
+            const inter_pos = get2DCoords(P_inter, segment, originVector);
             json.push({
                 name: object.name,
-                x: x,
-                y: y,
+                x_real: real_pos.x,
+                y_real: real_pos.y,
+                x_inter: inter_pos.x,
+                y_inter: inter_pos.y,
                 isLandscape: object.userData.isLandscape,
                 heightToWidthRatio: object.userData.heightToWidthRatio,
                 zoom: object.userData.zoom,
@@ -75,6 +78,15 @@ function openCylindricalImages() {
 
     window.open(url, "_blank");
     clearSelection();
+}
+
+function get2DCoords(P, segment, originVector) {
+    var sProjected = new THREE.Vector3();
+    segment.closestPointToPoint(P, true, sProjected);
+    const pointVector = new THREE.Vector3().subVectors(sProjected, P).normalize();
+    const x = originVector.angleTo(pointVector);
+    const y = centerPoint.distanceTo(sProjected);
+    return { x: x, y: -y };
 }
 
 function applyCylindricalRadius(r) {

@@ -24,16 +24,18 @@ function openSphericalImages() {
     let json = [];
 
     images.forEach((object) => {
-        let P = object.userData.intersection;
-        if (P == null) P = object.position;
-        if (C.distanceTo(P) < radius) {
-            const V = new THREE.Vector3().subVectors(P, C).normalize();
-            const phi = math.acos(V.y);
-            const theta = math.atan2(V.x, V.z);
+        let P_inter = object.userData.intersection;
+        let P_real = object.position;
+        if (P_inter == null) return;
+        if (C.distanceTo(P_real) < radius) {
+            const real_pos = get2DCoords(P_real);
+            const inter_pos = get2DCoords(P_inter);
             json.push({
                 name: object.name,
-                x: theta,
-                y: phi,
+                x_real: real_pos.x,
+                y_real: real_pos.y,
+                x_inter: inter_pos.x,
+                y_inter: inter_pos.y,
                 isLandscape: object.userData.isLandscape,
                 heightToWidthRatio: object.userData.heightToWidthRatio,
                 zoom: object.userData.zoom,
@@ -47,6 +49,13 @@ function openSphericalImages() {
 
     window.open(url, "_blank");
     clearSelection();
+}
+
+function get2DCoords(P) {
+    const V = new THREE.Vector3().subVectors(P, C).normalize();
+    const phi = math.acos(V.y);
+    const theta = math.atan2(V.x, V.z);
+    return { x: theta, y: phi };
 }
 
 function applySphericalRadius(r) {
