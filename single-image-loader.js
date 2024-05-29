@@ -59,7 +59,7 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
             const material = new THREE.LineBasicMaterial({
                 color: 0x0000ff,
                 transparent: true,
-                opacity: 0.25,
+                opacity: 0.5,
                 linewidth: 0.1,
             });
             const line = new THREE.Line(geometry, material);
@@ -79,7 +79,7 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
             const material = new THREE.LineBasicMaterial({
                 color: 0x0000ff,
                 transparent: true,
-                opacity: 0.25,
+                opacity: 0.5,
                 linewidth: 0.1,
             });
             const line = new THREE.Line(geometry, material);
