@@ -66,7 +66,7 @@ function onClick() {
 
     var intersects = raycaster.intersectObject(scene, true);
     if (intersects.length == 0) return;
-
+    console.log(intersects[0]);
     var object = firstImage(intersects);
     if (object == null) return;
 

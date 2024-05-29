@@ -86,6 +86,8 @@ gltfLoader.load("models/pedret/pedret_XII_text4K.glb", (object) => {
     object.scene.scale.copy(scale);
     object.scene.quaternion.copy(rotation);
 
+    object.scene.name = "model";
+
     const wrapper = new THREE.Object3D();
     wrapper.name = "model";
     wrapper.add(object.scene);
