@@ -39,7 +39,7 @@ chmod +x makeDZI.sh # Give execution permissions
 Now, add your model `pedret_XII_text4K.glb` into `public/models/pedret`. In the case you have a different one, you'll need to change the model name inside `main.js`.
 
 ### 6. Place your Bundler files
-Now, place your `MNAC-AbsSud-CamerasRegistration.out` inside `public/out-files/MNAC-AbsidiolaSud`. Then modify the paths of your `MNAC-AbsSud-CamerasList.lst`. To do so execute `convert_picture_list.py`. Before running it, modify the paths inside `convert_picture_list.py` to fit your needs.
+Now, place your `MNAC-AbsSud-CamerasRegistration.out` inside `public/out-files/MNAC-AbsidiolaSud`. Then modify the paths of your `MNAC-AbsSud-CamerasList.lst`. To do so execute `convert_picture_list.py`. Before running it, modify the paths inside `convert_picture_list.py` to fit your needs. Place the outputted file into `public/out-files/MNAC-AbsidiolaSud`.
 
 ```bash
 python3 convert_picture_list.py # Run the script
