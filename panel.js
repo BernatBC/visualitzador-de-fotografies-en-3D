@@ -32,7 +32,7 @@ const infoElement = document.getElementById("info");
 function createPanel() {
     let settings1 = {
         "Image size": 1.0,
-        "Image separation": 0.2,
+        "Camera image separation": 0.2,
         "Image wireframe": true,
     };
 
@@ -45,7 +45,7 @@ function createPanel() {
             showFolder("Plane");
             showFolder("Cylinder");
         },
-        "Open to OpenSeaDragon": function () {
+        "Open in 2D viewer": function () {
             openImagesToOpenSeaDragon();
 
             hideFolder("Individual Selection");
@@ -60,7 +60,7 @@ function createPanel() {
             showController("Sphere", "Cancel");
             hideController("Sphere", "Create Sphere");
             hideController("Sphere", "Radius");
-            hideController("Sphere", "Open to OpenSeaDragon");
+            hideController("Sphere", "Open in 2D viewer");
 
             hideFolder("Individual Selection");
             hideFolder("Plane");
@@ -69,7 +69,7 @@ function createPanel() {
             setMessage("Select 1 image");
             setSelectionMode("sphere");
         },
-        "Open to OpenSeaDragon": function () {
+        "Open in 2D viewer": function () {
             openSphericalImages();
         },
         Radius: 0.5,
@@ -79,7 +79,7 @@ function createPanel() {
             hideController("Sphere", "Cancel");
             showController("Sphere", "Create Sphere");
             hideController("Sphere", "Radius");
-            hideController("Sphere", "Open to OpenSeaDragon");
+            hideController("Sphere", "Open in 2D viewer");
 
             showFolder("Plane");
             showFolder("Cylinder");
@@ -95,7 +95,7 @@ function createPanel() {
             hideController("Plane", "Width");
             hideController("Plane", "Height");
             hideController("Plane", "Max distance");
-            hideController("Plane", "Open to OpenSeaDragon");
+            hideController("Plane", "Open in 2D viewer");
             showController("Plane", "Cancel");
             hideController("Plane", "Create Plane");
 
@@ -111,7 +111,7 @@ function createPanel() {
             hideController("Plane", "Width");
             hideController("Plane", "Height");
             hideController("Plane", "Max distance");
-            hideController("Plane", "Open to OpenSeaDragon");
+            hideController("Plane", "Open in 2D viewer");
             hideController("Plane", "Cancel");
             showController("Plane", "Create Plane");
 
@@ -125,7 +125,7 @@ function createPanel() {
         Width: 1,
         Height: 1,
         "Max distance": 0.1,
-        "Open to OpenSeaDragon": function () {
+        "Open in 2D viewer": function () {
             openPlane();
         },
     };
@@ -134,7 +134,7 @@ function createPanel() {
         "Create Cylinder": function () {
             hideController("Cylinder", "Radius");
             hideController("Cylinder", "Height");
-            hideController("Cylinder", "Open to OpenSeaDragon");
+            hideController("Cylinder", "Open in 2D viewer");
             showController("Cylinder", "Cancel");
             hideController("Cylinder", "Create Cylinder");
 
@@ -145,7 +145,7 @@ function createPanel() {
             setMessage("Select 2 images");
             setSelectionMode("cylinder");
         },
-        "Open to OpenSeaDragon": function () {
+        "Open in 2D viewer": function () {
             openCylindricalImages();
         },
         Radius: 0.5,
@@ -155,7 +155,7 @@ function createPanel() {
 
             hideController("Cylinder", "Radius");
             hideController("Cylinder", "Height");
-            hideController("Cylinder", "Open to OpenSeaDragon");
+            hideController("Cylinder", "Open in 2D viewer");
             hideController("Cylinder", "Cancel");
             showController("Cylinder", "Create Cylinder");
 
@@ -169,28 +169,28 @@ function createPanel() {
     };
 
     folder1.add(settings1, "Image size", 0.0, 5.0, 0.01).onChange(setSize);
-    folder1.add(settings1, "Image separation", 0.01, 2.0, 0.01).onChange(setOffset);
+    folder1.add(settings1, "Camera image separation", 0.01, 2.0, 0.01).onChange(setOffset);
     folder1.add(settings1, "Image wireframe").onChange(setWireframe);
 
-    folder2.add(settings2, "Open to OpenSeaDragon");
+    folder2.add(settings2, "Open in 2D viewer");
     folder2.add(settings2, "Clear Selection");
 
     folder3.add(settings3, "Create Sphere");
     folder3.add(settings3, "Radius", 0.0, 5.0, 0.01).onChange(applySphericalRadius);
-    folder3.add(settings3, "Open to OpenSeaDragon");
+    folder3.add(settings3, "Open in 2D viewer");
     folder3.add(settings3, "Cancel");
 
     folder4.add(settings4, "Create Plane");
     folder4.add(settings4, "Width", 0.0, 10.0, 0.01).onChange(changePlaneWidth);
     folder4.add(settings4, "Height", 0.0, 10.0, 0.01).onChange(changePlaneHeight);
     folder4.add(settings4, "Max distance", 0.0, 5.0, 0.01).onChange(changePlaneDistance);
-    folder4.add(settings4, "Open to OpenSeaDragon");
+    folder4.add(settings4, "Open in 2D viewer");
     folder4.add(settings4, "Cancel");
 
     folder5.add(settings5, "Create Cylinder");
     folder5.add(settings5, "Radius", 0.0, 5.0, 0.01).onChange(applyCylindricalRadius);
     folder5.add(settings5, "Height", 0.0, 5.0, 0.01).onChange(applyCylindricalHeight);
-    folder5.add(settings5, "Open to OpenSeaDragon");
+    folder5.add(settings5, "Open in 2D viewer");
     folder5.add(settings5, "Cancel");
 
     // Initialize panel
@@ -199,16 +199,16 @@ function createPanel() {
     //hideFolder("Plane");
     //hideFolder("Cylinder");
     hideController("Sphere", "Radius");
-    hideController("Sphere", "Open to OpenSeaDragon");
+    hideController("Sphere", "Open in 2D viewer");
     hideController("Sphere", "Cancel");
     hideController("Plane", "Width");
     hideController("Plane", "Height");
     hideController("Plane", "Max distance");
-    hideController("Plane", "Open to OpenSeaDragon");
+    hideController("Plane", "Open in 2D viewer");
     hideController("Plane", "Cancel");
     hideController("Cylinder", "Radius");
     hideController("Cylinder", "Height");
-    hideController("Cylinder", "Open to OpenSeaDragon");
+    hideController("Cylinder", "Open in 2D viewer");
     hideController("Cylinder", "Cancel");
 }
 
@@ -263,7 +263,7 @@ function setSphereSettings() {
     showController("Sphere", "Cancel");
     hideController("Sphere", "Create Sphere");
     showController("Sphere", "Radius");
-    showController("Sphere", "Open to OpenSeaDragon");
+    showController("Sphere", "Open in 2D viewer");
 
     setMessage("");
 }
@@ -271,7 +271,7 @@ function setSphereSettings() {
 function setCylinderSettings() {
     showController("Cylinder", "Radius");
     showController("Cylinder", "Height");
-    showController("Cylinder", "Open to OpenSeaDragon");
+    showController("Cylinder", "Open in 2D viewer");
     showController("Cylinder", "Cancel");
     hideController("Cylinder", "Create Cylinder");
 
@@ -282,7 +282,7 @@ function setPlaneSettings() {
     showController("Plane", "Width");
     showController("Plane", "Height");
     showController("Plane", "Max distance");
-    showController("Plane", "Open to OpenSeaDragon");
+    showController("Plane", "Open in 2D viewer");
     showController("Plane", "Cancel");
     hideController("Plane", "Create Plane");
 
