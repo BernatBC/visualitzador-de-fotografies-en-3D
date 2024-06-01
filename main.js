@@ -103,7 +103,7 @@ await loadImages(
     "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistration.out"
 );
 
-addInteraction(camera, scene);
+addInteraction(camera, scene, controls);
 
 window.addEventListener("resize", onWindowResize, false);
 
