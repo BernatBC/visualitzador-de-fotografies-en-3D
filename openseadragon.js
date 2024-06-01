@@ -50,6 +50,8 @@ var viewer = OpenSeadragon({
     preserveViewport: true,
 });
 
+viewer.zoomPerClick = 1;
+
 viewer.addHandler("open", function () {
     distribute(parsedImages);
 });
