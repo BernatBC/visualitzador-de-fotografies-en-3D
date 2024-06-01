@@ -69,7 +69,6 @@ viewer.addHandler("canvas-click", function (event) {
             viewportPoint.y > bounds.y + bounds.height
         )
             continue;
-        console.log(parsedImages[i].name);
         localStorage.setItem("navigate", parsedImages[i].name);
         return;
     }
@@ -77,7 +76,7 @@ viewer.addHandler("canvas-click", function (event) {
 
 function distribute(images) {
     overlapping = true;
-    for (let i = 0; i < 25 && overlapping; i++) {
+    for (let i = 0; overlapping; i++) {
         console.log("i: " + i);
         overlapping = false;
         for (let i = 0; i < images.length; i++) align(images[i], images, i);
@@ -90,10 +89,6 @@ function align(a, images, i) {
         if (a.name === b.name) return;
         var intersection = getIntersection(a, b);
         if (!intersection) return;
-        console.log("intersection between:");
-        console.log(a);
-        console.log(b);
-        console.log("---");
         overlapping = true;
 
         var diff = getDistance(a, b);
@@ -115,7 +110,6 @@ function align(a, images, i) {
         moveImage(a, output, i);
         return;
     }
-    console.log("NO INTERSECTION");
 }
 
 function getIntersection(a, b) {
@@ -142,7 +136,7 @@ function moveImage(a, output, i) {
     a.x += output.x;
     a.y += output.y;
     var item = viewer.world.getItemAt(i);
-    item.setPosition(new OpenSeadragon.Point(a.x - getHeight(a) / 2, a.y - getHeight(a) / 2));
+    item.setPosition(new OpenSeadragon.Point(a.x - getWidth(a) / 2, a.y - getHeight(a) / 2));
 }
 
 function invertZoom() {
@@ -155,18 +149,7 @@ function invertZoom() {
         document.getElementById("regular-zoom").style.display = "inline";
     }
 
-    for (let i = 0; i < parsedImages.length; i++) {
-        const a = parsedImages[i];
-        var item = viewer.world.getItemAt(i);
-        //var cornerPos = getCornerPosition(a);
-        var centerPos = getCenterPosition(a);
-        a.x = parseFloat(centerPos.x);
-        a.y = parseFloat(centerPos.y);
-        item.setHeight(getHeight(a));
-        item.setPosition(new OpenSeadragon.Point(a.x - getWidth(a) / 2, a.y - getHeight(a) / 2));
-        //item.setPosition(new OpenSeadragon.Point(cornerPos.x, cornerPos.y));
-    }
-    distribute(parsedImages);
+    recalculate();
 }
 
 function togglePosition() {
@@ -179,16 +162,18 @@ function togglePosition() {
         document.getElementById("real-position").style.display = "inline";
     }
 
+    recalculate();
+}
+
+function recalculate() {
     for (let i = 0; i < parsedImages.length; i++) {
         const a = parsedImages[i];
         var item = viewer.world.getItemAt(i);
-        //var cornerPos = getCornerPosition(a);
         var centerPos = getCenterPosition(a);
         a.x = parseFloat(centerPos.x);
         a.y = parseFloat(centerPos.y);
         item.setHeight(getHeight(a));
         item.setPosition(new OpenSeadragon.Point(a.x - getWidth(a) / 2, a.y - getHeight(a) / 2));
-        //item.setPosition(new OpenSeadragon.Point(cornerPos.x, cornerPos.y));
     }
     distribute(parsedImages);
 }
