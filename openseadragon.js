@@ -54,6 +54,24 @@ viewer.addHandler("open", function () {
     distribute(parsedImages);
 });
 
+viewer.addHandler("canvas-click", function (event) {
+    var viewportPoint = viewer.viewport.pointFromPixel(event.position);
+    for (let i = 0; i < viewer.world.getItemCount(); i++) {
+        let a = viewer.world.getItemAt(i);
+        let bounds = a.getBounds();
+        if (
+            viewportPoint.x < bounds.x ||
+            viewportPoint.x > bounds.x + bounds.width ||
+            viewportPoint.y < bounds.y ||
+            viewportPoint.y > bounds.y + bounds.height
+        )
+            continue;
+        console.log(parsedImages[i].name);
+        localStorage.setItem("navigate", parsedImages[i].name);
+        return;
+    }
+});
+
 function distribute(images) {
     overlapping = true;
     for (let i = 0; i < 25 && overlapping; i++) {

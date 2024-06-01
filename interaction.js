@@ -54,6 +54,18 @@ function addInteraction(cam, sce) {
     });
 
     window.addEventListener("pointermove", onHover);
+
+    addEventListener("storage", (event) => {
+        let images = getAllImages();
+        images.forEach((i) => {
+            if (i.name != localStorage.getItem("navigate")) return;
+            console.log(i.position);
+            console.log(i.userData.direction);
+            console.log(camera);
+            camera.position.set(i.position.x, i.position.y, i.position.z);
+            camera.lookAt(i.userData.direction.x, i.userData.direction.y, i.userData.direction.z);
+        });
+    });
 }
 
 function onClick() {
