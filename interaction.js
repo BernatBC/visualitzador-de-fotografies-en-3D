@@ -9,6 +9,7 @@ import {
     setCylinderSettings,
     setPlaneSettings,
     setMultiSettings,
+    resetUI,
 } from "./panel.js";
 import { create, all } from "mathjs";
 
@@ -78,6 +79,7 @@ function onClick() {
         if (imagesSelected.has(object)) {
             imagesSelected.delete(object);
             object.material.color.setHex(HOVER_COLOR);
+            if (mode === "multi" && imagesSelected.size == 0) resetUI();
         } else {
             imagesSelected.add(object);
             object.material.color.setHex(SELECTION_COLOR);

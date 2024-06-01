@@ -44,6 +44,7 @@ function createPanel() {
             showFolder("Sphere");
             showFolder("Plane");
             showFolder("Cylinder");
+            resetMessage();
         },
         "Open in 2D viewer": function () {
             openImagesToOpenSeaDragon();
@@ -52,6 +53,7 @@ function createPanel() {
             showFolder("Sphere");
             showFolder("Plane");
             showFolder("Cylinder");
+            resetMessage();
         },
     };
 
@@ -298,6 +300,15 @@ function setMultiSettings() {
     setMessage("");
 }
 
+function resetUI() {
+    hideFolder("Individual Selection");
+    showFolder("Sphere");
+    showFolder("Plane");
+    showFolder("Cylinder");
+
+    resetMessage();
+}
+
 export {
     createPanel,
     setSliderValue,
@@ -305,4 +316,5 @@ export {
     setCylinderSettings,
     setPlaneSettings,
     setMultiSettings,
+    resetUI,
 };
