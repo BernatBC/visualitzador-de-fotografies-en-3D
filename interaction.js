@@ -22,6 +22,7 @@ var mDragging = false;
 var mDown = false;
 var camera;
 var scene;
+var controls;
 var mode = "multi";
 
 const HOVER_COLOR = 0xccffff;
@@ -32,9 +33,10 @@ const RANGE_COLOR = 0xfcae1e;
 var imagesSelected = new Set();
 var rangeImages = new Set();
 
-function addInteraction(cam, sce) {
+function addInteraction(cam, sce, cntrls) {
     camera = cam;
     scene = sce;
+    controls = cntrls;
     setPlaneScene(sce);
     setSphereScene(sce);
     setCylinderScene(sce);
@@ -56,16 +58,16 @@ function addInteraction(cam, sce) {
 
     window.addEventListener("pointermove", onHover);
 
-    addEventListener("storage", (event) => {
+    window.addEventListener("storage", (event) => {
+        console.log("navigate");
         let images = getAllImages();
         images.forEach((i) => {
             if (i.name != localStorage.getItem("navigate")) return;
-            console.log(i.position);
-            console.log(i.userData.direction);
-            console.log(camera);
-            camera.position.set(i.position.x, i.position.y, i.position.z);
-            camera.lookAt(i.userData.direction.x, i.userData.direction.y, i.userData.direction.z);
+            camera.position.copy(i.position);
+            let target = new THREE.Vector3().copy(i.position).add(i.userData.direction);
+            controls.target.set(target.x, target.y, target.z);
         });
+        localStorage.setItem("navigate", null);
     });
 }
 
@@ -190,9 +192,6 @@ function createJSON(objectArray) {
 }
 
 function get2DCoords(C, P) {
-    console.log("---");
-    console.log(C);
-    console.log(P);
     const V = new THREE.Vector3().subVectors(P, C).normalize();
     const phi = math.acos(V.y);
     const theta = math.atan2(V.x, V.z);

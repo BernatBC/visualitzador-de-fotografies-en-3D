@@ -53,15 +53,24 @@ var viewer = OpenSeadragon({
 viewer.zoomPerClick = 1;
 
 viewer.addHandler("open", function () {
+    if (mode === "single" || parsedImages.size == 1) return;
     distribute(parsedImages);
 });
 
 viewer.addHandler("canvas-click", function (event) {
     if (!event.quick) return;
+    if (mode === "single") {
+        localStorage.setItem("navigate", image);
+        console.log("Navigate: " + image);
+        window.dispatchEvent(new Event("storage"));
+        return;
+    }
     var viewportPoint = viewer.viewport.pointFromPixel(event.position);
+    console.log(viewportPoint);
     for (let i = 0; i < viewer.world.getItemCount(); i++) {
         let a = viewer.world.getItemAt(i);
         let bounds = a.getBounds();
+        console.log(bounds);
         if (
             viewportPoint.x < bounds.x ||
             viewportPoint.x > bounds.x + bounds.width ||
@@ -69,6 +78,7 @@ viewer.addHandler("canvas-click", function (event) {
             viewportPoint.y > bounds.y + bounds.height
         )
             continue;
+        console.log("Navigate: " + parsedImages[i].name);
         localStorage.setItem("navigate", parsedImages[i].name);
         return;
     }
@@ -140,6 +150,7 @@ function moveImage(a, output, i) {
 }
 
 function invertZoom() {
+    if (mode === "single" || parsedImages.size == 1) return;
     regularZoom = !regularZoom;
     if (regularZoom) {
         document.getElementById("invert-zoom").style.display = "inline";
@@ -153,6 +164,7 @@ function invertZoom() {
 }
 
 function togglePosition() {
+    if (mode === "single" || parsedImages.size == 1) return;
     realPosition = !realPosition;
     if (realPosition) {
         document.getElementById("intersection-position").style.display = "inline";
