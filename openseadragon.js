@@ -57,6 +57,7 @@ viewer.addHandler("open", function () {
 });
 
 viewer.addHandler("canvas-click", function (event) {
+    if (!event.quick) return;
     var viewportPoint = viewer.viewport.pointFromPixel(event.position);
     for (let i = 0; i < viewer.world.getItemCount(); i++) {
         let a = viewer.world.getItemAt(i);
