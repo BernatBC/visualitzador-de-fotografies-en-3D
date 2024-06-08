@@ -11,6 +11,8 @@ import {
     setMultiSettings,
     resetUI,
 } from "./panel.js";
+import { openFigure, hoveringFigure } from "./inspect.js";
+
 import { create, all } from "mathjs";
 
 const math = create(all, {});
@@ -24,6 +26,7 @@ var camera;
 var scene;
 var controls;
 var mode = "multi";
+var authoringMode = true;
 
 const HOVER_COLOR = 0xccffff;
 const SELECTION_COLOR = 0xd6b4fc;
@@ -81,7 +84,13 @@ function onClick() {
 
     var intersects = raycaster.intersectObject(scene, true);
     if (intersects.length == 0) return;
-    console.log(intersects[0]);
+
+    if (!authoringMode) {
+        openFigure(intersects);
+        render();
+        return;
+    }
+
     var object = firstImage(intersects);
     if (object == null) return;
 
@@ -149,6 +158,11 @@ function onHover() {
     raycaster.setFromCamera(mouse, camera);
     var intersects = raycaster.intersectObject(scene, true);
     if (intersects.length > 0) {
+        if (!authoringMode) {
+            hoveringFigure(intersects);
+            render();
+            return;
+        }
         var object = firstImage(intersects);
         if (object != null) {
             // New Hover
@@ -229,6 +243,10 @@ function setSelectionMode(m) {
     mode = m;
 }
 
+function setAuthoringMode(m) {
+    authoringMode = m;
+}
+
 export {
     addInteraction,
     openImagesToOpenSeaDragon,
@@ -238,4 +256,5 @@ export {
     clearRangeImages,
     paintRangeImages,
     setSelectionMode,
+    setAuthoringMode,
 };
