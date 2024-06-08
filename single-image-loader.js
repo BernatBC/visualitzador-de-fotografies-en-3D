@@ -138,19 +138,18 @@ function setIntersectionPosition(scene) {
             i.position,
             i.userData.direction
         );
-        if (intersectionPosition == null) i.userData.intersection = null;
-        else i.userData.intersection = new THREE.Vector3().copy(intersectionPosition);
+        i.userData.intersection = new THREE.Vector3().copy(intersectionPosition);
     });
 }
 
 function getIntersectionPosition(scene, position, direction) {
     raycaster.set(position, direction);
     var intersections = raycaster.intersectObject(scene, true);
-    if (intersections.length == 0) return null;
+    if (intersections.length == 0) return position;
     for (let i = 0; i < intersections.length; i++) {
         if (intersections[i].object.name != "wireframe") return intersections[i].point;
     }
-    return null;
+    return position;
 }
 
 export { loadImage, setSize, setOffset, getAllImages, setWireframe, setIntersectionPosition };
