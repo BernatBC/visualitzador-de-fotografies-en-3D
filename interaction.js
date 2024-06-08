@@ -74,7 +74,7 @@ function addInteraction(cam, sce, cntrls) {
 function onClick() {
     event.preventDefault();
     // Avoid clicking images behind GUI
-    if (event.target.tagName === "DIV") return;
+    if (event.target.tagName !== "CANVAS") return;
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
@@ -143,7 +143,7 @@ function onHover() {
     if (mDragging) return;
     event.preventDefault();
     // Avoid clicking images behind GUI
-    if (event.target.tagName === "DIV") return;
+    if (event.target.tagName !== "CANVAS") return;
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
