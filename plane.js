@@ -6,6 +6,8 @@ import {
     paintRangeImages,
     clearRangeImages,
 } from "./interaction";
+import { savePlane } from "./inspect";
+
 import { create, all } from "mathjs";
 
 const math = create(all, {});
@@ -139,7 +141,7 @@ function openPlane() {
         const real_pos = get2DCoords(P_real);
 
         if (
-            P.distanceTo(P2) < planeDistance / 2 &&
+            P_real.distanceTo(P2) < planeDistance / 2 &&
             math.abs(real_pos.x) < planeWidth / 2 &&
             math.abs(real_pos.y) < planeHeight / 2
         ) {
@@ -208,6 +210,10 @@ function paintRange() {
     paintRangeImages(rangeImages);
 }
 
+function savePlaneToInspectMode() {
+    savePlane(abstractPlane, planeHeight, planeWidth, planeDistance, centerPoint, t, b);
+}
+
 export {
     setScene,
     createPlane,
@@ -216,4 +222,5 @@ export {
     changePlaneHeight,
     changePlaneWidth,
     openPlane,
+    savePlaneToInspectMode,
 };

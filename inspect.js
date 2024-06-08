@@ -55,8 +55,30 @@ function saveCylinder(C, r, h, V) {
     cylinders.push(cylinderObject);
 }
 
-function savePlane() {
-    console.log("Saving");
+function savePlane(abstractPlane, planeHeight, planeWidth, planeDistance, centerPoint, t, b) {
+    var coplanarPoint = abstractPlane.coplanarPoint(new THREE.Vector3().copy(centerPoint));
+    var focalPoint = new THREE.Vector3().addVectors(coplanarPoint, abstractPlane.normal);
+
+    const boxGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.02, 10, 10, 10);
+    const boxMaterial = new THREE.MeshBasicMaterial({
+        color: NORMAL_COLOR,
+    });
+    const box = new THREE.Mesh(boxGeometry, boxMaterial);
+
+    scene.add(box);
+    box.lookAt(focalPoint);
+    box.position.set(centerPoint.x, centerPoint.y, centerPoint.z);
+
+    box.userData.abstractPlane = abstractPlane;
+    box.userData.height = planeHeight;
+    box.userData.width = planeWidth;
+    box.userData.distance = planeDistance;
+    box.userData.t = t;
+    box.userData.b = b;
+
+    box.name = "Plane" + planes.length;
+    box.visible = false;
+    planes.push(box);
 }
 
 function setFiguresVisibility(show) {
@@ -82,9 +104,18 @@ function openFigure(objects) {
                     c.userData.height
                 );
         });
-    if (object.name.startsWith("Plane") && spheres.length > 0)
+    if (object.name.startsWith("Plane") && planes.length > 0)
         planes.forEach((p) => {
-            if (p.name == object.name) openSphericalImages(p.position, p.userData.radius);
+            if (p.name == object.name)
+                openPlaneImages(
+                    p.userData.abstractPlane,
+                    p.userData.height,
+                    p.userData.width,
+                    p.userData.distance,
+                    p.position,
+                    p.userData.t,
+                    p.userData.b
+                );
         });
 }
 
@@ -223,6 +254,58 @@ function getCylinder2DCoords(P, segment, originVector, centerPoint) {
     const x = originVector.angleTo(pointVector);
     const y = centerPoint.distanceTo(sProjected);
     return { x: x, y: -y };
+}
+
+function openPlaneImages(abstractPlane, planeHeight, planeWidth, planeDistance, centerPoint, t, b) {
+    let images = getAllImages();
+    let json = [];
+
+    images.forEach((object) => {
+        const P_real = object.position;
+        const P_inter = object.userData.intersection;
+        if (P_inter == null) return;
+        var P2 = new THREE.Vector3();
+        abstractPlane.projectPoint(P_real, P2);
+
+        const real_pos = getPlane2DCoords(P_real, centerPoint, abstractPlane, t, b);
+
+        if (
+            P_real.distanceTo(P2) < planeDistance / 2 &&
+            math.abs(real_pos.x) < planeWidth / 2 &&
+            math.abs(real_pos.y) < planeHeight / 2
+        ) {
+            const inter_pos = getPlane2DCoords(P_inter, centerPoint, abstractPlane, t, b);
+            json.push({
+                name: object.name,
+                x_real: real_pos.x,
+                y_real: real_pos.y,
+                x_inter: inter_pos.x,
+                y_inter: inter_pos.y,
+                isLandscape: object.userData.isLandscape,
+                heightToWidthRatio: object.userData.heightToWidthRatio,
+                zoom: object.userData.zoom,
+            });
+        }
+    });
+
+    let jsonContent = JSON.stringify(json);
+    localStorage.setItem("images", jsonContent);
+    const url = "openseadragon.html?mode=plane";
+
+    window.open(url, "_blank");
+}
+
+function getPlane2DCoords(P, centerPoint, abstractPlane, t, b) {
+    var P2 = new THREE.Vector3();
+    abstractPlane.projectPoint(P, P2);
+    return worldCoordsToPlaneCoords(P, centerPoint, t, b);
+}
+
+function worldCoordsToPlaneCoords(P, centerPoint, t, b) {
+    const V = new THREE.Vector3().subVectors(P, centerPoint);
+    const tv = new THREE.Vector3().copy(V).dot(t);
+    const bv = new THREE.Vector3().copy(V).dot(b);
+    return { x: -tv, y: bv };
 }
 
 export {

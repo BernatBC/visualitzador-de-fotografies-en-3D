@@ -20,7 +20,7 @@ import {
     changePlaneHeight,
     changePlaneWidth,
     openPlane,
-    //savePlaneToInspectMode,
+    savePlaneToInspectMode,
 } from "./plane.js";
 
 import {
@@ -168,7 +168,7 @@ function createPanel() {
             setSelectionMode("plane");
         },
         "Save figure to Inspect mode": function () {
-            //savePlaneToInspectMode();
+            savePlaneToInspectMode();
         },
         Cancel: function () {
             cancelPlane();
