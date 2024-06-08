@@ -7,6 +7,7 @@ import {
     clearRangeImages,
 } from "./interaction";
 import { setSliderValue } from "./panel";
+import { saveCylinder } from "./inspect";
 
 var radius = 0.5;
 
@@ -182,6 +183,10 @@ function paintRange() {
     paintRangeImages(rangeImages);
 }
 
+function saveCylinderToInspectMode() {
+    saveCylinder(centerPoint, radius, height, vector);
+}
+
 export {
     openCylindricalImages,
     createCylinder,
@@ -189,4 +194,5 @@ export {
     applyCylindricalRadius,
     setScene,
     applyCylindricalHeight,
+    saveCylinderToInspectMode,
 };

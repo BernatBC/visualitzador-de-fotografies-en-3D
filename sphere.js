@@ -7,6 +7,7 @@ import {
     clearRangeImages,
 } from "./interaction";
 import { create, all } from "mathjs";
+import { saveSphere } from "./inspect";
 
 const math = create(all, {});
 
@@ -112,4 +113,15 @@ function paintRange() {
     paintRangeImages(rangeImages);
 }
 
-export { openSphericalImages, createSphere, cancelSphere, applySphericalRadius, setScene };
+function saveSphereToInspectMode() {
+    saveSphere(C, radius);
+}
+
+export {
+    openSphericalImages,
+    createSphere,
+    cancelSphere,
+    applySphericalRadius,
+    setScene,
+    saveSphereToInspectMode,
+};

@@ -6,6 +6,7 @@ import { loadImages } from "./multiple-image-loader.js";
 import { addInteraction } from "./interaction.js";
 import { createPanel } from "./panel.js";
 import { setIntersectionPosition } from "./single-image-loader.js";
+import { setScene } from "./inspect.js";
 
 //INIT
 THREE.Cache.enabled = true;
@@ -104,6 +105,8 @@ await loadImages(
 );
 
 addInteraction(camera, scene, controls);
+
+setScene(scene);
 
 window.addEventListener("resize", onWindowResize, false);
 

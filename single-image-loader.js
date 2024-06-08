@@ -152,4 +152,16 @@ function getIntersectionPosition(scene, position, direction) {
     return position;
 }
 
-export { loadImage, setSize, setOffset, getAllImages, setWireframe, setIntersectionPosition };
+function setImageVisibility(show) {
+    images.forEach((i) => (i.visible = show));
+}
+
+export {
+    loadImage,
+    setSize,
+    setOffset,
+    getAllImages,
+    setWireframe,
+    setIntersectionPosition,
+    setImageVisibility,
+};
