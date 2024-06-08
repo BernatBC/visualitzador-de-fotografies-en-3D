@@ -1,5 +1,5 @@
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import { setSize, setOffset, setWireframe } from "./single-image-loader.js";
+import { setSize, setOffset, setWireframe, setImageVisibility } from "./single-image-loader.js";
 import { openImagesToOpenSeaDragon, clearSelection, setSelectionMode } from "./interaction.js";
 
 import { applySphericalRadius, openSphericalImages, cancelSphere } from "./sphere.js";
@@ -21,6 +21,7 @@ import {
 
 const panel = new GUI({ width: 290 });
 
+const mode_folder = panel.addFolder("Mode");
 const folder1 = panel.addFolder("Image Settings");
 const folder2 = panel.addFolder("Individual Selection");
 const folder3 = panel.addFolder("Sphere");
@@ -30,6 +31,40 @@ const folder5 = panel.addFolder("Cylinder");
 const infoElement = document.getElementById("info");
 
 function createPanel() {
+    let mode_settings = {
+        "Change to Authoring mode": function () {
+            hideController("Mode", "Change to Authoring mode");
+            showController("Mode", "Change to Inspect mode");
+            hideFolder("Individual Selection");
+            showFolder("Image Settings");
+            showFolder("Sphere");
+            showFolder("Plane");
+            showFolder("Cylinder");
+
+            resetMessage();
+            setSelectionMode("multi");
+
+            setImageVisibility(true);
+        },
+        "Change to Inspect mode": function () {
+            showController("Mode", "Change to Authoring mode");
+            hideController("Mode", "Change to Inspect mode");
+            hideFolder("Individual Selection");
+            hideFolder("Image Settings");
+            hideFolder("Sphere");
+            hideFolder("Plane");
+            hideFolder("Cylinder");
+
+            setMessage("Open predefined figures");
+            setSelectionMode("multi");
+
+            cancelSphere();
+            cancelPlane();
+            cancelCylinder();
+            clearSelection();
+            setImageVisibility(false);
+        },
+    };
     let settings1 = {
         "Image size": 1.0,
         "Camera image separation": 0.2,
@@ -170,6 +205,9 @@ function createPanel() {
         },
     };
 
+    mode_folder.add(mode_settings, "Change to Inspect mode");
+    mode_folder.add(mode_settings, "Change to Authoring mode");
+
     folder1.add(settings1, "Image size", 0.0, 5.0, 0.01).onChange(setSize);
     folder1.add(settings1, "Camera image separation", 0.01, 2.0, 0.01).onChange(setOffset);
     folder1.add(settings1, "Image wireframe").onChange(setWireframe);
@@ -200,6 +238,7 @@ function createPanel() {
     //hideFolder("Sphere");
     //hideFolder("Plane");
     //hideFolder("Cylinder");
+    hideController("Mode", "Change to Authoring mode");
     hideController("Sphere", "Radius");
     hideController("Sphere", "Open in 2D viewer");
     hideController("Sphere", "Cancel");
