@@ -20,6 +20,7 @@ import {
     changePlaneHeight,
     changePlaneWidth,
     openPlane,
+    //savePlaneToInspectMode,
 } from "./plane.js";
 
 import {
@@ -27,6 +28,7 @@ import {
     applyCylindricalRadius,
     openCylindricalImages,
     applyCylindricalHeight,
+    saveCylinderToInspectMode,
 } from "./cylinder.js";
 
 import { setFiguresVisibility } from "./inspect.js";
@@ -166,7 +168,7 @@ function createPanel() {
             setSelectionMode("plane");
         },
         "Save figure to Inspect mode": function () {
-            console.log("Saving plane");
+            //savePlaneToInspectMode();
         },
         Cancel: function () {
             cancelPlane();
@@ -215,7 +217,7 @@ function createPanel() {
         Radius: 0.5,
         Height: 1.0,
         "Save figure to Inspect mode": function () {
-            console.log("Saving cylinder");
+            saveCylinderToInspectMode();
         },
         Cancel: function () {
             cancelCylinder();
