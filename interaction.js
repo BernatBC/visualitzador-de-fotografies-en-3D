@@ -174,8 +174,8 @@ function createJSON(objectArray) {
 
     objectArray.forEach((object) => {
         const real_pos = get2DCoords(C, object.position);
+        if (object.userData.intersection == null) intersection_pos = real_pos;
         const intersection_pos = get2DCoords(C, object.userData.intersection);
-        if (intersection_pos == null) return;
         json.push({
             name: object.name,
             x_real: real_pos.x,
