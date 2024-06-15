@@ -25,7 +25,7 @@ camera.position.set(5, 5, 5);
 const renderer = new THREE.WebGLRenderer({
     antialias: true,
 });
-renderer.setSize(window.innerWidth, window.innerHeight - 25);
+renderer.setSize(window.innerWidth, window.innerHeight - 25, false); // -25 to avoid scroll bar
 document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -90,7 +90,7 @@ gltfLoader.load("models/pedret/pedret_XII_text4K.glb", (object) => {
     object.scene.name = "model";
 
     const wrapper = new THREE.Object3D();
-    wrapper.name = "model";
+    wrapper.name = "wrapper";
     wrapper.add(object.scene);
     wrapper.rotateX(-Math.PI / 2);
 
@@ -131,4 +131,4 @@ function render() {
 
 animate();
 
-export { render };
+export { render, renderer };

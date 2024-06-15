@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { render } from "./main.js";
+import { render, renderer } from "./main.js";
 import { getAllImages } from "./single-image-loader.js";
 import { createPlane, setScene as setPlaneScene } from "./plane.js";
 import { createSphere, setScene as setSphereScene } from "./sphere.js";
@@ -78,12 +78,24 @@ function onClick() {
     event.preventDefault();
     // Avoid clicking images behind GUI
     if (event.target.tagName !== "CANVAS") return;
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    // get x,y coords into canvas where click occurred
+    var rect = event.target.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+    mouse.x = ( (x / event.target.clientWidth ) * 2) - 1;
+    mouse.y = (-(y / event.target.clientHeight) * 2) + 1;
+
+    /*mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    */
     raycaster.setFromCamera(mouse, camera);
 
     var intersects = raycaster.intersectObject(scene, true);
-    if (intersects.length == 0) return;
+    if (intersects.length == 0) 
+    {
+        console.log("No intersection detected.");
+        return;
+    }
 
     if (!authoringMode) {
         openFigure(intersects);
@@ -153,8 +165,19 @@ function onHover() {
     event.preventDefault();
     // Avoid clicking images behind GUI
     if (event.target.tagName !== "CANVAS") return;
+
+    // get x,y coords into canvas where click occurred
+    var rect = event.target.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+    mouse.x = ( (x / event.target.clientWidth ) * 2) - 1;
+    mouse.y = (-(y / event.target.clientHeight) * 2) + 1;
+
+    /*
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    mouse.y = -(event.clientY / (window.innerHeight)) * 2 + 1;
+    */
+    console.log(mouse);
     raycaster.setFromCamera(mouse, camera);
     var intersects = raycaster.intersectObject(scene, true);
     if (intersects.length > 0) {
