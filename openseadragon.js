@@ -50,7 +50,7 @@ var viewer = OpenSeadragon({
     preserveViewport: true,
 });
 
-viewer.zoomPerClick = 1;
+viewer.zoomPerClick = 1; 
 
 viewer.addHandler("open", function () {
     if (mode === "single" || parsedImages.size == 1) return;
@@ -127,6 +127,12 @@ function getIntersection(a, b) {
     var top = min(getTop(a), getTop(b));
     var right = min(getRight(a), getRight(b));
     var bottom = max(getBottom(a), getBottom(b));
+
+    const margin = 0.01;
+    left -= margin;
+    right += margin;
+    top += margin;
+    bottom -= margin;
 
     if (bottom < top && right > left) {
         return {
