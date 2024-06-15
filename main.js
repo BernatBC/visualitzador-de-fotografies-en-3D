@@ -12,6 +12,7 @@ import { setScene } from "./inspect.js";
 THREE.Cache.enabled = true;
 
 const scene = new THREE.Scene();
+window.scene = scene; // debug from console
 scene.background = new THREE.Color(0xdadada);
 
 const camera = new THREE.PerspectiveCamera(
