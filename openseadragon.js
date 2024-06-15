@@ -48,6 +48,7 @@ var viewer = OpenSeadragon({
 
     showNavigator: true,
     preserveViewport: true,
+    maxZoomPixelRatio: 3, // for videos
 });
 
 viewer.zoomPerClick = 1; 
