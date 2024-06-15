@@ -177,7 +177,7 @@ function onHover() {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / (window.innerHeight)) * 2 + 1;
     */
-    console.log(mouse);
+    //console.log(mouse);
     raycaster.setFromCamera(mouse, camera);
     var intersects = raycaster.intersectObject(scene, true);
     if (intersects.length > 0) {
