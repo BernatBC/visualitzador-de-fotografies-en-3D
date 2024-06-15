@@ -85,6 +85,7 @@ viewer.addHandler("canvas-click", function (event) {
 });
 
 function distribute(images) {
+    return; 
     overlapping = true;
     for (let i = 0; overlapping; i++) {
         console.log("i: " + i);
@@ -184,6 +185,7 @@ function togglePosition() {
 }
 
 function recalculate() {
+    console.log("Recalculating. Real position: " + realPosition + ". Regular zoom: " + regularZoom + ".");
     for (let i = 0; i < parsedImages.length; i++) {
         const a = parsedImages[i];
         var item = viewer.world.getItemAt(i);

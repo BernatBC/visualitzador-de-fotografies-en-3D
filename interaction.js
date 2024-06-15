@@ -128,7 +128,7 @@ function openImagesToOpenSeaDragon() {
     localStorage.setItem("images", jsonContent);
     const url = "openseadragon.html?mode=multiple";
     window.open(url, "_blank");
-    clearSelection();
+    // clearSelection();
 }
 
 function clearSelection() {
