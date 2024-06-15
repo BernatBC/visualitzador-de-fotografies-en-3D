@@ -25,7 +25,7 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
 
     // Afegir imatge
     const SCALE = 5 * imageSize;
-    const image_path = "/images/low_res/" + image_name;
+    const image_path = "./images/low_res/" + image_name;
     const image_texture = image_loader.load(image_path, function () {
         image_texture.colorSpace = THREE.SRGBColorSpace;
         const isLandscape = image_texture.image.width > image_texture.image.height;
