@@ -56,6 +56,12 @@ scene.add(axesHelper);
 
 createPanel();
 
+await loadImages(
+    scene,
+    "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasList-converted.lst",
+    "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistration.out"
+);
+
 //MODEL LOADER
 const gltfLoader = new GLTFLoader();
 //gltfLoader.load("models/pedret10/MNAC-AbsSud-LowPoly.glb", (object) => {
@@ -78,32 +84,31 @@ gltfLoader.load("models/pedret/pedret_XII_text4K.glb", (object) => {
         0.0,
         1.0
     );
-    const pos = new THREE.Vector3().setFromMatrixPosition(matrix);
-    const scale = new THREE.Vector3().setFromMatrixScale(matrix);
-    const rotation = new THREE.Quaternion().setFromRotationMatrix(matrix);
+    const rotMat = new THREE.Matrix4().copy(matrix);
+    rotMat.premultiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
+    const pos = new THREE.Vector3().setFromMatrixPosition(rotMat);
+    const scale = new THREE.Vector3().setFromMatrixScale(rotMat);
+    const rotation = new THREE.Quaternion().setFromRotationMatrix(rotMat);
 
     console.log(object.scene);
 
     object.scene.position.copy(pos);
     object.scene.scale.copy(scale);
     object.scene.quaternion.copy(rotation);
-
     object.scene.name = "model";
-
+    //console.log("Before:", object.scene.matrixWorld);
+    /*
     const wrapper = new THREE.Object3D();
     wrapper.name = "wrapper";
     wrapper.add(object.scene);
-    wrapper.rotateX(-Math.PI / 2);
-
-    scene.add(wrapper);
+    //wrapper.rotateX(-Math.PI / 2);
+    scene.add(wrapper);*/
+    scene.add(object.scene);
+    //setIntersectionPosition(object.scene);
     setIntersectionPosition(scene);
 });
 
-await loadImages(
-    scene,
-    "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasList-converted.lst",
-    "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistration.out"
-);
+
 
 addInteraction(camera, scene, controls);
 
