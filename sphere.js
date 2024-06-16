@@ -56,7 +56,7 @@ function get2DCoords(P) {
     const V = new THREE.Vector3().subVectors(P, C).normalize();
     const phi = math.acos(V.y);
     const theta = math.atan2(V.x, V.z);
-    return { x: theta, y: phi };
+    return { x: -theta, y: phi }; // TODO: Check if it is correct
 }
 
 function applySphericalRadius(r) {
