@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "mathjs": "^12.3.1",
-    "three": "^0.161.0"
+    "three": "^0.165.0"
   },
   "devDependencies": {
     "vite": "^5.0.12"
