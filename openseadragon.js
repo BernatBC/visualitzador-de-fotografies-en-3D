@@ -55,7 +55,7 @@ viewer.zoomPerClick = 1;
 
 viewer.addHandler("open", function () {
     if (mode === "single" || parsedImages.size == 1) return;
-    distribute(parsedImages);
+    //distribute(parsedImages); // testing
 });
 
 viewer.addHandler("canvas-click", function (event) {
@@ -85,8 +85,13 @@ viewer.addHandler("canvas-click", function (event) {
     }
 });
 
+function distrib()
+{
+    distribute(parsedImages);
+}
+
 function distribute(images) {
-    return; 
+    //return;  // TODO 
     overlapping = true;
     for (let i = 0; overlapping; i++) {
         console.log("i: " + i);
@@ -151,8 +156,9 @@ function getIntersection(a, b) {
 }
 
 function moveImage(a, output, i) {
-    a.x += output.x;
-    a.y += output.y;
+    const speed = 1.0; // testing
+    a.x += output.x*speed;
+    a.y += output.y*speed;
     var item = viewer.world.getItemAt(i);
     item.setPosition(new OpenSeadragon.Point(a.x - getWidth(a) / 2, a.y - getHeight(a) / 2));
 }
@@ -196,7 +202,7 @@ function recalculate() {
         item.setHeight(getHeight(a));
         item.setPosition(new OpenSeadragon.Point(a.x - getWidth(a) / 2, a.y - getHeight(a) / 2));
     }
-    distribute(parsedImages);
+    //distribute(parsedImages);
 }
 
 function max(a, b) {
