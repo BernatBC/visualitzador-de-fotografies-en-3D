@@ -1,11 +1,10 @@
 import * as THREE from "three";
 import { create, all } from "mathjs";
 
-import { MeshBVH, acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from 'three-mesh-bvh'; // BVH
+import { MeshBVH, acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-mesh-bvh"; // BVH
 THREE.Mesh.prototype.raycast = acceleratedRaycast;
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
-
 
 const math = create(all, {});
 
@@ -17,9 +16,7 @@ var imageSize = 1;
 
 var images = [];
 
-
 const pickableObjects = [];
-
 
 function loadImage(scene, R, t, zoom, image_name, image_loader) {
     const pos = math.multiply(math.unaryMinus(math.transpose(R)), t);
@@ -35,10 +32,9 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
         -view_direction.get([2])
     );
 
-    
     // Afegir imatge
     const SCALE = 5 * imageSize;
-    const image_path = "./images/low_res/" + image_name;
+    const image_path = "/images/low_res/" + image_name;
     const image_texture = image_loader.load(image_path, function () {
         image_texture.colorSpace = THREE.SRGBColorSpace;
         const isLandscape = image_texture.image.width > image_texture.image.height;
@@ -108,10 +104,16 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
             isLandscape: isLandscape,
             heightToWidthRatio: heightToWidthRelation,
         };
-        console.log("Image: ", image_name, " Position: ", image_plane.position, " Direction: ", image_plane.userData.direction);
+        console.log(
+            "Image: ",
+            image_name,
+            " Position: ",
+            image_plane.position,
+            " Direction: ",
+            image_plane.userData.direction
+        );
 
         images.push(image_plane);
-
     });
 }
 
@@ -150,7 +152,6 @@ function setWireframe(enable) {
 function setIntersectionPosition(scene) {
     console.log(scene);
 
-    
     var gltf = scene.getObjectByName("model");
     gltf.updateMatrixWorld(true);
     gltf.traverse(function (child) {
@@ -161,16 +162,15 @@ function setIntersectionPosition(scene) {
         }
     });
     console.log("Pick:", pickableObjects);
-    
 
     var model = scene.getObjectByName("model");
     //var model = scene;
     console.log(model);
-    console.log("Setting intersection positions for ", images.length,  " images...");
+    console.log("Setting intersection positions for ", images.length, " images...");
 
     images.forEach((i) => {
         const intersectionPosition = getIntersectionPosition(
-            scene, 
+            scene,
             model,
             pickableObjects,
             i.position,
@@ -193,25 +193,30 @@ function getIntersectionPosition(scene, model, objs, position, direction) {
     */
 
     var intersections = raycaster.intersectObjects(objs, true); // BVH
-    
-    if (intersections.length == 0) 
-    {
+
+    if (intersections.length == 0) {
         console.log("No intersection found");
         return position;
     }
     var i = 0;
     var j = -1;
-    for ( ; i < intersections.length; i++) {
+    for (; i < intersections.length; i++) {
         //if (intersections[i].object.name != "wireframe" && intersections[i].object.name != "wireframe-line" && intersections[i].object.name != "" && intersections[i].object.name[0] != "S") break; // return intersections[i].point;
         console.log("Intersected:", intersections[i].object);
         //if (intersections[i].object.name != "wireframe") j = i;
-        if (intersections[i].object.name[0] == "P") 
-            {
-                j=i;
-                break; // return intersections[i].point;
-            }
+        if (intersections[i].object.name[0] == "P") {
+            j = i;
+            break; // return intersections[i].point;
+        }
     }
-    if (j!=-1) console.log("Position: ", position, " Intersection", intersections[j].point, intersections[j].object.name);
+    if (j != -1)
+        console.log(
+            "Position: ",
+            position,
+            " Intersection",
+            intersections[j].point,
+            intersections[j].object.name
+        );
     return intersections[j].point;
 }
 
