@@ -8,6 +8,7 @@ const parsedImages = JSON.parse(retrievedObject);
 var overlapping;
 var regularZoom = true;
 var realPosition = true;
+var overlappingSet = false;
 
 console.log(mode);
 console.log(image);
@@ -37,8 +38,6 @@ if (mode === "single") {
 }
 
 var viewer = OpenSeadragon({
-    zoomInButton: "zoom-in",
-    zoomOutButton: "zoom-out",
     homeButton: "home",
     fullPageButton: "full-page",
 
@@ -51,7 +50,7 @@ var viewer = OpenSeadragon({
     maxZoomPixelRatio: 3, // for videos
 });
 
-viewer.zoomPerClick = 1; 
+viewer.zoomPerClick = 1;
 
 viewer.addHandler("open", function () {
     if (mode === "single" || parsedImages.size == 1) return;
@@ -85,13 +84,25 @@ viewer.addHandler("canvas-click", function (event) {
     }
 });
 
-function distrib()
-{
+function distrib() {
+    if (mode === "single" || parsedImages.size == 1) return;
+    overlappingSet = !overlappingSet;
+
+    if (overlappingSet) {
+        document.getElementById("overlap").style.display = "inline";
+        document.getElementById("distribute").style.display = "none";
+    } else {
+        document.getElementById("overlap").style.display = "none";
+        document.getElementById("distribute").style.display = "inline";
+    }
+
+    recalculate();
     distribute(parsedImages);
 }
 
 function distribute(images) {
-    //return;  // TODO 
+    if (!overlappingSet) return;
+    //return;  // TODO
     overlapping = true;
     for (let i = 0; overlapping; i++) {
         console.log("i: " + i);
@@ -157,8 +168,8 @@ function getIntersection(a, b) {
 
 function moveImage(a, output, i) {
     const speed = 1.0; // testing
-    a.x += output.x*speed;
-    a.y += output.y*speed;
+    a.x += output.x * speed;
+    a.y += output.y * speed;
     var item = viewer.world.getItemAt(i);
     item.setPosition(new OpenSeadragon.Point(a.x - getWidth(a) / 2, a.y - getHeight(a) / 2));
 }
@@ -192,7 +203,9 @@ function togglePosition() {
 }
 
 function recalculate() {
-    console.log("Recalculating. Real position: " + realPosition + ". Regular zoom: " + regularZoom + ".");
+    console.log(
+        "Recalculating. Real position: " + realPosition + ". Regular zoom: " + regularZoom + "."
+    );
     for (let i = 0; i < parsedImages.length; i++) {
         const a = parsedImages[i];
         var item = viewer.world.getItemAt(i);
@@ -202,7 +215,7 @@ function recalculate() {
         item.setHeight(getHeight(a));
         item.setPosition(new OpenSeadragon.Point(a.x - getWidth(a) / 2, a.y - getHeight(a) / 2));
     }
-    //distribute(parsedImages);
+    distribute(parsedImages);
 }
 
 function max(a, b) {
