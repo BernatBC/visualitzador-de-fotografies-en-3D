@@ -82,8 +82,8 @@ function onClick() {
     var rect = event.target.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    mouse.x = ( (x / event.target.clientWidth ) * 2) - 1;
-    mouse.y = (-(y / event.target.clientHeight) * 2) + 1;
+    mouse.x = (x / event.target.clientWidth) * 2 - 1;
+    mouse.y = -(y / event.target.clientHeight) * 2 + 1;
 
     /*mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -91,8 +91,7 @@ function onClick() {
     raycaster.setFromCamera(mouse, camera);
 
     var intersects = raycaster.intersectObject(scene, true);
-    if (intersects.length == 0) 
-    {
+    if (intersects.length == 0) {
         console.log("No intersection detected.");
         return;
     }
@@ -140,7 +139,7 @@ function openImagesToOpenSeaDragon() {
     localStorage.setItem("images", jsonContent);
     const url = "openseadragon.html?mode=multiple";
     window.open(url, "_blank");
-    // clearSelection();
+    clearSelection();
 }
 
 function clearSelection() {
@@ -170,8 +169,8 @@ function onHover() {
     var rect = event.target.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    mouse.x = ( (x / event.target.clientWidth ) * 2) - 1;
-    mouse.y = (-(y / event.target.clientHeight) * 2) + 1;
+    mouse.x = (x / event.target.clientWidth) * 2 - 1;
+    mouse.y = -(y / event.target.clientHeight) * 2 + 1;
 
     /*
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
