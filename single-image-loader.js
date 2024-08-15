@@ -167,8 +167,9 @@ function setIntersectionPosition(scene) {
     //var model = scene;
     console.log(model);
     console.log("Setting intersection positions for ", images.length, " images...");
-
+    let counter = 1;
     images.forEach((i) => {
+        console.log("intersection: ", counter, " out of ", images.length);
         const intersectionPosition = getIntersectionPosition(
             scene,
             model,
@@ -177,13 +178,41 @@ function setIntersectionPosition(scene) {
             i.userData.direction
         );
         i.userData.intersection = new THREE.Vector3().copy(intersectionPosition);
+        i.userData.intersectionPointsMatrix = getIntersectionPointsMatrix(
+            scene,
+            model,
+            pickableObjects,
+            i
+        );
+        counter++;
     });
     console.log("Setting intersection positions: done!");
 }
 
+function getIntersectionPointsMatrix(scene, model, objs, object) {
+    let M = [];
+    for (let i = -0.5; i <= 0.5; i += 0.1) {
+        let V = [];
+        for (let j = -0.5; j <= 0.5; j += 0.1) {
+            const objectPoint = new THREE.Vector3(i, j, 0);
+            const worldPoint = objectPoint.clone().applyMatrix4(object.matrixWorld);
+            const intersectionPoint = getIntersectionPosition(
+                scene,
+                model,
+                objs,
+                worldPoint,
+                object.userData.direction
+            );
+            V.push(intersectionPoint);
+        }
+        M.push(V);
+    }
+    return M;
+}
+
 function getIntersectionPosition(scene, model, objs, position, direction) {
     raycaster.set(position, direction);
-    console.log("Position: ", position, " Direction: ", direction);
+    //console.log("Position: ", position, " Direction: ", direction);
     raycaster.firstHitOnly = true; // BVH
     //var intersections = raycaster.intersectObjects(model, true); // BVH
     /*
@@ -202,21 +231,21 @@ function getIntersectionPosition(scene, model, objs, position, direction) {
     var j = -1;
     for (; i < intersections.length; i++) {
         //if (intersections[i].object.name != "wireframe" && intersections[i].object.name != "wireframe-line" && intersections[i].object.name != "" && intersections[i].object.name[0] != "S") break; // return intersections[i].point;
-        console.log("Intersected:", intersections[i].object);
+        //console.log("Intersected:", intersections[i].object);
         //if (intersections[i].object.name != "wireframe") j = i;
         if (intersections[i].object.name[0] == "P") {
             j = i;
             break; // return intersections[i].point;
         }
     }
-    if (j != -1)
+    /*if (j != -1)
         console.log(
             "Position: ",
             position,
             " Intersection",
             intersections[j].point,
             intersections[j].object.name
-        );
+        );*/
     return intersections[j].point;
 }
 
