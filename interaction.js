@@ -14,6 +14,7 @@ import {
 import { openFigure, hoveringFigure } from "./inspect.js";
 
 import { create, all } from "mathjs";
+import { openNearbyImages } from "./modelClick.js";
 
 const math = create(all, {});
 
@@ -102,8 +103,14 @@ function onClick() {
         return;
     }
 
-    var object = firstImage(intersects);
+    var object = firstImageOrModel(intersects);
     if (object == null) return;
+
+    // Model click
+    if (object.name.startsWith("PEDRET")) {
+        if (event.button == 0) openNearbyImages();
+        return;
+    }
 
     if (event.button == 0) {
         const url = "openseadragon.html?mode=single&image=" + encodeURIComponent(object.name);
@@ -185,8 +192,8 @@ function onHover() {
             render();
             return;
         }
-        var object = firstImage(intersects);
-        if (object != null) {
+        var object = firstImageOrModel(intersects);
+        if (object != null && object.name.startsWith("Sant Quirze de Pedret by Zones")) {
             // New Hover
             if (hover === undefined) hoverIn(object);
             // Replace hover
@@ -253,8 +260,9 @@ function clearRangeImages() {
     rangeImages = new Set();
 }
 
-function firstImage(objects) {
+function firstImageOrModel(objects) {
     for (let i = 0; i < objects.length; i++) {
+        if (objects[i].object.name.startsWith("PEDRET")) return objects[i].object;
         if (objects[i].object.name.startsWith("Sant Quirze de Pedret by Zones"))
             return objects[i].object;
     }

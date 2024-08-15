@@ -1,0 +1,3 @@
+function openNearbyImages() {}
+
+export { openNearbyImages };
