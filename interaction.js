@@ -193,8 +193,14 @@ function onHover() {
             render();
             return;
         }
-        var object = firstImageOrModel(intersects).object;
-        if (object != null && object.name.startsWith("Sant Quirze de Pedret by Zones")) {
+        const object_intersection = firstImageOrModel(intersects);
+        var object;
+        if (object_intersection != null) object = object_intersection.object;
+        if (
+            object_intersection != null &&
+            object != null &&
+            object.name.startsWith("Sant Quirze de Pedret by Zones")
+        ) {
             // New Hover
             if (hover === undefined) hoverIn(object);
             // Replace hover
@@ -287,4 +293,5 @@ export {
     paintRangeImages,
     setSelectionMode,
     setAuthoringMode,
+    createJSON,
 };
