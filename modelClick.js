@@ -19,8 +19,8 @@ function openNearbyImages(object) {
 }
 
 function isImageNearby(pointPressed, pointMatrix) {
-    for (let i = 0; i < 11; i++)
-        for (let j = 0; j < 11; j++)
+    for (let i = 0; i < pointMatrix.length; i++)
+        for (let j = 0; j < pointMatrix[0].length; j++)
             if (pointPressed.distanceTo(pointMatrix[i][j]) < MAX_DISTANCE) return true;
     return false;
 }

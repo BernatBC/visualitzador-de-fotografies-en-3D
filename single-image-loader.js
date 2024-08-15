@@ -191,9 +191,9 @@ function setIntersectionPosition(scene) {
 
 function getIntersectionPointsMatrix(scene, model, objs, object) {
     let M = [];
-    for (let i = -0.5; i <= 0.5; i += 0.1) {
+    for (let i = -0.3; i <= 0.3; i += 0.1) {
         let V = [];
-        for (let j = -0.5; j <= 0.5; j += 0.1) {
+        for (let j = -0.3; j <= 0.3; j += 0.1) {
             const objectPoint = new THREE.Vector3(i, j, 0);
             const worldPoint = objectPoint.clone().applyMatrix4(object.matrixWorld);
             const intersectionPoint = getIntersectionPosition(
