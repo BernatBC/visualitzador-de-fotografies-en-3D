@@ -8,6 +8,7 @@ const parsedImages = JSON.parse(retrievedObject);
 var overlapping;
 var regularZoom = true;
 var realPosition = true;
+var overlappingSet = false;
 
 console.log(mode);
 console.log(image);
@@ -37,8 +38,6 @@ if (mode === "single") {
 }
 
 var viewer = OpenSeadragon({
-    zoomInButton: "zoom-in",
-    zoomOutButton: "zoom-out",
     homeButton: "home",
     fullPageButton: "full-page",
 
@@ -48,13 +47,14 @@ var viewer = OpenSeadragon({
 
     showNavigator: true,
     preserveViewport: true,
+    maxZoomPixelRatio: 3, // for videos
 });
 
 viewer.zoomPerClick = 1;
 
 viewer.addHandler("open", function () {
     if (mode === "single" || parsedImages.size == 1) return;
-    distribute(parsedImages);
+    //distribute(parsedImages); // testing
 });
 
 viewer.addHandler("canvas-click", function (event) {
@@ -84,7 +84,25 @@ viewer.addHandler("canvas-click", function (event) {
     }
 });
 
+function distrib() {
+    if (mode === "single" || parsedImages.size == 1) return;
+    overlappingSet = !overlappingSet;
+
+    if (overlappingSet) {
+        document.getElementById("overlap").style.display = "inline";
+        document.getElementById("distribute").style.display = "none";
+    } else {
+        document.getElementById("overlap").style.display = "none";
+        document.getElementById("distribute").style.display = "inline";
+    }
+
+    recalculate();
+    distribute(parsedImages);
+}
+
 function distribute(images) {
+    if (!overlappingSet) return;
+    //return;  // TODO
     overlapping = true;
     for (let i = 0; overlapping; i++) {
         console.log("i: " + i);
@@ -128,6 +146,12 @@ function getIntersection(a, b) {
     var right = min(getRight(a), getRight(b));
     var bottom = max(getBottom(a), getBottom(b));
 
+    const margin = 0.01;
+    left -= margin;
+    right += margin;
+    top += margin;
+    bottom -= margin;
+
     if (bottom < top && right > left) {
         return {
             top: top,
@@ -143,8 +167,9 @@ function getIntersection(a, b) {
 }
 
 function moveImage(a, output, i) {
-    a.x += output.x;
-    a.y += output.y;
+    const speed = 1.0; // testing
+    a.x += output.x * speed;
+    a.y += output.y * speed;
     var item = viewer.world.getItemAt(i);
     item.setPosition(new OpenSeadragon.Point(a.x - getWidth(a) / 2, a.y - getHeight(a) / 2));
 }
@@ -178,6 +203,9 @@ function togglePosition() {
 }
 
 function recalculate() {
+    console.log(
+        "Recalculating. Real position: " + realPosition + ". Regular zoom: " + regularZoom + "."
+    );
     for (let i = 0; i < parsedImages.length; i++) {
         const a = parsedImages[i];
         var item = viewer.world.getItemAt(i);

@@ -12,6 +12,7 @@ import { setScene } from "./inspect.js";
 THREE.Cache.enabled = true;
 
 const scene = new THREE.Scene();
+window.scene = scene; // debug from console
 scene.background = new THREE.Color(0xdadada);
 
 const camera = new THREE.PerspectiveCamera(
@@ -25,7 +26,7 @@ camera.position.set(5, 5, 5);
 const renderer = new THREE.WebGLRenderer({
     antialias: true,
 });
-renderer.setSize(window.innerWidth, window.innerHeight - 25);
+renderer.setSize(window.innerWidth, window.innerHeight - 25, false); // -25 to avoid scroll bar
 document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -55,6 +56,12 @@ scene.add(axesHelper);
 
 createPanel();
 
+await loadImages(
+    scene,
+    "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasList-converted.lst",
+    "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistration.out"
+);
+
 //MODEL LOADER
 const gltfLoader = new GLTFLoader();
 //gltfLoader.load("models/pedret10/MNAC-AbsSud-LowPoly.glb", (object) => {
@@ -77,32 +84,31 @@ gltfLoader.load("models/pedret/pedret_XII_text4K.glb", (object) => {
         0.0,
         1.0
     );
-    const pos = new THREE.Vector3().setFromMatrixPosition(matrix);
-    const scale = new THREE.Vector3().setFromMatrixScale(matrix);
-    const rotation = new THREE.Quaternion().setFromRotationMatrix(matrix);
+    const rotMat = new THREE.Matrix4().copy(matrix);
+    rotMat.premultiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
+    const pos = new THREE.Vector3().setFromMatrixPosition(rotMat);
+    const scale = new THREE.Vector3().setFromMatrixScale(rotMat);
+    const rotation = new THREE.Quaternion().setFromRotationMatrix(rotMat);
 
     console.log(object.scene);
 
     object.scene.position.copy(pos);
     object.scene.scale.copy(scale);
     object.scene.quaternion.copy(rotation);
-
     object.scene.name = "model";
-
+    //console.log("Before:", object.scene.matrixWorld);
+    /*
     const wrapper = new THREE.Object3D();
-    wrapper.name = "model";
+    wrapper.name = "wrapper";
     wrapper.add(object.scene);
-    wrapper.rotateX(-Math.PI / 2);
-
-    scene.add(wrapper);
+    //wrapper.rotateX(-Math.PI / 2);
+    scene.add(wrapper);*/
+    scene.add(object.scene);
+    //setIntersectionPosition(object.scene);
     setIntersectionPosition(scene);
 });
 
-await loadImages(
-    scene,
-    "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasList-converted.lst",
-    "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistration.out"
-);
+
 
 addInteraction(camera, scene, controls);
 
@@ -131,4 +137,4 @@ function render() {
 
 animate();
 
-export { render };
+export { render, renderer };

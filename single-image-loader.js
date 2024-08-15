@@ -1,13 +1,22 @@
 import * as THREE from "three";
 import { create, all } from "mathjs";
 
+import { MeshBVH, acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-mesh-bvh"; // BVH
+THREE.Mesh.prototype.raycast = acceleratedRaycast;
+THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
+THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
+
 const math = create(all, {});
 
 var raycaster = new THREE.Raycaster();
+raycaster.params.Line.threshold = 0.001;
+
 var imageOffset = 0.2;
 var imageSize = 1;
 
 var images = [];
+
+const pickableObjects = [];
 
 function loadImage(scene, R, t, zoom, image_name, image_loader) {
     const pos = math.multiply(math.unaryMinus(math.transpose(R)), t);
@@ -60,7 +69,7 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
                 color: 0x0000ff,
                 transparent: true,
                 opacity: 0.5,
-                linewidth: 0.1,
+                linewidth: 0.2,
             });
             const line = new THREE.Line(geometry, material);
             line.name = "wireframe-line";
@@ -95,6 +104,15 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
             isLandscape: isLandscape,
             heightToWidthRatio: heightToWidthRelation,
         };
+        console.log(
+            "Image: ",
+            image_name,
+            " Position: ",
+            image_plane.position,
+            " Direction: ",
+            image_plane.userData.direction
+        );
+
         images.push(image_plane);
     });
 }
@@ -132,24 +150,74 @@ function setWireframe(enable) {
 }
 
 function setIntersectionPosition(scene) {
+    console.log(scene);
+
+    var gltf = scene.getObjectByName("model");
+    gltf.updateMatrixWorld(true);
+    gltf.traverse(function (child) {
+        if (child.isMesh) {
+            const m = child; // as THREE.Mesh
+            m.geometry.computeBoundsTree(); // BVH
+            pickableObjects.push(m);
+        }
+    });
+    console.log("Pick:", pickableObjects);
+
+    var model = scene.getObjectByName("model");
+    //var model = scene;
+    console.log(model);
+    console.log("Setting intersection positions for ", images.length, " images...");
+
     images.forEach((i) => {
         const intersectionPosition = getIntersectionPosition(
             scene,
+            model,
+            pickableObjects,
             i.position,
             i.userData.direction
         );
         i.userData.intersection = new THREE.Vector3().copy(intersectionPosition);
     });
+    console.log("Setting intersection positions: done!");
 }
 
-function getIntersectionPosition(scene, position, direction) {
+function getIntersectionPosition(scene, model, objs, position, direction) {
     raycaster.set(position, direction);
-    var intersections = raycaster.intersectObject(scene, true);
-    if (intersections.length == 0) return position;
-    for (let i = 0; i < intersections.length; i++) {
-        if (intersections[i].object.name != "wireframe") return intersections[i].point;
+    console.log("Position: ", position, " Direction: ", direction);
+    raycaster.firstHitOnly = true; // BVH
+    //var intersections = raycaster.intersectObjects(model, true); // BVH
+    /*
+    const invMat = new THREE.Matrix4();
+    invMat.copy(model.matrixWorld).invert();
+    raycaster.ray.applyMatrix4(invMat);
+    */
+
+    var intersections = raycaster.intersectObjects(objs, true); // BVH
+
+    if (intersections.length == 0) {
+        console.log("No intersection found");
+        return position;
     }
-    return position;
+    var i = 0;
+    var j = -1;
+    for (; i < intersections.length; i++) {
+        //if (intersections[i].object.name != "wireframe" && intersections[i].object.name != "wireframe-line" && intersections[i].object.name != "" && intersections[i].object.name[0] != "S") break; // return intersections[i].point;
+        console.log("Intersected:", intersections[i].object);
+        //if (intersections[i].object.name != "wireframe") j = i;
+        if (intersections[i].object.name[0] == "P") {
+            j = i;
+            break; // return intersections[i].point;
+        }
+    }
+    if (j != -1)
+        console.log(
+            "Position: ",
+            position,
+            " Intersection",
+            intersections[j].point,
+            intersections[j].object.name
+        );
+    return intersections[j].point;
 }
 
 function setImageVisibility(show) {

@@ -8,12 +8,10 @@
 
 <div class="container">
     <div id="ui">
-        <a id="home"><i class="fa-solid fa-camera"></i> Center camera</a>
-        <a id="zoom-in"><i class="fas fa-magnifying-glass-plus"></i> Zoom In</a>
-        <a id="zoom-out"><i class="fas fa-magnifying-glass-minus"></i> Zoom Out</a>
-        <a id="full-page"><i class="fa-solid fa-expand"></i> Full Screen</a>
-        <a id="invert-zoom" href="javascript:invertZoom()" title="Increase details"
-            ><i class="fa-solid fa-up-right-and-down-left-from-center"></i> Increase Deatils</a
+        <a id="home" href="javascript:,"><i class="fa-solid fa-camera"></i> Reset camera</a>
+        <a id="full-page" href="javascript:,"><i class="fa-solid fa-expand"></i> Full Screen</a>
+        <a id="invert-zoom" href="javascript:invertZoom()" title="Increase details">
+            <i class="fa-solid fa-up-right-and-down-left-from-center"></i> Increase Details</a
         >
         <a
             id="regular-zoom"
@@ -26,15 +24,18 @@
             id="real-position"
             style="display: none"
             href="javascript:togglePosition()"
-            title="Set real position"
-            ><i class="fa-solid fa-location-dot"></i> Set real position</a
+            title="Use camera positions"
+            ><i class="fa-solid fa-location-dot"></i> Use camera positions</a
         >
-        <a
-            id="intersection-position"
-            href="javascript:togglePosition()"
-            title="Set intersection position"
-            ><i class="fa-solid fa-location-dot"></i> Set intersection position</a
+        <a id="intersection-position" href="javascript:togglePosition()" title="Use camera targets"
+            ><i class="fa-solid fa-location-dot"></i> Use camera targets</a
         >
+        <a id="distribute" href="javascript:distrib()" title="Distribute"
+            ><i class="fa-solid fa-expand"></i> Distribute
+        </a>
+        <a id="overlap" style="display: none" href="javascript:distrib()" title="Overlap"
+            ><i class="fa-solid fa-compress"></i> Overlap
+        </a>
     </div>
     <div id="openseadragon1" style="width: 100vm"></div>
 </div>
