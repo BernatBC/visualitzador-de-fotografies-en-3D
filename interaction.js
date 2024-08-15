@@ -103,12 +103,13 @@ function onClick() {
         return;
     }
 
-    var object = firstImageOrModel(intersects);
+    var object_intersection = firstImageOrModel(intersects);
+    var object = object_intersection.object;
     if (object == null) return;
 
     // Model click
     if (object.name.startsWith("PEDRET")) {
-        if (event.button == 0) openNearbyImages();
+        if (event.button == 0) openNearbyImages(object_intersection);
         return;
     }
 
@@ -192,7 +193,7 @@ function onHover() {
             render();
             return;
         }
-        var object = firstImageOrModel(intersects);
+        var object = firstImageOrModel(intersects).object;
         if (object != null && object.name.startsWith("Sant Quirze de Pedret by Zones")) {
             // New Hover
             if (hover === undefined) hoverIn(object);
@@ -262,9 +263,8 @@ function clearRangeImages() {
 
 function firstImageOrModel(objects) {
     for (let i = 0; i < objects.length; i++) {
-        if (objects[i].object.name.startsWith("PEDRET")) return objects[i].object;
-        if (objects[i].object.name.startsWith("Sant Quirze de Pedret by Zones"))
-            return objects[i].object;
+        if (objects[i].object.name.startsWith("PEDRET")) return objects[i];
+        if (objects[i].object.name.startsWith("Sant Quirze de Pedret by Zones")) return objects[i];
     }
     return null;
 }
