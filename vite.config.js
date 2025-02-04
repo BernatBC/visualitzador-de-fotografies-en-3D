@@ -4,4 +4,7 @@ export default {
             ignored: ["**/Sant Quirze de Pedret by Zones/**"],
         },
     },
+    build: {
+        target: 'esnext'
+    }
 };

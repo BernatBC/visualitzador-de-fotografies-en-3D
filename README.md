@@ -81,3 +81,12 @@ npx vite
 ```
 
 Once it's loaded, you can open your browser and navigate to `http://localhost:5173/`. Your URL might be different, so pay attention to the `npx vite` output.
+
+### 9. Build the application
+You can generate the static site by using the following command:
+
+```bash
+npx vite build
+```
+
+The `dist` directory will contain all the files needed. You can open `dist/index.html` to start the app.
