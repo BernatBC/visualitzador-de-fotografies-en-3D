@@ -83,10 +83,14 @@ npx vite
 Once it's loaded, you can open your browser and navigate to `http://localhost:5173/`. Your URL might be different, so pay attention to the `npx vite` output.
 
 ### 9. Build the application
-You can generate the static site by using the following command:
+You can generate the static site by using the following commands, or by running `buildSite.sh`.
 
 ```bash
 npx vite build
+cp openseadragon.html dist/
+cp openseadragon.css dist/
+cp openseadragon.js dist/
+cp -r openseadragon dist/
 ```
 
-The `dist` directory will contain all the files needed. You can open `dist/index.html` to start the app.
+The `dist` directory will contain all the files needed.
