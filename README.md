@@ -94,3 +94,4 @@ cp -r openseadragon dist/
 ```
 
 The `dist` directory will contain all the files needed.
+You can preview the site by entering `npx vite preview`, and you can deploy it to your favourite platform.
