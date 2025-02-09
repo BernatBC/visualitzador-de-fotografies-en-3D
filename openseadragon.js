@@ -1,3 +1,4 @@
+console.time('loadingTime')
 const urlParams = new URLSearchParams(window.location.search);
 const image = urlParams.get("image");
 const mode = urlParams.get("mode");
@@ -55,6 +56,7 @@ viewer.zoomPerClick = 1;
 viewer.addHandler("open", function () {
     if (mode === "single" || parsedImages.size == 1) return;
     //distribute(parsedImages); // testing
+    console.timeEnd('loadingTime')
 });
 
 viewer.addHandler("canvas-click", function (event) {
@@ -102,6 +104,7 @@ function distrib() {
 
 function distribute(images) {
     if (!overlappingSet) return;
+    console.time('overlappingSolver');
     //return;  // TODO
     overlapping = true;
     for (let i = 0; overlapping; i++) {
@@ -109,6 +112,7 @@ function distribute(images) {
         overlapping = false;
         for (let i = 0; i < images.length; i++) align(images[i], images, i);
     }
+    console.timeEnd('overlappingSolver');
 }
 
 function align(a, images, i) {
