@@ -21,6 +21,7 @@ function setScene(sce) {
 }
 
 function openSphericalImages() {
+    console.time('computeCoords');
     let images = getAllImages();
     let json = [];
 
@@ -50,6 +51,7 @@ function openSphericalImages() {
 
     window.open(url, "_blank");
     clearSelection();
+    console.timeEnd('computeCoords')
 }
 
 function get2DCoords(P) {

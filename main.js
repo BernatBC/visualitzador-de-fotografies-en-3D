@@ -8,6 +8,8 @@ import { createPanel } from "./panel.js";
 import { setIntersectionPosition } from "./single-image-loader.js";
 import { setScene } from "./inspect.js";
 
+console.time('threeJSLoading');
+
 //INIT
 THREE.Cache.enabled = true;
 
@@ -55,12 +57,12 @@ const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
 createPanel();
-
+/*
 await loadImages(
     scene,
     "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasList-converted.lst",
     "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistration.out"
-);
+);*/
 
 //MODEL LOADER
 const gltfLoader = new GLTFLoader();
@@ -105,9 +107,14 @@ gltfLoader.load("models/pedret/pedret_XII_text4K.glb", (object) => {
     scene.add(wrapper);*/
     scene.add(object.scene);
     //setIntersectionPosition(object.scene);
+    loadImages(
+        scene,
+        "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasList-converted.lst",
+        "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistration.out"
+    );
     setIntersectionPosition(scene);
+    console.timeEnd('threeJSLoading');
 });
-
 
 
 addInteraction(camera, scene, controls);
