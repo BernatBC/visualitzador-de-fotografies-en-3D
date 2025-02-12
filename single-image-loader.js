@@ -18,7 +18,7 @@ var images = [];
 
 const pickableObjects = [];
 
-function loadImage(scene, R, t, zoom, image_name, image_loader) {
+function loadImage(scene, R, t, zoom, image_name, image_loader, totalNumberOfImages) {
     const pos = math.multiply(math.unaryMinus(math.transpose(R)), t);
     //View direction
     const view_direction = math.multiply(
@@ -114,6 +114,10 @@ function loadImage(scene, R, t, zoom, image_name, image_loader) {
         );
 
         images.push(image_plane);
+        if (images.length == totalNumberOfImages) {
+            setIntersectionPosition(scene);
+            console.timeEnd('threeJSLoading');
+        }
     });
 }
 
