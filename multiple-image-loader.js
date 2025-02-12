@@ -45,7 +45,7 @@ async function loadImages(scene, images_file, cameras_file) {
 
             //if (!image_list[i].includes("0098")) continue; // TODO
 
-            loadImage(scene, R, t, zoom, image_list[i], image_loader);
+            loadImage(scene, R, t, zoom, image_list[i], image_loader, num_cameras);
         }
     });
 }

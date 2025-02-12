@@ -5,7 +5,6 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { loadImages } from "./multiple-image-loader.js";
 import { addInteraction } from "./interaction.js";
 import { createPanel } from "./panel.js";
-import { setIntersectionPosition } from "./single-image-loader.js";
 import { setScene } from "./inspect.js";
 
 console.time('threeJSLoading');
@@ -112,8 +111,6 @@ gltfLoader.load("models/pedret/pedret_XII_text4K.glb", (object) => {
         "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasList-converted.lst",
         "out-files/MNAC-AbsidiolaSud/MNAC-AbsSud-CamerasRegistration.out"
     );
-    setIntersectionPosition(scene);
-    console.timeEnd('threeJSLoading');
 });
 
 
