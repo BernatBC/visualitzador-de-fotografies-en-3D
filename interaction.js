@@ -60,6 +60,20 @@ function addInteraction(cam, sce, cntrls) {
         mDragging = false;
     });
 
+    // add event listener for keypress
+    window.addEventListener("keydown", function (event) {
+        // c for setting camera target to camera position
+        if (event.key === "c") {
+            console.log("controls", controls);
+            console.log("camera", camera);
+            let pos = camera.position.clone();
+            pos.add(camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(0.1));
+            controls.target.set(pos.x, pos.y, pos.z);
+        }   
+    });
+
+
+
     window.addEventListener("pointermove", onHover);
 
     window.addEventListener("storage", (event) => {
