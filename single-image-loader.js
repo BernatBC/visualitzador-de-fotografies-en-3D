@@ -66,7 +66,7 @@ function loadImage(scene, R, t, zoom, image_name, image_loader, totalNumberOfIma
             const points = [vertice, new THREE.Vector3(0, 0, 0)];
             const geometry = new THREE.BufferGeometry().setFromPoints(points);
             const material = new THREE.LineBasicMaterial({
-                color: 0x0000ff,
+                color: 0x0000ff,  // see NEUTRAL_LINE_COLOR in interaction.js
                 transparent: true,
                 opacity: 0.5,
                 linewidth: 0.2,
