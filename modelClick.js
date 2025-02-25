@@ -29,7 +29,7 @@ function openImagesToOpenSeaDragon(imagesSelected) {
     let jsonContent = JSON.stringify(createJSON(imagesSelected));
     localStorage.setItem("images", jsonContent);
     const url = "openseadragon.html?mode=multiple";
-    window.open(url, "_blank");
+    window.open(url, "blank");
 }
 
 export { openNearbyImages };

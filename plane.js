@@ -163,7 +163,7 @@ function openPlane() {
     localStorage.setItem("images", jsonContent);
     const url = "openseadragon.html?mode=plane";
 
-    window.open(url, "_blank");
+    window.open(url, "blank");
     //cancelPlane();
 }
 

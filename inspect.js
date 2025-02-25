@@ -180,7 +180,7 @@ function openSphericalImages(C, radius) {
     localStorage.setItem("images", jsonContent);
     const url = "openseadragon.html?mode=spherical";
 
-    window.open(url, "_blank");
+    window.open(url, "blank");
 }
 
 function getSphere2DCoords(P, C) {
@@ -244,7 +244,7 @@ function openCylindricalImages(vector, centerPoint, radius, height) {
     localStorage.setItem("images", jsonContent);
     const url = "openseadragon.html?mode=cylindrical";
 
-    window.open(url, "_blank");
+    window.open(url, "blank");
 }
 
 function getCylinder2DCoords(P, segment, originVector, centerPoint) {
@@ -292,7 +292,7 @@ function openPlaneImages(abstractPlane, planeHeight, planeWidth, planeDistance, 
     localStorage.setItem("images", jsonContent);
     const url = "openseadragon.html?mode=plane";
 
-    window.open(url, "_blank");
+    window.open(url, "blank");
 }
 
 function getPlane2DCoords(P, centerPoint, abstractPlane, t, b) {
