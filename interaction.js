@@ -130,7 +130,7 @@ function onClick() {
 
     if (event.button == 0) {
         const url = "openseadragon.html?mode=single&image=" + encodeURIComponent(object.name);
-        window.open(url, "_blank");
+        window.open(url, "blank");
         clearSelection();
     } else if (!rangeImages.has(object)) {
         if (imagesSelected.has(object)) {
@@ -168,7 +168,7 @@ function openImagesToOpenSeaDragon() {
     let jsonContent = JSON.stringify(createJSON(imagesSelected));
     localStorage.setItem("images", jsonContent);
     const url = "openseadragon.html?mode=multiple";
-    window.open(url, "_blank");
+    window.open(url, "blank");
     clearSelection();
 }
 

@@ -33,22 +33,22 @@ import {
 
 import { setFiguresVisibility } from "./inspect.js";
 
-const panel = new GUI({ width: 290 });
+const panel = new GUI({ width: 290, title: "Show/Hide Interface" });
 
 const mode_folder = panel.addFolder("Mode");
-const folder1 = panel.addFolder("Image Settings");
 const folder2 = panel.addFolder("Individual Selection");
-const folder3 = panel.addFolder("Sphere");
 const folder4 = panel.addFolder("Plane");
+const folder3 = panel.addFolder("Sphere");
 const folder5 = panel.addFolder("Cylinder");
+const folder1 = panel.addFolder("Image Settings");
 
 const infoElement = document.getElementById("info");
 
 function createPanel() {
     let mode_settings = {
-        "Change to Authoring mode": function () {
-            hideController("Mode", "Change to Authoring mode");
-            showController("Mode", "Change to Inspect mode");
+        "Enter Author Mode (expert)": function () {
+            hideController("Mode", "Enter Author Mode (expert)");
+            showController("Mode", "Enter Inspect Mode (easy)");
             hideFolder("Individual Selection");
             showFolder("Image Settings");
             showFolder("Sphere");
@@ -62,16 +62,16 @@ function createPanel() {
             setFiguresVisibility(false);
             setAuthoringMode(true);
         },
-        "Change to Inspect mode": function () {
-            showController("Mode", "Change to Authoring mode");
-            hideController("Mode", "Change to Inspect mode");
+        "Enter Inspect Mode (easy)": function () {
+            showController("Mode", "Enter Author Mode (expert)");
+            hideController("Mode", "Enter Inspect Mode (easy)");
             hideFolder("Individual Selection");
             hideFolder("Image Settings");
             hideFolder("Sphere");
             hideFolder("Plane");
             hideFolder("Cylinder");
 
-            setMessage("Open predefined figures");
+            setMessage("Click any colored shape to open its related images");
             setSelectionMode("multi");
 
             cancelSphere();
@@ -84,9 +84,9 @@ function createPanel() {
         },
     };
     let settings1 = {
-        "Image size": 1.0,
-        "Camera image separation": 0.2,
-        "Image wireframe": true,
+        "Thumbnail size": 1.0,
+        "Frustum length": 0.1,
+        "Show frustum": true,
     };
 
     let settings2 = {
@@ -111,12 +111,12 @@ function createPanel() {
     };
 
     let settings3 = {
-        "Create Sphere": function () {
-            showController("Sphere", "Cancel");
-            hideController("Sphere", "Create Sphere");
+        "New Sphere...": function () {
+            showController("Sphere", "Done");
+            hideController("Sphere", "New Sphere...");
             hideController("Sphere", "Radius");
             hideController("Sphere", "Open in 2D viewer");
-            hideController("Sphere", "Save figure to Inspect mode");
+            hideController("Sphere", "Save selection (for Inspect Mode)");
 
             hideFolder("Individual Selection");
             hideFolder("Plane");
@@ -129,17 +129,18 @@ function createPanel() {
             openSphericalImages();
         },
         Radius: 0.5,
-        "Save figure to Inspect mode": function () {
+        "Save selection (for Inspect Mode)": function () {
             saveSphereToInspectMode();
+            this.Done();
         },
-        Cancel: function () {
+        Done: function () {
             cancelSphere();
 
-            hideController("Sphere", "Cancel");
-            showController("Sphere", "Create Sphere");
+            hideController("Sphere", "Done");
+            showController("Sphere", "New Sphere...");
             hideController("Sphere", "Radius");
             hideController("Sphere", "Open in 2D viewer");
-            hideController("Sphere", "Save figure to Inspect mode");
+            hideController("Sphere", "Save selection (for Inspect Mode)");
 
             showFolder("Plane");
             showFolder("Cylinder");
@@ -151,14 +152,14 @@ function createPanel() {
     };
 
     let settings4 = {
-        "Create Plane": function () {
+        "New Plane...": function () {
             hideController("Plane", "Width");
             hideController("Plane", "Height");
-            hideController("Plane", "Max distance");
+            hideController("Plane", "Depth");
             hideController("Plane", "Open in 2D viewer");
-            showController("Plane", "Cancel");
-            hideController("Plane", "Create Plane");
-            hideController("Plane", "Save figure to Inspect mode");
+            showController("Plane", "Done");
+            hideController("Plane", "New Plane...");
+            hideController("Plane", "Save selection (for Inspect Mode)");
 
             hideFolder("Individual Selection");
             hideFolder("Sphere");
@@ -167,18 +168,19 @@ function createPanel() {
             setMessage("Select 3 images");
             setSelectionMode("plane");
         },
-        "Save figure to Inspect mode": function () {
+        "Save selection (for Inspect Mode)": function () {
             savePlaneToInspectMode();
+            this.Done();
         },
-        Cancel: function () {
+        Done: function () {
             cancelPlane();
             hideController("Plane", "Width");
             hideController("Plane", "Height");
-            hideController("Plane", "Max distance");
+            hideController("Plane", "Depth");
             hideController("Plane", "Open in 2D viewer");
-            hideController("Plane", "Cancel");
-            showController("Plane", "Create Plane");
-            hideController("Plane", "Save figure to Inspect mode");
+            hideController("Plane", "Done");
+            showController("Plane", "New Plane...");
+            hideController("Plane", "Save selection (for Inspect Mode)");
 
             showFolder("Sphere");
             showFolder("Cylinder");
@@ -189,20 +191,20 @@ function createPanel() {
         },
         Width: 1,
         Height: 1,
-        "Max distance": 0.1,
+        "Depth": 0.1,
         "Open in 2D viewer": function () {
             openPlane();
         },
     };
 
     let settings5 = {
-        "Create Cylinder": function () {
+        "New Cylinder...": function () {
             hideController("Cylinder", "Radius");
             hideController("Cylinder", "Height");
             hideController("Cylinder", "Open in 2D viewer");
-            showController("Cylinder", "Cancel");
-            hideController("Cylinder", "Create Cylinder");
-            hideController("Cylinder", "Save figure to Inspect mode");
+            showController("Cylinder", "Done");
+            hideController("Cylinder", "New Cylinder...");
+            hideController("Cylinder", "Save selection (for Inspect Mode)");
 
             hideFolder("Individual Selection");
             hideFolder("Sphere");
@@ -216,18 +218,19 @@ function createPanel() {
         },
         Radius: 0.5,
         Height: 1.0,
-        "Save figure to Inspect mode": function () {
+        "Save selection (for Inspect Mode)": function () {
             saveCylinderToInspectMode();
+            this.Done();
         },
-        Cancel: function () {
+        Done: function () {
             cancelCylinder();
 
             hideController("Cylinder", "Radius");
             hideController("Cylinder", "Height");
             hideController("Cylinder", "Open in 2D viewer");
-            hideController("Cylinder", "Cancel");
-            showController("Cylinder", "Create Cylinder");
-            hideController("Cylinder", "Save figure to Inspect mode");
+            hideController("Cylinder", "Done");
+            showController("Cylinder", "New Cylinder...");
+            hideController("Cylinder", "Save selection (for Inspect Mode)");
 
             showFolder("Sphere");
             showFolder("Plane");
@@ -238,58 +241,55 @@ function createPanel() {
         },
     };
 
-    mode_folder.add(mode_settings, "Change to Inspect mode");
-    mode_folder.add(mode_settings, "Change to Authoring mode");
+    mode_folder.add(mode_settings, "Enter Inspect Mode (easy)");
+    mode_folder.add(mode_settings, "Enter Author Mode (expert)");
 
-    folder1.add(settings1, "Image size", 0.0, 5.0, 0.01).onChange(setSize);
-    folder1.add(settings1, "Camera image separation", 0.01, 2.0, 0.01).onChange(setOffset);
-    folder1.add(settings1, "Image wireframe").onChange(setWireframe);
+    folder1.add(settings1, "Thumbnail size", 0.0, 2.0, 0.01).onChange(setSize);
+    folder1.add(settings1, "Frustum length", 0.01, 0.5, 0.01).onChange(setOffset);
+    folder1.add(settings1, "Show frustum").onChange(setWireframe);
 
     folder2.add(settings2, "Open in 2D viewer");
     folder2.add(settings2, "Clear Selection");
 
-    folder3.add(settings3, "Create Sphere");
+    folder3.add(settings3, "New Sphere...");
     folder3.add(settings3, "Radius", 0.0, 5.0, 0.01).onChange(applySphericalRadius);
     folder3.add(settings3, "Open in 2D viewer");
-    folder3.add(settings3, "Save figure to Inspect mode");
-    folder3.add(settings3, "Cancel");
+    folder3.add(settings3, "Save selection (for Inspect Mode)");
+    folder3.add(settings3, "Done");
 
-    folder4.add(settings4, "Create Plane");
+    folder4.add(settings4, "New Plane...");
     folder4.add(settings4, "Width", 0.0, 10.0, 0.01).onChange(changePlaneWidth);
     folder4.add(settings4, "Height", 0.0, 10.0, 0.01).onChange(changePlaneHeight);
-    folder4.add(settings4, "Max distance", 0.0, 5.0, 0.01).onChange(changePlaneDistance);
+    folder4.add(settings4, "Depth", 0.0, 5.0, 0.01).onChange(changePlaneDistance);
     folder4.add(settings4, "Open in 2D viewer");
-    folder4.add(settings4, "Save figure to Inspect mode");
-    folder4.add(settings4, "Cancel");
+    folder4.add(settings4, "Save selection (for Inspect Mode)");
+    folder4.add(settings4, "Done");
 
-    folder5.add(settings5, "Create Cylinder");
+    folder5.add(settings5, "New Cylinder...");
     folder5.add(settings5, "Radius", 0.0, 5.0, 0.01).onChange(applyCylindricalRadius);
     folder5.add(settings5, "Height", 0.0, 5.0, 0.01).onChange(applyCylindricalHeight);
     folder5.add(settings5, "Open in 2D viewer");
-    folder5.add(settings5, "Save figure to Inspect mode");
-    folder5.add(settings5, "Cancel");
+    folder5.add(settings5, "Save selection (for Inspect Mode)");
+    folder5.add(settings5, "Done");
 
     // Initialize panel
     hideFolder("Individual Selection");
-    //hideFolder("Sphere");
-    //hideFolder("Plane");
-    //hideFolder("Cylinder");
-    hideController("Mode", "Change to Authoring mode");
+    hideController("Mode", "Enter Author Mode (expert)");
     hideController("Sphere", "Radius");
     hideController("Sphere", "Open in 2D viewer");
-    hideController("Sphere", "Save figure to Inspect mode");
-    hideController("Sphere", "Cancel");
+    hideController("Sphere", "Save selection (for Inspect Mode)");
+    hideController("Sphere", "Done");
     hideController("Plane", "Width");
     hideController("Plane", "Height");
-    hideController("Plane", "Max distance");
+    hideController("Plane", "Depth");
     hideController("Plane", "Open in 2D viewer");
-    hideController("Plane", "Save figure to Inspect mode");
-    hideController("Plane", "Cancel");
+    hideController("Plane", "Save selection (for Inspect Mode)");
+    hideController("Plane", "Done");
     hideController("Cylinder", "Radius");
     hideController("Cylinder", "Height");
     hideController("Cylinder", "Open in 2D viewer");
-    hideController("Cylinder", "Save figure to Inspect mode");
-    hideController("Cylinder", "Cancel");
+    hideController("Cylinder", "Save selection (for Inspect Mode)");
+    hideController("Cylinder", "Done");
 }
 
 function setSliderValue(folder, slider_name, value) {
@@ -336,15 +336,15 @@ function setMessage(message) {
 
 function resetMessage() {
     infoElement.innerText =
-        "Open an image with left click, select images with right click or create a figure";
+        "Left click on an image: Open the image    |    Right click on an image: Select the image";
 }
 
 function setSphereSettings() {
-    showController("Sphere", "Cancel");
-    hideController("Sphere", "Create Sphere");
+    showController("Sphere", "Done");
+    hideController("Sphere", "New Sphere...");
     showController("Sphere", "Radius");
     showController("Sphere", "Open in 2D viewer");
-    showController("Sphere", "Save figure to Inspect mode");
+    showController("Sphere", "Save selection (for Inspect Mode)");
 
     setMessage("");
 }
@@ -353,9 +353,9 @@ function setCylinderSettings() {
     showController("Cylinder", "Radius");
     showController("Cylinder", "Height");
     showController("Cylinder", "Open in 2D viewer");
-    showController("Cylinder", "Cancel");
-    hideController("Cylinder", "Create Cylinder");
-    showController("Cylinder", "Save figure to Inspect mode");
+    showController("Cylinder", "Done");
+    hideController("Cylinder", "New Cylinder...");
+    showController("Cylinder", "Save selection (for Inspect Mode)");
 
     setMessage("");
 }
@@ -363,11 +363,11 @@ function setCylinderSettings() {
 function setPlaneSettings() {
     showController("Plane", "Width");
     showController("Plane", "Height");
-    showController("Plane", "Max distance");
+    showController("Plane", "Depth");
     showController("Plane", "Open in 2D viewer");
-    showController("Plane", "Cancel");
-    hideController("Plane", "Create Plane");
-    showController("Plane", "Save figure to Inspect mode");
+    showController("Plane", "Done");
+    hideController("Plane", "New Plane...");
+    showController("Plane", "Save selection (for Inspect Mode)");
 
     setMessage("");
 }

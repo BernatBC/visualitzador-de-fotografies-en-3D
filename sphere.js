@@ -49,7 +49,7 @@ function openSphericalImages() {
     localStorage.setItem("images", jsonContent);
     const url = "openseadragon.html?mode=spherical";
 
-    window.open(url, "_blank");
+    window.open(url, "blank");
     clearSelection();
     console.timeEnd('computeCoords')
 }
