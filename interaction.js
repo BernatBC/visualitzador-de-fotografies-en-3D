@@ -32,6 +32,7 @@ var authoringMode = true;
 const HOVER_COLOR = 0xccffff;
 const SELECTION_COLOR = 0xd6b4fc;
 const NEUTRAL_COLOR = 0xffffff;
+const NEUTRAL_LINE_COLOR = 0x0000ff;
 const RANGE_COLOR = 0xfcae1e;
 
 var imagesSelected = new Set();
@@ -121,10 +122,17 @@ function onClick() {
         if (imagesSelected.has(object)) {
             imagesSelected.delete(object);
             object.material.color.setHex(HOVER_COLOR);
+            object.children[0].children.forEach((child) => {
+                child.material.color.setHex(HOVER_COLOR);
+            });
             if (mode === "multi" && imagesSelected.size == 0) resetUI();
         } else {
             imagesSelected.add(object);
             object.material.color.setHex(SELECTION_COLOR);
+            // set color to SELECTION_COLOR also to children
+            object.children[0].children.forEach((child) => {
+                child.material.color.setHex(SELECTION_COLOR);
+            });
             if (mode === "sphere" && imagesSelected.size == 1) {
                 createSphere();
                 setSphereSettings();
@@ -151,19 +159,34 @@ function openImagesToOpenSeaDragon() {
 }
 
 function clearSelection() {
-    imagesSelected.forEach((image_object) => image_object.material.color.setHex(NEUTRAL_COLOR));
+    imagesSelected.forEach((image_object) => { image_object.material.color.setHex(NEUTRAL_COLOR); 
+        image_object.children[0].children.forEach((child) => {
+            child.material.color.setHex(NEUTRAL_LINE_COLOR);
+        });
+    });
     imagesSelected.clear();
 }
 
 function hoverIn(image_object) {
     if (!imagesSelected.has(image_object) && !rangeImages.has(image_object))
+    {
         image_object.material.color.setHex(HOVER_COLOR);
+        image_object.children[0].children.forEach((child) => {
+            child.material.color.setHex(HOVER_COLOR);
+        });
+    }
+
     hover = image_object;
 }
 
 function hoverOut() {
     if (!imagesSelected.has(hover) && !rangeImages.has(hover))
+    {
         hover.material.color.setHex(NEUTRAL_COLOR);
+        hover.children[0].children.forEach((child) => {
+            child.material.color.setHex(NEUTRAL_LINE_COLOR);
+        });
+    }   
     hover = undefined;
 }
 
@@ -256,14 +279,27 @@ function paintRangeImages(images) {
     rangeImages = images;
     rangeImages.forEach((object) => {
         object.material.color.setHex(RANGE_COLOR);
+        object.children[0].children.forEach((child) => {
+            child.material.color.setHex(RANGE_COLOR); 
+        } );
     });
 }
 
 function clearRangeImages() {
     rangeImages.forEach((object) => {
-        if (imagesSelected.has(object)) object.material.color.setHex(SELECTION_COLOR);
-        else object.material.color.setHex(NEUTRAL_COLOR);
-    });
+        if (imagesSelected.has(object)) {
+            object.material.color.setHex(SELECTION_COLOR);
+            object.children[0].children.forEach((child) => {
+                child.material.color.setHex(SELECTION_COLOR);
+            });
+        }
+        else {
+            object.material.color.setHex(NEUTRAL_COLOR);
+            object.children[0].children.forEach((child) => {
+                child.material.color.setHex(NEUTRAL_LINE_COLOR);
+            });
+        }
+    }); 
     rangeImages = new Set();
 }
 
