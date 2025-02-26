@@ -10,18 +10,26 @@ var spheres = [];
 var cylinders = [];
 var planes = [];
 
-const HOVER_COLOR = 0x66aaaa;
-const NORMAL_COLOR = 0xaaaaaa;
+const HOVER_COLOR = 0xccaaaa;
+const NORMAL_COLOR = 0x6060cc;
 
 function setScene(s) {
     scene = s;
 }
 
-function saveSphere(C, r) {
-    const geometry = new THREE.SphereGeometry(0.05, 10, 10);
-    const material = new THREE.MeshBasicMaterial({
+function createMaterial() {
+    return new THREE.MeshPhysicalMaterial({
         color: NORMAL_COLOR,
+        metalness: 0.8,
+        roughness: 0.2,
+        iridescence: 1.0,
     });
+}
+
+function saveSphere(C, r) {
+    const geometry = new THREE.SphereGeometry(0.1, 10, 10);
+    const material = createMaterial();
+    console.log(material);
     const sphereObject = new THREE.Mesh(geometry, material);
 
     scene.add(sphereObject);
@@ -34,10 +42,8 @@ function saveSphere(C, r) {
 }
 
 function saveCylinder(C, r, h, V) {
-    const geometry = new THREE.CylinderGeometry(0.05, 0.05, 0.1, 10).rotateX(Math.PI / 2);
-    const material = new THREE.MeshBasicMaterial({
-        color: NORMAL_COLOR,
-    });
+    const geometry = new THREE.CylinderGeometry(0.1, 0.05, 0.1, 10).rotateX(Math.PI / 2);
+    const material = createMaterial();
 
     const cylinderObject = new THREE.Mesh(geometry, material);
 
@@ -59,10 +65,8 @@ function savePlane(abstractPlane, planeHeight, planeWidth, planeDistance, center
     var coplanarPoint = abstractPlane.coplanarPoint(new THREE.Vector3().copy(centerPoint));
     var focalPoint = new THREE.Vector3().addVectors(coplanarPoint, abstractPlane.normal);
 
-    const boxGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.02, 10, 10, 10);
-    const boxMaterial = new THREE.MeshBasicMaterial({
-        color: NORMAL_COLOR,
-    });
+    const boxGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.04, 10, 10, 10);
+    const boxMaterial = createMaterial();
     const box = new THREE.Mesh(boxGeometry, boxMaterial);
 
     scene.add(box);
