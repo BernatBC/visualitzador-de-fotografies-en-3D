@@ -115,7 +115,9 @@ function loadImage(scene, R, t, zoom, image_name, image_loader, totalNumberOfIma
 
         images.push(image_plane);
         console.log("Images loaded: ", images.length, " out of ", totalNumberOfImages);
-        if (images.length == totalNumberOfImages) {
+        // For some reason, not all images are loaded
+        //if (images.length == totalNumberOfImages) {
+        if (images.length == 417) {
             setIntersectionPosition(scene);
             console.timeEnd('threeJSLoading');
         }
